@@ -19,6 +19,7 @@ struct SheetHost: View {
             case .providers: ProvidersSheet()
             case .settings: SettingsSheet()
             case .screenTimeTest: ScreenTimeSpikeView()
+            case .credits: CreditsSheet()
             }
         }
         .presentationDetents([.medium, .large])
@@ -416,9 +417,36 @@ struct SettingsSheet: View {
                 Option(icon: .shield, title: "Screen Time test", subtitle: "Real app pausing on this iPhone (spike).") {
                     model.dismissSheets(); DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { model.present(.screenTimeTest) }
                 }
+                Option(icon: .heart, title: "Credits", subtitle: "The illustrations, and who made them.") {
+                    model.dismissSheets(); DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { model.present(.credits) }
+                }
                 Option(icon: .reload, title: "Reset the demo", subtitle: "Clear everything and start again.") { model.resetDemo() }
             }
             Footnote(text: "GYLT — Get Your Life Together. Free, no accounts, no analytics.")
+        }
+    }
+}
+
+
+struct CreditsSheet: View {
+    var body: some View {
+        SheetFrame(title: "Credits", lead: "GYLT is free, and so is the art it stands on.") {
+            CardGroup(fill: Theme.sheetGroup) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Illustrations by The Open Meadows Library").font(.text(.body, weight: .semibold)).foregroundStyle(Theme.label)
+                    Text("Eight scenes from the Open Meadows library by Otto, used under the Creative Commons Attribution 4.0 license. Two are lightly recoloured to sit with the palette.")
+                        .font(.text(.subheadline)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
+                    Link("ottoapp.me/open-meadows", destination: URL(string: "https://ottoapp.me/open-meadows")!)
+                        .font(.text(.subheadline, weight: .medium)).foregroundStyle(Theme.accentText)
+                }
+                .padding(16).frame(maxWidth: .infinity, alignment: .leading)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Drawn for GYLT").font(.text(.body, weight: .semibold)).foregroundStyle(Theme.label)
+                    Text("The generic promise scene, the locked arch and the milestone sunrise.").font(.text(.subheadline)).foregroundStyle(Theme.label2)
+                }
+                .padding(16).frame(maxWidth: .infinity, alignment: .leading)
+                .overlay(alignment: .top) { Rectangle().fill(Theme.separator).frame(height: 0.5) }
+            }
         }
     }
 }

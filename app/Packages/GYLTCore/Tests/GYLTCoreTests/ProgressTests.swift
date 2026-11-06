@@ -116,5 +116,13 @@ struct HistoryTests {
         #expect(Progress.streak(asOf: friday, in: try state(keeping: [0, 2, 3]), calendar: utc) == 1)
         #expect(Progress.streak(asOf: friday, in: try state(keeping: []), calendar: utc) == 0)
     }
+
+    @Test func theLongestStreakRemembersARunThatEnded() throws {
+        // Kept 9, 8, 7 and 6 days ago, missed since, kept today.
+        let s = try state(keeping: [0, 6, 7, 8, 9])
+        #expect(Progress.longestStreak(asOf: friday, in: s, calendar: utc) == 4)
+        #expect(Progress.streak(asOf: friday, in: s, calendar: utc) == 1)
+        #expect(Progress.longestStreak(asOf: friday, in: try state(keeping: []), calendar: utc) == 0)
+    }
 }
 

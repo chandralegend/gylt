@@ -69,16 +69,13 @@ private struct PromiseCard: View {
     var body: some View {
         let c = commitment
         let on = c.isEnabled
-        Card {
-            VStack(alignment: .leading, spacing: 12) {
+        VStack(spacing: 0) {
+            ArtView(art: Art.forPromise(c.id)).frame(height: 112).opacity(on ? 1 : 0.45)
+            VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 12) {
                     Button { model.present(.editCommitment(c.id)) } label: {
-                        HStack(spacing: 12) {
-                            Symbol(icon: Icon(rawValue: c.iconName) ?? .zap, size: 22)
-                                .foregroundStyle(on ? Theme.onAccent : Theme.label2)
-                                .frame(width: 40, height: 40)
-                                .background(Squircle(corner: 12).fill(on ? Theme.accent : Theme.fill))
-                            Text(c.title).font(.text(.headline)).foregroundStyle(Theme.label).multilineTextAlignment(.leading)
+                        HStack {
+                            Text(c.title).font(.text(.title3, weight: .bold)).foregroundStyle(on ? Theme.label : Theme.label2).multilineTextAlignment(.leading)
                             Spacer(minLength: 0)
                         }
                     }
@@ -97,9 +94,11 @@ private struct PromiseCard: View {
                 }
                 .buttonStyle(.plain)
             }
-            .opacity(on ? 1 : 0.6)
-            .animation(Motion.easeOut, value: on)
+            .padding(16)
         }
+        .frame(maxWidth: .infinity)
+        .panel(Theme.surface, corner: 26)
+        .animation(Motion.easeOut, value: on)
     }
 }
 
@@ -114,21 +113,15 @@ struct CoachView: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text("A little attitude. A lot of follow-through.").font(.text(.subheadline)).foregroundStyle(Theme.label2).padding(.top, 2).padding(.bottom, 20)
 
-                Card {
+                VStack(spacing: 0) {
+                    ArtView(art: .coach).frame(height: 190)
                     VStack(alignment: .leading, spacing: 0) {
-                        HStack(spacing: 12) {
-                            Symbol(icon: .headphone, size: 22).foregroundStyle(Theme.accent).frame(width: 44, height: 44)
-                                .background(Circle().fill(Theme.accentSoft))
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(model.settings.persona.rawValue).font(.text(.title3, weight: .bold)).foregroundStyle(Theme.label)
-                                Text("Firm. On your side.").font(.text(.subheadline)).foregroundStyle(Theme.label2)
-                            }
-                        }
-                        Text("“\(model.coachQuote)”").font(.text(.title3, weight: .semibold)).foregroundStyle(Theme.label)
-                            .padding(.top, 20).padding(.bottom, 16).fixedSize(horizontal: false, vertical: true)
+                        Text("\(model.settings.persona.rawValue.uppercased()) · FIRM, ON YOUR SIDE").font(.text(.footnote, weight: .bold)).foregroundStyle(Theme.label2)
+                        Text("“\(model.coachQuote)”").font(.statement(26, weight: .semibold)).foregroundStyle(Theme.label)
+                            .padding(.top, 8).padding(.bottom, 16).fixedSize(horizontal: false, vertical: true)
                         Button { model.speak(model.coachQuote) } label: {
                             HStack(spacing: 12) {
-                                Image(systemName: model.isSpeaking ? "pause.fill" : "play.fill").font(.system(size: 15, weight: .bold)).foregroundStyle(.white)
+                                Image(systemName: model.isSpeaking ? "pause.fill" : "play.fill").font(.system(size: 15, weight: .bold)).foregroundStyle(Theme.onAccent)
                                     .contentTransition(.symbolEffect(.replace))
                                     .frame(width: 36, height: 36).background(Circle().fill(Theme.accent))
                                 VoiceWave(playing: model.isSpeaking).id(model.isSpeaking)
@@ -139,7 +132,9 @@ struct CoachView: View {
                         }
                         .buttonStyle(PressScale(scale: 0.98)).accessibilityLabel(model.isSpeaking ? "Stop the coach" : "Hear your coach")
                     }
+                    .padding(18)
                 }
+                .panel(Theme.surface, corner: 30)
                 .appear()
 
                 SmallLabel(text: "How should I talk to you?")
@@ -236,6 +231,24 @@ struct YouView: View {
                 }
                 .appear()
 
+                SectionHeader(title: "Medals", trailing: AnyView(NavigationLink { MilestonesView() } label: {
+                    Text("See all").font(.text(.subheadline, weight: .semibold)).foregroundStyle(Theme.accentText).frame(minHeight: 44)
+                }))
+                NavigationLink { MilestonesView() } label: {
+                    HStack {
+                        ForEach(Milestone.days.prefix(3), id: \.self) { n in
+                            VStack(spacing: 6) {
+                                MedalView(days: n, size: 88, locked: model.longestStreak < n)
+                                Text("\(n) days").font(.text(.caption, weight: .semibold)).foregroundStyle(model.longestStreak < n ? Theme.label3 : Theme.label)
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                    }
+                    .padding(.vertical, 16).frame(maxWidth: .infinity).panel(Theme.surface)
+                }
+                .buttonStyle(PressScale(scale: 0.98))
+                .appear(0.03)
+
                 SectionHeader(title: "Consistency", trailing: AnyView(Text("12 weeks").font(.text(.subheadline)).foregroundStyle(Theme.label2)))
                 let h = model.history(weeks: 12)
                 Card {
@@ -313,5 +326,40 @@ struct YouView: View {
                 }
             }
         }
+    }
+}
+
+
+// MARK: - Medals
+
+struct MilestonesView: View {
+    @Environment(AppModel.self) private var model
+
+    var body: some View {
+        let best = model.longestStreak, now = model.streak
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Earned by keeping promises, one day at a time.").font(.text(.subheadline)).foregroundStyle(Theme.label2).padding(.top, 2).padding(.bottom, 24)
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 22) {
+                    ForEach(Milestone.days, id: \.self) { n in
+                        VStack(spacing: 8) {
+                            MedalView(days: n, size: 104, locked: best < n)
+                            Text("\(n) days").font(.text(.footnote, weight: .semibold)).foregroundStyle(best < n ? Theme.label3 : Theme.label)
+                        }
+                    }
+                }
+                if let next = Milestone.next(after: now) {
+                    CardGroup {
+                        ListRow(icon: .zap, title: "\(next - now) \(next - now == 1 ? "day" : "days") to your next medal", subtitle: "\(next) days in a row", showsSeparator: false)
+                    }
+                    .padding(.top, 32)
+                }
+            }
+            .padding(.horizontal, Theme.gutter).padding(.bottom, 32)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .background(Theme.bg)
+        .navigationTitle("Medals")
+        .navigationBarTitleDisplayMode(.large)
     }
 }

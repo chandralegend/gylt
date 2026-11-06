@@ -42,7 +42,7 @@ Onboarding (welcome, how it works, the deal, your promises, permissions), Today 
 
 ## v4: Meadow Dusk palette and art (Nov 2026, softened)
 
-Real illustrations replace drawn shapes. Source: The Open Meadows Library (CC BY 4.0), 8 images in `app/GYLT/Resources/Art`, plus 3 GYLT originals. Credit lives in Settings and `Art/CREDITS.md`.
+Real illustrations replace drawn shapes. Source: The Open Meadows Library (CC BY 4.0), 8 images in `app/GYLT/Resources/Assets.xcassets/Art`, plus 3 GYLT originals. Credit lives in Settings and `app/ART-CREDITS.md`.
 
 The first pass used a hot vermilion for every control, which fought the soft art. The palette is now calm: **lavender is the one primary**, and the pastel hues from the illustrations are companions used for data and medals. Text on a pastel fill is always ink.
 
@@ -64,3 +64,8 @@ Medals, one pastel each with an ink numeral: 3 butter, 7 peach, 14 sky, 30 bloss
 Moods: Sunset (walk), Morning (bed), Night (call it a night), Flow (paused).
 The two hottest illustrations are softened: the walk art is desaturated a little, and the red-room intervention art is tinted toward plum (hue-rotate, desaturated). Both are cosmetic filters on the credited originals.
 The canvas (https://claude.ai/artifact/c99cbd6f-1334-470c-945d-9d23f4033006) shows every screen in this system, including a Palette board.
+
+## Built in the app (Nov 2026)
+
+The canvas is now implemented: illustrated Today hero, promise cards and list thumbnails; the intervention, app block and payoff on full-bleed art that fades into the page; the paused state with the flow-state illustration; medals (hexagon, one pastel each) with a once-only milestone screen when the streak lands on 3, 7, 14, 30, 60 or 100; a Medals page under Progress; Settings > Credits for the Open Meadows attribution. Lavender is the single primary; the app icon and the Screen Time shield screen use it too.
+Light mode: cream background, deeper lavender (`#6F59C9`) for controls and links so contrast holds.

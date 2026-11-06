@@ -103,6 +103,7 @@ struct RowPress: ButtonStyle {
 
 struct ListRow: View {
     let icon: Icon?
+    var art: Art? = nil
     let title: String
     var subtitle: String?
     var trailing: String?
@@ -126,7 +127,9 @@ struct ListRow: View {
 
     private var tile: some View {
         Group {
-            if let icon {
+            if let art {
+                ArtView(art: art).frame(width: 48, height: 48).clipShape(Squircle(corner: 14))
+            } else if let icon {
                 Symbol(icon: icon, size: 20).foregroundStyle(Theme.label)
                     .frame(width: 36, height: 36).background(Squircle(corner: 10).fill(Theme.fill))
             }
@@ -257,8 +260,8 @@ struct StreakChip: View {
             Image(systemName: "flame.fill").font(.system(size: 12, weight: .bold))
             Text("\(days) days in a row").font(.text(.footnote, weight: .semibold))
         }
-        .foregroundStyle(Theme.accentText).padding(.horizontal, 10).frame(minHeight: 28)
-        .background(Capsule().fill(Theme.accentSoft))
+        .foregroundStyle(Theme.peachText).padding(.horizontal, 10).frame(minHeight: 28)
+        .background(Capsule().fill(Theme.peachSoft))
         .accessibilityElement(children: .combine)
     }
 }

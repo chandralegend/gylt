@@ -101,4 +101,14 @@ public enum Progress {
         while i >= 0, h.days[i].kept > 0 { count += 1; i -= 1 }
         return count
     }
+
+    /// The longest run of consecutive days with at least one promise kept, over the last year. Zero when nothing was kept.
+    public static func longestStreak(asOf now: Date, in state: AppState, calendar: Calendar = .current) -> Int {
+        let h = history(weeks: 53, endingWith: now, in: state, calendar: calendar)
+        var best = 0, run = 0
+        for (i, d) in h.days.enumerated() where i <= h.todayIndex {
+            if d.kept > 0 { run += 1; best = max(best, run) } else { run = 0 }
+        }
+        return best
+    }
 }

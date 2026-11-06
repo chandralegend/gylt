@@ -10,8 +10,8 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     override func configuration(shielding webDomain: WebDomain, in category: ActivityCategory) -> ShieldConfiguration { make() }
 
     private func make() -> ShieldConfiguration {
-        let coral = UIColor(red: 0.933, green: 0.294, blue: 0.169, alpha: 1)
-        let ink = UIColor(red: 0.055, green: 0.055, blue: 0.063, alpha: 1)
+        let lavender = UIColor(red: 0.725, green: 0.651, blue: 0.961, alpha: 1)
+        let ink = UIColor(red: 0.086, green: 0.078, blue: 0.114, alpha: 1)
         let soft = UIColor(white: 0.65, alpha: 1)
         var subtitle = "You chose this time for yourself. Let’s keep that promise."
         if let lease = ShieldLeaseFile.read() {
@@ -24,8 +24,8 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             icon: shieldImage(),
             title: .init(text: "The feed can wait.", color: .white),
             subtitle: .init(text: subtitle, color: soft),
-            primaryButtonLabel: .init(text: "Back to my walk", color: .white),
-            primaryButtonBackgroundColor: coral,
+            primaryButtonLabel: .init(text: "Back to my walk", color: ink),
+            primaryButtonBackgroundColor: lavender,
             secondaryButtonLabel: .init(text: "End this session", color: soft)
         )
     }
@@ -33,6 +33,6 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     /// A plain shield glyph in the accent colour.
     private func shieldImage() -> UIImage? {
         let config = UIImage.SymbolConfiguration(pointSize: 56, weight: .semibold)
-        return UIImage(systemName: "shield.fill", withConfiguration: config)?.withTintColor(UIColor(red: 0.933, green: 0.294, blue: 0.169, alpha: 1), renderingMode: .alwaysOriginal)
+        return UIImage(systemName: "shield.fill", withConfiguration: config)?.withTintColor(UIColor(red: 0.725, green: 0.651, blue: 0.961, alpha: 1), renderingMode: .alwaysOriginal)
     }
 }

@@ -48,7 +48,7 @@ def star(img, x, y, r, fill="#FFE9E2"):
 
 def finish(img, name):
     out = img.resize((W, H), Image.LANCZOS)
-    out.save(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "GYLT", "Resources", "Art", name))
+    out.save(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "GYLT", "Resources", "Assets.xcassets", "Art", name.replace(".png", "") + ".imageset", name))
 
 def canvas():
     return Image.new("RGB", (W * S, H * S))
@@ -90,6 +90,6 @@ def milestone():
     finish(im, "gylt-milestone.png")
 
 if __name__ == "__main__":
-    os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../GYLT/Resources/Art"), exist_ok=True)
+    pass  # images are written straight into the asset catalog
     custom(); blocked(); milestone()
     print("drawn")

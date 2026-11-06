@@ -17,6 +17,7 @@ struct FlowView: View {
                     case .session: SessionView(occurrence: occ, commitment: c)
                     case .blocked: BlockedView(occurrence: occ, commitment: c)
                     case .complete: CompleteView(occurrence: occ, commitment: c)
+                    case .milestone: MilestoneView(occurrence: occ)
                     }
                 }
                 .id(flow.screen)
@@ -60,7 +61,7 @@ private struct VoiceButton: View {
     var body: some View {
         Button { model.speak(text) } label: {
             HStack(spacing: 12) {
-                Image(systemName: model.isSpeaking ? "pause.fill" : "play.fill").font(.system(size: 15, weight: .bold)).foregroundStyle(.white)
+                Image(systemName: model.isSpeaking ? "pause.fill" : "play.fill").font(.system(size: 15, weight: .bold)).foregroundStyle(Theme.onAccent)
                     .contentTransition(.symbolEffect(.replace))
                     .frame(width: 36, height: 36).background(Circle().fill(Theme.accent))
                 VoiceWave(playing: model.isSpeaking).id(model.isSpeaking)
@@ -117,7 +118,7 @@ struct InterventionView: View {
 
                 VStack(alignment: .leading, spacing: 16) {
                     Chip2(text: model.settings.persona.rawValue + (model.lineIsAI(.intervention, for: occurrence.id) ? " · AI" : ""))
-                    Text("\(first)\(first.isEmpty ? "" : "\n")\(Text(last).foregroundStyle(Theme.accent))")
+                    Text("\(first)\(first.isEmpty ? "" : "\n")\(Text(last).foregroundStyle(Theme.butter))")
                         .font(.statement(46)).foregroundStyle(Theme.label)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
@@ -125,12 +126,12 @@ struct InterventionView: View {
                         Text(quote).font(.text(.title3)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
                     }
                 }
-                .padding(.top, 48).appear(0.05)
+                .padding(.top, 210).appear(0.05)
 
                 VoiceButton(text: quote, label: "Hear coach").padding(.top, 24).appear(0.12)
 
                 CardGroup {
-                    ListRow(icon: Icon(rawValue: commitment.iconName) ?? .zap, title: commitment.title,
+                    ListRow(icon: nil, art: Art.forPromise(commitment.id), title: commitment.title,
                             trailing: "\(commitment.fullMinutes) min", showsSeparator: false)
                     if blocking {
                         ListRow(icon: .shield, title: model.pausedTitle(simulatedCount: commitment.protectedApps.count),
@@ -142,6 +143,9 @@ struct InterventionView: View {
             .padding(.horizontal, Theme.gutter)
         }
         .scrollBounceBehavior(.basedOnSize)
+        .background(alignment: .top) {
+            ZStack { ArtView(art: .intervention); ArtFade() }.frame(height: 470).ignoresSafeArea(edges: .top)
+        }
         .task { model.fetchLine(.intervention, for: occurrence.id) }
         .safeAreaInset(edge: .bottom) {
             BottomBar {
@@ -177,6 +181,7 @@ struct SessionView: View {
             let title = ended ? "You did the time." : isMin ? "The minimum. Still counts." : "One foot, then the other."
             let caption = ended ? "Time’s up" : running ? "of \(s.targetSeconds / 60) min" : started ? "Paused" : "\(s.targetSeconds / 60) min"
             let progress = min(1, elapsed / Double(max(1, s.targetSeconds)))
+            let paused = !running && started && !ended
 
             VStack(spacing: 0) {
                 TopBar(occurrenceId: occurrence.id) {
@@ -211,6 +216,7 @@ struct SessionView: View {
                         .padding(.top, 20)
 
                         ZStack {
+                        ZStack {
                             ProgressRing(progress: progress, lineWidth: 14, track: Theme.fill)
                                 .animation(.linear(duration: 0.5), value: progress)
                             VStack(spacing: 6) {
@@ -237,6 +243,11 @@ struct SessionView: View {
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabel("Time remaining")
                         .accessibilityValue(Fmt.clock(remaining))
+                        .opacity(paused ? 0 : 1)
+                        if paused { pausedCard(remaining: remaining) }
+                        }
+                        .frame(height: 340)
+                        .animation(Motion.spring, value: paused)
 
                         VStack(spacing: 6) {
                             Text(model.settings.persona.rawValue + (model.lineIsAI(.started, for: occurrence.id) ? " · AI" : "")).font(.text(.footnote, weight: .semibold)).foregroundStyle(Theme.label3)
@@ -290,6 +301,20 @@ struct SessionView: View {
     }
 }
 
+extension SessionView {
+    /// Paused: the flow-state illustration and a calm line, in place of the ring.
+    fileprivate func pausedCard(remaining: Double) -> some View {
+        VStack(spacing: 12) {
+            ArtView(art: .session).frame(height: 220).background(Color.white).clipShape(Squircle(corner: 28))
+            Text("Take a breath.").font(.statement(30)).foregroundStyle(Theme.label)
+            Text("\(Fmt.clock(remaining)) left").font(.numeral(20)).foregroundStyle(Theme.label2)
+        }
+        .padding(.horizontal, 6)
+        .transition(.opacity.combined(with: .scale(scale: 0.96)))
+        .accessibilityElement(children: .combine)
+    }
+}
+
 private struct SessionControl<Glyph: View>: View {
     let label: String
     var size: CGFloat
@@ -330,14 +355,10 @@ struct BlockedView: View {
                     Symbol(icon: .shield, size: 14)
                     Text("GYLT is holding the line").font(.text(.footnote, weight: .semibold))
                 }
-                .foregroundStyle(Theme.label2).frame(minHeight: 44)
+                .foregroundStyle(.white).padding(.horizontal, 14).frame(minHeight: 34)
+                .background(Capsule().fill(.black.opacity(0.35))).padding(.top, 10)
 
-                ZStack(alignment: .bottomTrailing) {
-                    BrandBadge(app: app.brand, size: 92)
-                    Symbol(icon: .lock, size: 18).foregroundStyle(Theme.ink).frame(width: 34, height: 34)
-                        .background(Circle().fill(Theme.paper)).offset(x: 10, y: 10)
-                }
-                .padding(.top, 44).padding(.bottom, 32).appear()
+                Color.clear.frame(height: 270).accessibilityHidden(true)
 
                 Text("The feed can wait.")
                     .font(.statement(40)).multilineTextAlignment(.center).foregroundStyle(Theme.label)
@@ -346,7 +367,7 @@ struct BlockedView: View {
                     .font(.text(.body)).foregroundStyle(Theme.label2).multilineTextAlignment(.center).padding(.top, 12).padding(.horizontal, 12).appear(0.1)
 
                 CardGroup {
-                    ListRow(icon: Icon(rawValue: commitment.iconName) ?? .zap, title: commitment.title, trailing: "\(commitment.fullMinutes) min", showsSeparator: false)
+                    ListRow(icon: nil, art: Art.forPromise(commitment.id), title: commitment.title, trailing: "\(commitment.fullMinutes) min", showsSeparator: false)
                     ListRow(icon: .clock, title: "\(app.displayName) opens", subtitle: "Or as soon as you finish", trailing: "around \(expires)")
                 }
                 .padding(.top, 32).appear(0.16)
@@ -354,6 +375,9 @@ struct BlockedView: View {
             .padding(.horizontal, Theme.gutter)
         }
         .scrollBounceBehavior(.basedOnSize)
+        .background(alignment: .top) {
+            ZStack { ArtView(art: .blocked); ArtFade() }.frame(height: 470).ignoresSafeArea(edges: .top)
+        }
         .safeAreaInset(edge: .bottom) {
             BottomBar {
                 Button("Back to my \(commitment.title.lowercased())") { model.go(.session) }.buttonStyle(AppButtonStyle(kind: .primary))
@@ -398,16 +422,11 @@ struct CompleteView: View {
                 }
                 .padding(.top, 4)
 
-                ZStack {
-                    ProgressRing(progress: ring, lineWidth: 10, track: Theme.fill)
-                    Image(systemName: "checkmark").font(.system(size: 44, weight: .bold)).foregroundStyle(Theme.accent)
-                        .scaleEffect(checked ? 1 : 0.4).opacity(checked ? 1 : 0)
-                }
-                .frame(width: 132, height: 132).padding(.top, 40)
+                Color.clear.frame(height: 235).accessibilityHidden(true)
 
                 if model.streak >= 2 { StreakChip(days: model.streak).padding(.top, 20).appear(0.4) }
                 Text("You showed up.")
-                    .font(.statement(40)).multilineTextAlignment(.center).foregroundStyle(Theme.label).padding(.top, model.streak >= 2 ? 12 : 28)
+                    .font(.statement(38)).multilineTextAlignment(.center).foregroundStyle(Theme.label).padding(.top, model.streak >= 2 ? 10 : 22)
                     .accessibilityAddTraits(.isHeader)
                 if !line.isEmpty {
                     Text(line).font(.text(.body)).foregroundStyle(Theme.label2).multilineTextAlignment(.center).padding(.top, 10).padding(.horizontal, 12)
@@ -422,7 +441,7 @@ struct CompleteView: View {
                     }
                     .padding(.vertical, 4)
                 }
-                .padding(.top, 28).appear(0.5)
+                .padding(.top, 20).appear(0.5)
 
                 CardGroup {
                     ListRow(icon: hadLease ? .lockOpen : .headphone, title: hadLease ? "Apps released" : "Coach only",
@@ -433,11 +452,17 @@ struct CompleteView: View {
             .padding(.horizontal, Theme.gutter)
         }
         .scrollBounceBehavior(.basedOnSize)
+        .background(alignment: .top) {
+            ZStack { ArtView(art: .payoff); ArtFade() }.frame(height: 340).ignoresSafeArea(edges: .top)
+        }
         .task { model.fetchLine(.finished(minimum: isMinimum, minutes: minutes), for: occurrence.id) }
         .onAppear { celebrate(minutes: activeMinutes) }
         .safeAreaInset(edge: .bottom) {
             BottomBar {
                 Button("Back to today") { model.selectedTab = .today; model.closeFlow() }.buttonStyle(AppButtonStyle(kind: .primary))
+                if let n = Milestone.reached(streak: model.streak), !model.milestoneSeen(n) {
+                    Button("See your milestone") { model.go(.milestone) }.buttonStyle(AppButtonStyle(kind: .secondary))
+                }
                 Button("Give me five more") { model.fiveMore(from: occurrence.id) }.buttonStyle(AppButtonStyle(kind: .tertiary))
                 VStack(spacing: 2) {
                     Text("\(commitment.title) · \(Fmt.evidence(occurrence))").font(.text(.footnote)).foregroundStyle(Theme.label2)
@@ -469,5 +494,45 @@ struct CompleteView: View {
             Haptics.success()
         }
         withAnimation(.easeOut(duration: 1.0).delay(0.3)) { shownMinutes = minutes }
+    }
+}
+
+
+// MARK: - Milestone
+
+/// A medal moment, shown once per milestone: the sunrise, the medal, one line, share or carry on.
+struct MilestoneView: View {
+    @Environment(AppModel.self) private var model
+    let occurrence: Occurrence
+
+    private static let words = [3: "Three days", 7: "Seven days", 14: "Fourteen days", 30: "Thirty days", 60: "Sixty days", 100: "One hundred days"]
+
+    var body: some View {
+        let n = Milestone.reached(streak: model.streak) ?? max(3, model.streak)
+        ScrollView {
+            VStack(spacing: 0) {
+                HStack {
+                    IconButton(icon: .close, label: "Close") { model.go(.complete) }
+                    Spacer()
+                }
+                MedalView(days: n, size: 260, dark: true).padding(.top, 36).appear(0.05)
+                Text("MILESTONE").font(.text(.footnote, weight: .bold)).tracking(2).foregroundStyle(Theme.butter).padding(.top, 52)
+                Text("\(Self.words[n] ?? "\(n) days")\nin a row.").font(.statement(46)).multilineTextAlignment(.center)
+                    .foregroundStyle(Theme.label).padding(.top, 6).appear(0.15)
+            }
+            .padding(.horizontal, Theme.gutter)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .background(alignment: .top) {
+            ZStack { ArtView(art: .milestone); ArtFade() }.frame(height: 600).ignoresSafeArea(edges: .top)
+        }
+        .onAppear { model.markMilestoneSeen(n); Haptics.success() }
+        .safeAreaInset(edge: .bottom) {
+            BottomBar {
+                ShareLink(item: "I kept my promises \(n) days in a row with GYLT.") { Label("Share", systemImage: "square.and.arrow.up") }
+                    .buttonStyle(AppButtonStyle(kind: .light))
+                Button("Keep going") { model.selectedTab = .today; model.closeFlow() }.buttonStyle(AppButtonStyle(kind: .secondary))
+            }
+        }
     }
 }

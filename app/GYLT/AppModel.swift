@@ -6,7 +6,7 @@ import Observation
 /// One flow presentation (intervention → session → block → complete). The id stays constant while the screen changes,
 /// so SwiftUI swaps content inside a single full-screen cover instead of dismissing and re-presenting it.
 struct Flow: Identifiable, Equatable {
-    enum Screen { case intervention, session, blocked, complete }
+    enum Screen { case intervention, session, blocked, complete, milestone }
     let id = UUID()
     var screen: Screen
     var occurrenceId: UUID
@@ -15,7 +15,7 @@ struct Flow: Identifiable, Equatable {
 
 enum AppSheet: Identifiable, Equatable {
     case changePlan(UUID), stuck(UUID), finish(UUID)
-    case apps, editCommitment(UUID?), personas, boundaries, providers, settings, screenTimeTest
+    case apps, editCommitment(UUID?), personas, boundaries, providers, settings, screenTimeTest, credits
     var id: String {
         switch self {
         case .changePlan(let i): "change-\(i)"
@@ -28,6 +28,7 @@ enum AppSheet: Identifiable, Equatable {
         case .providers: "providers"
         case .settings: "settings"
         case .screenTimeTest: "screentime"
+        case .credits: "credits"
         }
     }
 }
@@ -169,6 +170,15 @@ final class AppModel {
     }
 
     var week: WeekSummary { Progress.week(containing: now, in: state) }
+    /// Medals the person has already seen celebrated, so each is shown once.
+    func milestoneSeen(_ n: Int) -> Bool { (UserDefaults.standard.array(forKey: "milestonesSeen") as? [Int] ?? []).contains(n) }
+    func markMilestoneSeen(_ n: Int) {
+        var seen = UserDefaults.standard.array(forKey: "milestonesSeen") as? [Int] ?? []
+        if !seen.contains(n) { seen.append(n); UserDefaults.standard.set(seen, forKey: "milestonesSeen") }
+    }
+    /// The longest run of days with something kept, over the last year.
+    var longestStreak: Int { Progress.longestStreak(asOf: now, in: state) }
+
     /// Consecutive days with at least one promise kept. Real data only.
     var streak: Int { Progress.streak(asOf: now, in: state) }
     func history(weeks: Int, commitment: UUID? = nil) -> GYLTCore.Progress.History {

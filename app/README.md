@@ -30,7 +30,7 @@ xcodebuild -project GYLT.xcodeproj -scheme GYLT -destination 'platform=iOS Simul
 | Path | What |
 | --- | --- |
 | `Packages/GYLTCore` | Pure-Swift domain and engine: commitments, occurrences, restriction leases, events, persistence, coach contract. No UI or OS imports |
-| `GYLT/DesignSystem` | Theme tokens (semantic colours, one accent), motion and haptics, SF Symbol icons, buttons, cards, rows, ring |
+| `GYLT/DesignSystem` | Theme tokens (Meadow Dusk: lavender primary, pastel companions), art and medals, motion and haptics, SF Symbol icons, buttons, cards, rows, ring |
 | `GYLT/Features` | Today, flow (intervention, session, block, payoff), Plan, Coach, Progress, sheets |
 | `GYLT/AppModel.swift` | `@Observable` model: runs the clock, persists state, performs side effects |
 
@@ -50,3 +50,6 @@ Real Screen Time restrictions, notifications, persistence recovery polish and BY
 ## Credits
 
 SF Pro and SF Symbols (system). No third-party fonts or icon sets.
+
+
+Art: eight illustrations from The Open Meadows Library (CC BY 4.0) and three originals, in `GYLT/Resources/Assets.xcassets/Art`. Credits in `ART-CREDITS.md` and Settings > Credits. `tools/draw_art.py` redraws the originals.

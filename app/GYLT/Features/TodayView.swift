@@ -102,7 +102,7 @@ struct TodayView: View {
                         Button {
                             if let occ, !occ.state.isTerminal { model.openFlow(for: occ) }
                         } label: {
-                            ListRow(icon: Icon(rawValue: c.iconName) ?? .zap, title: c.title,
+                            ListRow(icon: nil, art: Art.forPromise(c.id), title: c.title,
                                     subtitle: done ? "Done · \(occ.map { Fmt.evidence($0).lowercased() } ?? "self-reported")" : (tomorrow ? "Tomorrow · " : "") + c.summary,
                                     trailing: done ? nil : occ.map { Fmt.time($0.scheduledStart) }, chevron: !done, done: done,
                                     showsSeparator: index > 0,
@@ -167,31 +167,34 @@ private struct HeroCard: View {
 
     var body: some View {
         let c = content
-        let fg = c.kept ? Theme.label : Theme.onAccent
-        let fg2 = c.kept ? Theme.label2 : Theme.onAccentSecondary
-        ZStack(alignment: .topTrailing) {
-            if c.watermark && !typeSize.isAccessibilitySize {
-                Image(systemName: Icon(rawValue: commitment.iconName)?.symbol ?? "bolt.fill")
-                    .font(.system(size: 24, weight: .semibold)).foregroundStyle(.white)
-                    .frame(width: 52, height: 52).background(Circle().fill(.white.opacity(0.2)))
-                    .padding(20).allowsHitTesting(false).accessibilityHidden(true)
+        let fg = c.kept ? Theme.label : Color.white
+        let fg2 = c.kept ? Theme.label2 : Color.white.opacity(0.92)
+        ZStack(alignment: .topLeading) {
+            if c.kept {
+                Theme.surface
+            } else {
+                ArtView(art: Art.forPromise(commitment.id))
+                LinearGradient(colors: [.black.opacity(0.5), .black.opacity(0.18), .black.opacity(0)], startPoint: .top, endPoint: UnitPoint(x: 0.5, y: 0.62))
+                    .allowsHitTesting(false)
             }
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 6) {
                     if c.kept { Image(systemName: "checkmark.circle.fill").foregroundStyle(Theme.accent) }
                     Text(c.meta).font(.text(.footnote, weight: .semibold)).foregroundStyle(fg2)
                 }
-                Text(c.title).font(.statement(36)).foregroundStyle(fg).padding(.top, 12)
+                Text(c.title).font(.statement(38)).foregroundStyle(fg).padding(.top, 10)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(c.sub).font(.text(.subheadline)).foregroundStyle(fg2).padding(.top, 8)
                 Spacer(minLength: 24)
                 Button(action: c.action) { Text(c.button) }
                     .buttonStyle(AppButtonStyle(kind: c.kept ? .primary : .light))
             }
+            .shadow(color: c.kept ? .clear : .black.opacity(0.25), radius: 8, y: 1)
             .padding(20)
         }
-        .frame(maxWidth: .infinity, minHeight: 250, alignment: .topLeading)
-        .panel(c.kept ? Theme.surface : Theme.accent, border: c.kept ? Theme.separator : nil)
+        .frame(maxWidth: .infinity, minHeight: 340, alignment: .topLeading)
+        .clipShape(Squircle(corner: 30))
+        .overlay { if c.kept { Squircle(corner: 30).stroke(Theme.separator, lineWidth: 1) } }
         .accessibilityElement(children: .contain)
     }
 }

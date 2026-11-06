@@ -64,6 +64,11 @@ struct OnboardingView: View {
     var body: some View {
         ZStack {
             Theme.bg.ignoresSafeArea()
+            if page == 0 {
+                ZStack { ArtView(art: .welcome, focus: UnitPoint(x: 0.3, y: 0.5)); ArtFade(color: Theme.bg) }
+                    .frame(height: 470).frame(maxHeight: .infinity, alignment: .top).ignoresSafeArea(edges: .top)
+                    .transition(.opacity)
+            }
             VStack(spacing: 0) {
                 HStack(spacing: 6) {
                     ForEach(0..<pages, id: \.self) { i in
@@ -139,16 +144,17 @@ struct OnboardingView: View {
 
     private var welcome: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Wordmark(size: 28).padding(.top, 8).padding(.bottom, 56)
-            Text("You said\nyou would.").font(.statement(52)).foregroundStyle(Theme.label)
-                .accessibilityAddTraits(.isHeader).padding(.bottom, 16)
-            body("GYLT is a coach with attitude and a short leash. It helps you start the thing you already decided to do.")
+            Wordmark(size: 24, color: .white).padding(.top, 8)
+            Color.clear.frame(height: 205)
+            Text("You said\nyou would.").font(.statement(50)).foregroundStyle(Theme.label)
+                .accessibilityAddTraits(.isHeader).padding(.bottom, 14)
+            body("A coach with a short leash. Free, with no account.")
             VStack(alignment: .leading, spacing: 14) {
                 welcomePoint("gift", "Free. No ads, no subscription.")
                 welcomePoint("person.crop.circle.badge.xmark", "No account, no tracking.")
                 welcomePoint("iphone", "Everything stays on this phone.")
             }
-            .padding(.top, 32)
+            .padding(.top, 20)
         }
     }
 
@@ -213,12 +219,10 @@ struct OnboardingView: View {
     private func promiseCard(_ c: Commitment) -> some View {
         let on = Binding(get: { promiseOn[c.id] ?? c.isEnabled }, set: { promiseOn[c.id] = $0 })
         let time = Binding(get: { promiseTime[c.id] ?? .now }, set: { promiseTime[c.id] = $0 })
-        return Card {
+        return VStack(spacing: 0) {
+            ArtView(art: Art.forPromise(c.id)).frame(height: 104).opacity(on.wrappedValue ? 1 : 0.4)
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 12) {
-                    Symbol(icon: Icon(rawValue: c.iconName) ?? .zap, size: 22)
-                        .foregroundStyle(on.wrappedValue ? Theme.onAccent : Theme.label2)
-                        .frame(width: 40, height: 40).background(Squircle(corner: 12).fill(on.wrappedValue ? Theme.accent : Theme.fill))
                     VStack(alignment: .leading, spacing: 2) {
                         Text(c.title).font(.text(.headline)).foregroundStyle(on.wrappedValue ? Theme.label : Theme.label2)
                         Text("\(c.fullMinutes) min · minimum \(c.minimumMinutes)").font(.text(.footnote)).foregroundStyle(Theme.label2)
@@ -240,8 +244,11 @@ struct OnboardingView: View {
                     Text("Off. No reminders and no coach for this one.").font(.text(.footnote)).foregroundStyle(Theme.label3)
                 }
             }
+            .padding(16)
             .animation(Motion.easeOut, value: on.wrappedValue)
         }
+        .frame(maxWidth: .infinity)
+        .panel(Theme.surface, corner: 24)
     }
 
     private var permissions: some View {

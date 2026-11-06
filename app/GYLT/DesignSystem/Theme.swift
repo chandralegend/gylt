@@ -13,33 +13,42 @@ extension Color {
     }
 }
 
-/// Design tokens. Neutrals are the system's own semantic colours, so light, dark and increased contrast come for free.
-/// One accent (coral). Shape rule: cards 20, controls and inputs 12, buttons and chips are capsules. All corners are continuous.
+/// Design tokens: "Meadow Dusk", soft. Aubergine ink and cream neutrals, lavender as the one primary,
+/// pastel companions from the illustrations. Shape rule: cards 20, controls and inputs 12, buttons and chips are capsules.
 enum Theme {
-    // Accent: spent only on the primary action, the active state and progress.
-    static let accent = Color(hex: 0xEE4B2B)
-    static let accentText = Color(light: 0xC63A1C, dark: 0xFF7A5C)       // for small accent text: passes contrast on both themes
-    static let accentSoft = Color(light: 0xFDE7E1, dark: 0x3A1F18)
-    static let onAccent = Color.white
-    static let onAccentSecondary = Color.white.opacity(0.82)
-    static let accentShade = Color(hex: 0xC63A1C)
+    // Primary: buttons, toggles, rings, the active tab. Lavender on dark, a deeper lavender on cream so white text passes.
+    static let accent = Color(light: 0x6F59C9, dark: 0xB9A6F5)
+    static let onAccent = Color(light: 0xFFFFFF, dark: 0x16141D)
+    static let onAccentSecondary = Color(light: 0xFFFFFF, dark: 0x16141D).opacity(0.78)
+    static let accentText = Color(light: 0x5B45B5, dark: 0xCDBEF8)      // small accent text
+    static let accentSoft = Color(light: 0xE9E2FB, dark: 0x2E2445)
+    static let accentShade = Color(hex: 0x6F59C9)
 
-    // Neutrals (system semantic).
-    static let bg = Color(uiColor: .systemGroupedBackground)
-    static let surface = Color(uiColor: .secondarySystemGroupedBackground)
-    static let fill = Color(uiColor: .tertiarySystemFill)
-    static let fill2 = Color(uiColor: .secondarySystemFill)
-    static let label = Color(uiColor: .label)
-    static let label2 = Color(uiColor: .secondaryLabel)
-    static let label3 = Color(uiColor: .tertiaryLabel)
-    static let separator = Color(uiColor: .separator)
-    static let sheet = Color(uiColor: .systemGroupedBackground)
-    static let sheetGroup = Color(uiColor: .secondarySystemGroupedBackground)
+    // Pastel companions, for data and medals. Text on them is always ink.
+    static let butter = Color(hex: 0xF6D68B)
+    static let peach = Color(hex: 0xF5B08B)
+    static let sky = Color(hex: 0x9DB6FF)
+    static let blossom = Color(hex: 0xF7A9D3)
+    static let mint = Color(hex: 0x9ADBB6)
+    static let peachSoft = Color(light: 0xFBE9DD, dark: 0x3A2D2B)
+    static let peachText = Color(light: 0xA2491F, dark: 0xF5B08B)
 
-    /// The focus flow (intervention, session, payoff) is always dark and a touch warmer than pure black.
-    static let focusBg = Color(hex: 0x0E0E10)
-    static let ink = Color(hex: 0x1C1C1E)
-    static let paper = Color(hex: 0xF2F2F7)
+    // Neutrals.
+    static let bg = Color(light: 0xF6F0E6, dark: 0x16141D)
+    static let surface = Color(light: 0xFFFFFF, dark: 0x201D2A)
+    static let fill = Color(light: 0xEDE5D8, dark: 0x2B2837)
+    static let fill2 = Color(light: 0xE3D9C8, dark: 0x393446)
+    static let label = Color(light: 0x1E1B27, dark: 0xF4EFE8)
+    static let label2 = Color(light: 0x6B6578, dark: 0xABA5B8)
+    static let label3 = Color(light: 0x9A94A6, dark: 0x736E81)
+    static let separator = Color(light: 0xE4DCCD, dark: 0x2F2B3A)
+    static let sheet = bg
+    static let sheetGroup = surface
+
+    /// The focus flow (intervention, session, payoff) is always dark.
+    static let focusBg = Color(hex: 0x16141D)
+    static let ink = Color(hex: 0x16141D)
+    static let paper = Color(hex: 0xF6F0E6)
 
     static let gutter: CGFloat = 20
     static let minTap: CGFloat = 44
