@@ -18,7 +18,6 @@ struct SheetHost: View {
             case .boundaries: BoundariesSheet()
             case .providers: ProvidersSheet()
             case .settings: SettingsSheet()
-            case .screenTimeTest: ScreenTimeSpikeView()
             case .credits: CreditsSheet()
             }
         }
@@ -323,6 +322,7 @@ struct EditCommitmentSheet: View {
     @State private var time = Date()
     @State private var full = 20
     @State private var minimum = 5
+    @State private var pausesApps = false
     @State private var loaded = false
 
     var body: some View {
@@ -333,6 +333,18 @@ struct EditCommitmentSheet: View {
                 field("Start time") { DatePicker("Start time", selection: $time, displayedComponents: .hourAndMinute).labelsHidden().frame(maxWidth: .infinity, alignment: .leading) }
                 field("Full version") { Stepper("\(full) min", value: $full, in: 2...120, step: 5).font(.text(.body)) }
                 field("Minimum for hard days") { Stepper("\(minimum) min", value: $minimum, in: 1...60).font(.text(.body)) }
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Pause my chosen apps").font(.text(.body, weight: .medium)).foregroundStyle(Theme.label)
+                        Text(model.pauseReady ? "They wait while you do this, and open again when you finish." : "Set up Screen Time first, under Promises, Apps to pause.")
+                            .font(.text(.footnote)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: 8)
+                    ToggleSwitch(isOn: $pausesApps, label: "Pause my chosen apps during this promise")
+                        .disabled(!model.pauseReady && !pausesApps).opacity(!model.pauseReady && !pausesApps ? 0.4 : 1)
+                }
+                .padding(.horizontal, 16).padding(.vertical, 10).frame(maxWidth: .infinity)
+                .background(Squircle(corner: Theme.controlRadius).fill(Theme.sheetGroup))
                 Button(commitmentId == nil ? "Add promise" : "Save") { save() }.buttonStyle(AppButtonStyle(kind: .primary))
                     .padding(.top, 8).disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
                 if let id = commitmentId, id != Commitment.walkID {
@@ -354,7 +366,7 @@ struct EditCommitmentSheet: View {
     private func load() {
         guard !loaded else { return }; loaded = true
         guard let id = commitmentId, let c = model.commitment(id) else { return }
-        title = c.title; firstStep = c.firstStep; full = c.fullMinutes; minimum = c.minimumMinutes
+        title = c.title; firstStep = c.firstStep; full = c.fullMinutes; minimum = c.minimumMinutes; pausesApps = c.blockingEnabled
         var comps = DateComponents(); comps.hour = c.startHour; comps.minute = c.startMinute
         time = Calendar.current.date(from: comps) ?? .now
     }
@@ -364,6 +376,12 @@ struct EditCommitmentSheet: View {
         var c = commitmentId.flatMap { model.commitment($0) } ?? Commitment(title: title, iconName: "zap", fullMinutes: full, minimumMinutes: minimum, startHour: 19)
         c.title = title.trimmingCharacters(in: .whitespaces); c.firstStep = firstStep; c.fullMinutes = full; c.minimumMinutes = minimum
         c.startHour = comps.hour ?? 19; c.startMinute = comps.minute ?? 0
+        c.blockingEnabled = pausesApps
+        if pausesApps {
+            // The engine only needs to know this promise pauses apps; the apps are the person's own Screen Time choice.
+            if c.protectedApps.isEmpty { c.protectedApps = Set(ProtectedApp.allCases) }
+            c.restrictionWindowMinutes = max(30, full + 10)
+        }
         let before = model.state.commitments.count
         model.send(.upsertCommitment(c))
         if model.state.commitments.count >= before, model.toast == nil { model.dismissSheets(); model.show("Your promise is saved.") }
@@ -405,6 +423,14 @@ struct BoundariesSheet: View {
 
 struct SettingsSheet: View {
     @Environment(AppModel.self) private var model
+    @State private var confirmErase = false
+
+    private var version: String {
+        let v = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+        let b = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
+        return "Version \(v) (\(b))"
+    }
+
     var body: some View {
         SheetFrame(title: "Settings") {
             CardGroup(fill: Theme.sheetGroup) {
@@ -414,15 +440,24 @@ struct SettingsSheet: View {
                 Option(icon: .shield, title: "Your boundaries", subtitle: "What GYLT can and can’t do.") {
                     model.dismissSheets(); DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { model.present(.boundaries) }
                 }
-                Option(icon: .shield, title: "Screen Time test", subtitle: "Real app pausing on this iPhone (spike).") {
-                    model.dismissSheets(); DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { model.present(.screenTimeTest) }
-                }
                 Option(icon: .heart, title: "Credits", subtitle: "The illustrations, and who made them.") {
                     model.dismissSheets(); DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { model.present(.credits) }
                 }
-                Option(icon: .reload, title: "Reset the demo", subtitle: "Clear everything and start again.") { model.resetDemo() }
             }
-            Footnote(text: "GYLT — Get Your Life Together. Free, no accounts, no analytics.")
+
+            SmallLabel(text: "Your data")
+            CardGroup(fill: Theme.sheetGroup) {
+                Button { confirmErase = true } label: {
+                    ListRow(icon: .reload, title: "Erase my data", subtitle: "Promises, history, AI keys and chosen apps. Starts fresh.", chevron: true, showsSeparator: false)
+                }.buttonStyle(RowPress())
+            }
+            Footnote(text: "GYLT — Get Your Life Together. Free, no accounts, no analytics. Everything stays on this phone.\n\(version)")
+        }
+        .confirmationDialog("Erase everything GYLT keeps on this phone?", isPresented: $confirmErase, titleVisibility: .visible) {
+            Button("Erase my data", role: .destructive) { model.eraseEverything() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This removes your promises, history, settings, saved AI keys and chosen apps. It can’t be undone.")
         }
     }
 }

@@ -10,10 +10,17 @@ struct Squircle: Shape {
 
 extension View {
     /// A filled, clipped surface with continuous corners and an optional hairline border.
-    func panel(_ fill: Color = Theme.surface, corner: CGFloat = Theme.cardRadius, border: Color? = nil) -> some View {
-        background(Squircle(corner: corner).fill(fill))
-            .overlay { if let border { Squircle(corner: corner).stroke(border, lineWidth: 1) } }
-            .clipShape(Squircle(corner: corner))
+    /// `glass`: a translucent card. A thin material blurs whatever sits behind it (the page's ambient colour), tinted by `fill`.
+    func panel(_ fill: Color = Theme.surface, corner: CGFloat = Theme.cardRadius, border: Color? = nil, glass: Bool = false) -> some View {
+        background {
+            if glass {
+                ZStack { Rectangle().fill(.ultraThinMaterial); Rectangle().fill(fill.opacity(0.58)) }.clipShape(Squircle(corner: corner))
+            } else {
+                Squircle(corner: corner).fill(fill)
+            }
+        }
+        .overlay { if let border { Squircle(corner: corner).stroke(border, lineWidth: 1) } else if glass { Squircle(corner: corner).stroke(Theme.separator.opacity(0.7), lineWidth: 0.75) } }
+        .clipShape(Squircle(corner: corner))
     }
 }
 
@@ -21,14 +28,14 @@ struct Card<Content: View>: View {
     var fill: Color = Theme.surface
     @ViewBuilder var content: Content
     var body: some View {
-        content.padding(16).frame(maxWidth: .infinity, alignment: .leading).panel(fill)
+        content.padding(16).frame(maxWidth: .infinity, alignment: .leading).panel(fill, glass: true)
     }
 }
 
 struct CardGroup<Content: View>: View {
     var fill: Color = Theme.surface
     @ViewBuilder var content: Content
-    var body: some View { VStack(spacing: 0) { content }.panel(fill) }
+    var body: some View { VStack(spacing: 0) { content }.panel(fill, glass: true) }
 }
 
 // MARK: - Buttons
@@ -351,61 +358,3 @@ struct VoiceWave: View {
         .accessibilityHidden(true)
     }
 }
-
-// MARK: - Third-party app icons (always normal rounded icons)
-
-enum BrandApp { case instagram, tiktok, youtube }
-
-struct BrandBadge: View {
-    let app: BrandApp
-    var size: CGFloat = 32
-
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: size * 0.3, style: .continuous).fill(background)
-            glyph.frame(width: size * 0.56, height: size * 0.56)
-        }
-        .frame(width: size, height: size)
-        .accessibilityHidden(true)
-    }
-
-    private var background: AnyShapeStyle {
-        switch app {
-        case .instagram:
-            AnyShapeStyle(LinearGradient(colors: [Color(hex: 0xFCA95C), Color(hex: 0xE0647E), Color(hex: 0x9D69C3)],
-                                         startPoint: .bottomLeading, endPoint: .topTrailing))
-        case .tiktok: AnyShapeStyle(Color(hex: 0x111111))
-        case .youtube: AnyShapeStyle(Color(hex: 0xE8453C))
-        }
-    }
-
-    @ViewBuilder private var glyph: some View {
-        switch app {
-        case .instagram:
-            ZStack {
-                RoundedRectangle(cornerRadius: 5, style: .continuous).stroke(.white, lineWidth: 1.6)
-                Circle().stroke(.white, lineWidth: 1.6).padding(4)
-                Circle().fill(.white).frame(width: 2.4, height: 2.4).offset(x: 5, y: -5)
-            }
-        case .tiktok:
-            GeometryReader { g in
-                let w = g.size.width, h = g.size.height
-                Path { p in
-                    p.move(to: CGPoint(x: w * 0.62, y: h * 0.08))
-                    p.addLine(to: CGPoint(x: w * 0.62, y: h * 0.62))
-                    p.addArc(center: CGPoint(x: w * 0.42, y: h * 0.66), radius: w * 0.2, startAngle: .degrees(0), endAngle: .degrees(360), clockwise: false)
-                    p.move(to: CGPoint(x: w * 0.62, y: h * 0.08))
-                    p.addQuadCurve(to: CGPoint(x: w * 0.95, y: h * 0.3), control: CGPoint(x: w * 0.66, y: h * 0.3))
-                }
-                .stroke(.white, style: StrokeStyle(lineWidth: 1.8, lineCap: .round, lineJoin: .round))
-            }
-        case .youtube:
-            ZStack {
-                RoundedRectangle(cornerRadius: 4, style: .continuous).stroke(.white, lineWidth: 1.6)
-                Image(systemName: "play.fill").font(.system(size: size * 0.2)).foregroundStyle(.white)
-            }
-            .frame(height: size * 0.4)
-        }
-    }
-}
-

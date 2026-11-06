@@ -38,4 +38,32 @@ final class SmokeTests: XCTestCase {
         XCTAssertNotNil(model.current(for: Commitment.walkID))
         XCTAssertEqual(model.current(for: Commitment.walkID)?.state, .scheduled)
     }
+
+    // MARK: honesty about pausing apps
+
+    @MainActor func testNoPauseIsClaimedWithoutScreenTime() {
+        // The test host has no Screen Time approval and no chosen apps, so a promise that "pauses apps" must not.
+        let model = AppModel(store: InMemoryStateStore())
+        XCTAssertFalse(model.pauseReady)
+        XCTAssertFalse(model.state.permissions.restrictionsAuthorized)
+        let occ = model.current(for: Commitment.walkID)!
+        model.begin(occ.id)
+        XCTAssertEqual(model.state.occurrence(occ.id)?.state, .active)
+        XCTAssertNil(model.state.occurrence(occ.id)?.lease, "no lease may exist when nothing can really be paused")
+        XCTAssertFalse(model.anyActiveLease)
+    }
+
+    @MainActor func testEraseEverythingStartsFresh() {
+        let model = AppModel(store: InMemoryStateStore())
+        var s = model.settings; s.onboardingCompleted = true; s.tone = .savage; model.update(settings: s)
+        model.setPromise(Commitment.bedID, enabled: false)
+        model.markMilestoneSeen(7)
+        model.eraseEverything()
+        XCTAssertFalse(model.settings.onboardingCompleted)
+        XCTAssertEqual(model.settings.tone, .direct)
+        XCTAssertTrue(model.state.commitment(Commitment.bedID)?.isEnabled ?? false)
+        XCTAssertFalse(model.milestoneSeen(7))
+        XCTAssertNotNil(model.current(for: Commitment.walkID), "a fresh install has today's promise ready")
+    }
 }
+

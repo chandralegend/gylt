@@ -1,14 +1,21 @@
 import Foundation
 
-/// Applies and removes real app restrictions. The simulator uses `SimulatedRestrictionAdapter`;
-/// a device build swaps in a FamilyControls/ManagedSettings implementation (Milestone 3).
+/// Applies and removes app pauses. The app uses Screen Time (FamilyControls and ManagedSettings); tests use `SimulatedRestrictionAdapter`.
 public protocol RestrictionAdapter: Sendable {
-    /// True only when restrictions are really enforced by the OS. The UI must say "simulated" otherwise.
+    /// True only when the OS can really pause apps: Screen Time approved and apps chosen. The UI never claims a pause otherwise.
     var isReal: Bool { get }
     var isAvailable: Bool { get }
     func apply(leaseId: UUID, apps: Set<ProtectedApp>, expiresAt: Date) async
     func release(leaseId: UUID) async
+    /// Runs when the engine has no active pause: make sure nothing is still shielded.
+    func clearLeftovers()
 }
+
+public extension RestrictionAdapter {
+    func clearLeftovers() {}
+}
+
+/// For tests only. Records what the engine asked for and does nothing else.
 
 public final class SimulatedRestrictionAdapter: RestrictionAdapter, @unchecked Sendable {
     public struct Call: Equatable, Sendable {

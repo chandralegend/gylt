@@ -1,4 +1,5 @@
 import SwiftUI
+import FamilyControls
 import GYLTCore
 
 /// Full-screen focus flow. Always dark: Opal-style immersion, one accent, big type.
@@ -109,7 +110,7 @@ struct InterventionView: View {
     var body: some View {
         let (first, last) = headlineParts(commitment.firstStep)
         let quote = model.line(.intervention, for: occurrence.id) ?? ""
-        let blocking = commitment.blockingEnabled && model.state.permissions.restrictionsAuthorized && occurrence.kind == .scheduled
+        let blocking = commitment.blockingEnabled && model.pauseReady && occurrence.kind == .scheduled
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 TopBar(occurrenceId: occurrence.id) {
@@ -134,7 +135,7 @@ struct InterventionView: View {
                     ListRow(icon: nil, art: Art.forPromise(commitment.id), title: commitment.title,
                             trailing: "\(commitment.fullMinutes) min", showsSeparator: false)
                     if blocking {
-                        ListRow(icon: .shield, title: model.pausedTitle(simulatedCount: commitment.protectedApps.count),
+                        ListRow(icon: .shield, title: "\(SelectionStore.count()) \(SelectionStore.count() == 1 ? "app" : "apps") will pause",
                                 trailing: "up to \(commitment.restrictionWindowMinutes) min")
                     }
                 }
@@ -189,7 +190,7 @@ struct SessionView: View {
                         Button { model.go(.blocked) } label: {
                             HStack(spacing: 6) {
                                 Symbol(icon: .shield, size: 14)
-                                Text(model.pausedTitle(simulatedCount: occurrence.lease?.apps.count ?? 0)).font(.text(.footnote, weight: .semibold))
+                                Text(model.pausedTitle).font(.text(.footnote, weight: .semibold))
                             }
                             .foregroundStyle(Theme.label).padding(.horizontal, 12).frame(minHeight: 32)
                             .background(Capsule().fill(Theme.fill2))
@@ -339,15 +340,17 @@ private struct SessionControl<Glyph: View>: View {
     }
 }
 
-// MARK: - App block (simulated shield)
+// MARK: - Pause status
 
+/// Where things stand while apps are paused: which ones, when they open again, and one clear way to end it.
+/// (The screen over a paused app itself is drawn by iOS, from our Screen Time extension.)
 struct BlockedView: View {
     @Environment(AppModel.self) private var model
     let occurrence: Occurrence
     let commitment: Commitment
+    @State private var confirmEnd = false
 
     var body: some View {
-        let app = (occurrence.lease?.apps ?? commitment.protectedApps).sorted { $0.rawValue < $1.rawValue }.first ?? .instagram
         let expires = occurrence.lease.map { Fmt.time($0.expiresAt) } ?? "soon"
         ScrollView {
             VStack(spacing: 0) {
@@ -358,25 +361,25 @@ struct BlockedView: View {
                 .foregroundStyle(.white).padding(.horizontal, 14).frame(minHeight: 34)
                 .background(Capsule().fill(.black.opacity(0.35))).padding(.top, 10)
 
-                Color.clear.frame(height: 270).accessibilityHidden(true)
+                Color.clear.frame(height: 205).accessibilityHidden(true)
 
-                Text("The feed can wait.")
-                    .font(.statement(40)).multilineTextAlignment(.center).foregroundStyle(Theme.label)
+                Text("This can wait.")
+                    .font(.statement(36)).multilineTextAlignment(.center).foregroundStyle(Theme.label)
                     .accessibilityAddTraits(.isHeader).appear(0.05)
-                Text("You chose this time for yourself. Let’s keep that promise.")
+                Text("You set this time aside for your \(commitment.title.lowercased()). Let’s keep that promise.")
                     .font(.text(.body)).foregroundStyle(Theme.label2).multilineTextAlignment(.center).padding(.top, 12).padding(.horizontal, 12).appear(0.1)
 
                 CardGroup {
-                    ListRow(icon: nil, art: Art.forPromise(commitment.id), title: commitment.title, trailing: "\(commitment.fullMinutes) min", showsSeparator: false)
-                    ListRow(icon: .clock, title: "\(app.displayName) opens", subtitle: "Or as soon as you finish", trailing: "around \(expires)")
+                    PausedAppsRow()
+                    ListRow(icon: .clock, title: "Opens again", subtitle: "Or as soon as you finish", trailing: "around \(expires)")
                 }
-                .padding(.top, 32).appear(0.16)
+                .padding(.top, 22).appear(0.16)
             }
             .padding(.horizontal, Theme.gutter)
         }
         .scrollBounceBehavior(.basedOnSize)
         .background(alignment: .top) {
-            ZStack { ArtView(art: .blocked); ArtFade() }.frame(height: 470).ignoresSafeArea(edges: .top)
+            ZStack { ArtView(art: .blocked, focus: UnitPoint(x: 0.55, y: 0.45)); ArtFade() }.frame(height: 400).ignoresSafeArea(edges: .top)
         }
         .safeAreaInset(edge: .bottom) {
             BottomBar {
@@ -384,10 +387,43 @@ struct BlockedView: View {
                 if commitment.minimumMinutes < commitment.fullMinutes {
                     Button("Do the \(commitment.minimumMinutes)-minute version") { model.chooseMinimum(occurrence.id) }.buttonStyle(AppButtonStyle(kind: .secondary))
                 }
-                Button("Change the plan") { model.present(.changePlan(occurrence.id)) }.buttonStyle(AppButtonStyle(kind: .tertiary))
-                Text("You set this rule. You’re still in control.").font(.text(.footnote)).foregroundStyle(Theme.label2)
+                Button("End the pause now") { confirmEnd = true }.buttonStyle(AppButtonStyle(kind: .tertiary))
+                Text("You set this rule. You can end it any time.").font(.text(.footnote)).foregroundStyle(Theme.label2)
             }
         }
+        .confirmationDialog("End the pause?", isPresented: $confirmEnd, titleVisibility: .visible) {
+            Button("End it and mark this one unfinished", role: .destructive) { model.endUnfinished(occurrence.id) }
+            Button("Keep going", role: .cancel) {}
+        } message: {
+            Text("Your apps open right away. It’s recorded honestly as unfinished.")
+        }
+    }
+}
+
+/// The apps that are paused, by their real names and icons (Apple draws these; GYLT never sees which apps they are).
+private struct PausedAppsRow: View {
+    var body: some View {
+        let selection = SelectionStore.load()
+        let apps = Array(selection.applicationTokens)
+        let extra = selection.categoryTokens.count + selection.webDomainTokens.count
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 12) {
+                Symbol(icon: .shield, size: 20).foregroundStyle(Theme.label).frame(width: 36, height: 36).background(Squircle(corner: 10).fill(Theme.fill))
+                Text("\(SelectionStore.count()) \(SelectionStore.count() == 1 ? "app" : "apps") paused").font(.text(.body, weight: .medium)).foregroundStyle(Theme.label)
+                Spacer(minLength: 0)
+            }
+            if !apps.isEmpty || extra > 0 {
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(apps.prefix(5), id: \.self) { token in
+                        Label(token).labelStyle(.titleAndIcon).font(.text(.subheadline)).foregroundStyle(Theme.label)
+                    }
+                    if apps.count > 5 { Text("and \(apps.count - 5) more").font(.text(.footnote)).foregroundStyle(Theme.label2) }
+                    if extra > 0 { Text("+ \(extra) \(extra == 1 ? "category or site" : "categories and sites")").font(.text(.footnote)).foregroundStyle(Theme.label2) }
+                }
+                .padding(.leading, 48)
+            }
+        }
+        .padding(.horizontal, 16).padding(.vertical, 12).frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

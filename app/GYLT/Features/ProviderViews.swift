@@ -2,34 +2,9 @@ import SwiftUI
 import GYLTCore
 
 struct AppsSheet: View {
-    @Environment(AppModel.self) private var model
     var body: some View {
-        let walk = model.walk
-        SheetFrame(title: "Distractions, on pause.", lead: "Choose what takes a break during your commitments. Calls and essentials stay available.") {
-            #if targetEnvironment(simulator)
-            CardGroup(fill: Theme.sheetGroup) {
-                ForEach(Array(ProtectedApp.allCases.enumerated()), id: \.element) { i, app in
-                    HStack(spacing: 12) {
-                        BrandBadge(app: app.brand, size: 36)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(app.displayName).font(.text(.body, weight: .medium)).foregroundStyle(Theme.label)
-                            Text("During commitments only").font(.text(.footnote)).foregroundStyle(Theme.label2)
-                        }
-                        Spacer(minLength: 8)
-                        ToggleSwitch(isOn: Binding(get: { walk?.protectedApps.contains(app) ?? false }, set: { on in
-                            guard var c = walk else { return }
-                            if on { c.protectedApps.insert(app) } else { c.protectedApps.remove(app) }
-                            model.send(.upsertCommitment(c))
-                        }), label: "Pause \(app.displayName)")
-                    }
-                    .padding(.horizontal, 16).padding(.vertical, 10).frame(minHeight: 60)
-                    .overlay(alignment: .top) { if i > 0 { Rectangle().fill(Theme.separator).frame(height: 2).padding(.leading, 64) } }
-                }
-            }
-            Footnote(text: "The simulator can’t pause real apps. On an iPhone this uses Apple’s Screen Time picker.")
-            #else
+        SheetFrame(title: "Distractions, on pause.", lead: "Choose what waits while you keep a promise. Calls and essentials stay available, and every pause has an end time.") {
             ScreenTimeSetupCard()
-            #endif
         }
     }
 }

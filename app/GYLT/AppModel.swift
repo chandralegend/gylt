@@ -15,7 +15,7 @@ struct Flow: Identifiable, Equatable {
 
 enum AppSheet: Identifiable, Equatable {
     case changePlan(UUID), stuck(UUID), finish(UUID)
-    case apps, editCommitment(UUID?), personas, boundaries, providers, settings, screenTimeTest, credits
+    case apps, editCommitment(UUID?), personas, boundaries, providers, settings, credits
     var id: String {
         switch self {
         case .changePlan(let i): "change-\(i)"
@@ -27,7 +27,6 @@ enum AppSheet: Identifiable, Equatable {
         case .boundaries: "boundaries"
         case .providers: "providers"
         case .settings: "settings"
-        case .screenTimeTest: "screentime"
         case .credits: "credits"
         }
     }
@@ -61,7 +60,7 @@ final class AppModel {
     private let speaker = Speaker()
     private var toastTask: Task<Void, Never>?
 
-    init(store: StateStore, restrictions: RestrictionAdapter = AdaptiveRestrictionAdapter(),
+    init(store: StateStore, restrictions: RestrictionAdapter = ScreenTimeRestrictionAdapter(),
          notifier: Notifier = LocalNotifier(), secrets: SecretStore = KeychainSecretStore()) {
         self.store = store
         self.restrictions = restrictions
@@ -69,6 +68,7 @@ final class AppModel {
         self.coachService = CoachService(secrets: secrets)
         self.state = (try? store.load()) ?? AppState()
         speaker.onChange = { [weak self] speaking in self?.isSpeaking = speaking }
+        syncPauseReadiness(force: true)
         send(.materialize)
         reconcileScreenTime()
         NotificationRouter.shared.onOpen = { [weak self] id in self?.handleNotification(id) }
@@ -91,7 +91,7 @@ final class AppModel {
     /// Called twice a second: lets the engine see the clock (expiry, target reached, missed).
     func heartbeat() {
         now = .now
-        watchPermission()
+        syncPauseReadiness()
         guard let r = try? engine.apply(CommandEnvelope(.tick), to: state, now: now, calendar: .current) else { return }
         commit(r)
     }
@@ -107,7 +107,12 @@ final class AppModel {
     private func run(_ effect: SideEffect) {
         let adapter = restrictions
         switch effect {
-        case .applyRestriction(let id, let apps, let expires): Task { await adapter.apply(leaseId: id, apps: apps, expiresAt: expires) }
+        case .applyRestriction(let id, let apps, let expires):
+            let title = state.occurrences.first { $0.lease?.id == id }.flatMap { commitment($0.commitmentId)?.title }
+            Task {
+                await adapter.apply(leaseId: id, apps: apps, expiresAt: expires)
+                if let title, let real = adapter as? ScreenTimeRestrictionAdapter { real.name(leaseId: id, promiseTitle: title) }
+            }
         case .releaseRestriction(let id, _): Task { await adapter.release(leaseId: id) }
         case .scheduleTrigger(let occId, let at): scheduleReminder(occId, at)
         case .cancelTrigger(let occId): let n = notifier; Task { await n.cancel(occurrenceId: occId) }
@@ -121,13 +126,23 @@ final class AppModel {
         }
     }
 
-    func resetDemo() {
+    /// Erases everything GYLT keeps on this phone: promises, history, settings, AI keys, the chosen apps and reminders.
+    /// There is no account and no server, so this is the whole of it.
+    func eraseEverything() {
         speaker.stop()
         flow = nil; sheet = nil; flowSheet = nil
+        (restrictions as? ScreenTimeRestrictionAdapter)?.clearEverything()
+        for kind in AIProviderConfig.Kind.allCases where kind.needsKey { coachService.secrets.delete(account: kind.account) }
+        try? FileManager.default.removeItem(at: AppGroup.file("selection.json"))
+        _ = OverrideInbox.drain()
+        for key in UserDefaults.standard.dictionaryRepresentation().keys where key == "milestonesSeen" || key.hasPrefix("coachCalls.") { UserDefaults.standard.removeObject(forKey: key) }
+        aiLines = [:]; aiInFlight = []
+        let n = notifier; Task { await n.cancelAll() }
         state = AppState()
         try? store.save(state)
+        selectedTab = .today
+        syncPauseReadiness(force: true)
         send(.materialize)
-        show("Demo reset. Your next promise is ready.")
     }
 
     // MARK: queries
@@ -185,48 +200,48 @@ final class AppModel {
         Progress.history(weeks: weeks, endingWith: now, in: state, commitmentId: commitment)
     }
 
-    /// True only when the OS is really restricting apps. Otherwise the UI says "simulated".
-    var enforcementIsReal: Bool { restrictions.isReal }
-    var pausedSuffix: String { enforcementIsReal ? "" : " (simulated)" }
+    /// True only when apps can really be paused: Screen Time approved and at least one app chosen.
+    /// The engine grants a pause only then, so every "paused" label in the app is true.
+    var pauseReady: Bool { restrictions.isReal }
 
-    /// "1 app paused" from the user's real selection, or "3 apps paused (simulated)" when nothing is really being restricted.
-    func pausedTitle(simulatedCount: Int) -> String {
-        if enforcementIsReal {
-            let n = SelectionStore.count()
-            return "\(n) \(n == 1 ? "app" : "apps") paused"
-        }
-        return "\(simulatedCount) apps paused (simulated)"
+    /// "3 apps paused", from the person's real selection.
+    var pausedTitle: String {
+        let n = SelectionStore.count()
+        return "\(n) \(n == 1 ? "app" : "apps") paused"
     }
 
     // MARK: Screen Time reconciliation
 
-    private var wasApproved = ScreenTimeAccess.isApproved
-
-    /// Runs at launch and whenever the app becomes active: apply what the shield extension recorded while we were away.
     private var lastScreenTimeReconcile = Date.distantPast
+    /// Runs at launch and whenever the app becomes active: apply what the shield extension recorded while we were away.
     func reconcileScreenTime() {
         guard Date().timeIntervalSince(lastScreenTimeReconcile) > 2 else { return }
         lastScreenTimeReconcile = Date()
         for request in OverrideInbox.drain() {
-            SpikeLog.write("app", "override from shield recorded")
+            DebugLog.write("app", "override from shield recorded")
             if let occ = state.occurrences.first(where: { $0.lease?.id == request.leaseId || ($0.hasActiveLease && request.leaseId == nil) }), !occ.state.isTerminal {
                 send(.endUnfinished(occ.id))
             }
         }
+        syncPauseReadiness(force: true)
         // Nothing active in the engine means nothing should still be shielded.
-        if !anyActiveLease { (restrictions as? AdaptiveRestrictionAdapter)?.clearLeftovers() }
+        if !anyActiveLease { restrictions.clearLeftovers() }
     }
 
-    /// If the user revokes Screen Time permission, authority is released and the UI stops claiming protection.
-    private func watchPermission() {
-        let approved = ScreenTimeAccess.isApproved
-        if wasApproved && !approved {
-            SpikeLog.write("app", "permission revoked -> releasing authority")
-            send(.setRestrictionPermission(false))
-        } else if !wasApproved && approved {
-            send(.setRestrictionPermission(true))
-        }
-        wasApproved = approved
+    private var lastReadiness: Bool?
+    private var lastReadinessCheck = Date.distantPast
+
+    /// Keeps the engine's authority in step with reality: Screen Time approved and apps chosen. If the person revokes
+    /// permission or empties the selection, any pause is released and no screen claims protection.
+    /// Cheap enough to call on every tick; the selection file is only read every couple of seconds unless forced.
+    func syncPauseReadiness(force: Bool = false) {
+        if !force, Date().timeIntervalSince(lastReadinessCheck) < 2 { return }
+        lastReadinessCheck = Date()
+        let ready = restrictions.isReal
+        defer { lastReadiness = ready }
+        guard ready != state.permissions.restrictionsAuthorized else { return }
+        DebugLog.write("app", ready ? "pause available" : "pause unavailable -> releasing authority")
+        send(.setRestrictionPermission(ready))
     }
 
     var anyActiveLease: Bool { state.occurrences.contains { $0.hasActiveLease } }
@@ -370,8 +385,8 @@ final class AppModel {
     }
 
     var selectedAppsSummary: String {
-        if enforcementIsReal { let n = SelectionStore.count(); return "\(n) \(n == 1 ? "app" : "apps") · essentials open" }
-        return "\((walk?.protectedApps.count ?? 0)) apps (simulated) · essentials open"
+        if pauseReady { let n = SelectionStore.count(); return "\(n) \(n == 1 ? "app" : "apps") · essentials stay open" }
+        return ScreenTimeAccess.isApproved ? "None chosen yet" : "Not set up"
     }
 
     // MARK: coach

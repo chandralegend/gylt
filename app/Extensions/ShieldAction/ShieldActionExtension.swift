@@ -9,7 +9,7 @@ final class ShieldActionExtension: ShieldActionDelegate {
     private func respond(to action: ShieldAction, _ completion: @escaping (ShieldActionResponse) -> Void) {
         switch action {
         case .primaryButtonPressed:
-            SpikeLog.write("shield", "primary pressed: close")
+            DebugLog.write("shield", "primary pressed: close")
             completion(.close)
         case .secondaryButtonPressed:
             // The user ended it. Release immediately and leave a note for the app.
@@ -17,7 +17,7 @@ final class ShieldActionExtension: ShieldActionDelegate {
             store.clearAllSettings()
             ShieldLeaseFile.clear()
             OverrideInbox.append(OverrideRequest(leaseId: id, at: Date()))
-            SpikeLog.write("shield", "secondary pressed: override, shield cleared")
+            DebugLog.write("shield", "secondary pressed: override, shield cleared")
             completion(.close)
         @unknown default:
             completion(.close)

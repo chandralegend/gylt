@@ -1,3 +1,5 @@
+> **Status (Nov 2026):** the in-app test screen and its `Screen Time test` button were removed when the app was finalized. The device checklist below still applies; run it with the real flow (pick apps under Promises, start the walk) and read the debug-build log with `app/tools/read-device-log.sh` (the log is written only by debug builds).
+
 # Screen Time spike — device checklist
 
 **Goal (roadmap Phase 0):** prove on a real iPhone that GYLT can start a restriction, end it at a fixed time even when the app is closed, and always let the user out, before any promise about it is made in the UI.

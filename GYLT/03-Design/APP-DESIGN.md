@@ -69,3 +69,11 @@ The canvas (https://claude.ai/artifact/c99cbd6f-1334-470c-945d-9d23f4033006) sho
 
 The canvas is now implemented: illustrated Today hero, promise cards and list thumbnails; the intervention, app block and payoff on full-bleed art that fades into the page; the paused state with the flow-state illustration; medals (hexagon, one pastel each) with a once-only milestone screen when the streak lands on 3, 7, 14, 30, 60 or 100; a Medals page under Progress; Settings > Credits for the Open Meadows attribution. Lavender is the single primary; the app icon and the Screen Time shield screen use it too.
 Light mode: cream background, deeper lavender (`#6F59C9`) for controls and links so contrast holds.
+
+## Finalized (Nov 2026)
+
+- **Pausing apps is real or it is absent.** There are no fake apps and no "(simulated)" labels. The engine grants a pause only when Screen Time is approved and apps are chosen (`AppModel.pauseReady`); otherwise Today offers "Pause distracting apps", Plan says "Not set up", and the promise is coach-only.
+- **Two block screens, both finished.** The screen over a paused app is drawn by iOS from the shield extension: "This can wait.", names the promise, says when the app opens again, "Back to my walk" and "End this pause". Inside GYLT, the pause status screen lists the real paused apps (Apple draws their names and icons), the time they open, and "End the pause now" with a confirmation.
+- **Any promise can pause apps** (editor toggle), not just the walk. The window is at least 30 minutes, or the promise length plus 10.
+- **No test tools.** The Screen Time test bench and "Reset the demo" are gone. Settings has a real "Erase my data" (promises, history, settings, AI keys, chosen apps, reminders). The extension log is debug-builds only.
+- **Ambient backgrounds.** Each tab has its own soft, blurred colour field from the palette (Today gold, Promises sky and lavender, Coach blossom and lavender, Progress mint and butter), drifting very slowly (still under Reduce Motion), with glass-like translucent cards (thin material over a tint) so the colour shows through.

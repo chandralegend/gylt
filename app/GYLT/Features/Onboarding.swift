@@ -28,12 +28,16 @@ struct ScreenTimeSetupCard: View {
             } else {
                 Button("Allow Screen Time access") { Task { await request() } }.buttonStyle(AppButtonStyle(kind: .secondary))
             }
+            if ScreenTimeAccess.status == .denied {
+                Button("Open Settings to allow it") { if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) } }
+                    .buttonStyle(AppButtonStyle(kind: .tertiary))
+            }
             if let error { Text(error).font(.text(.footnote)).foregroundStyle(Theme.accentText) }
             Text("Optional. Apps stay paused only for the time you set, and you can end it any time. You can always use GYLT as a coach only.")
                 .font(.text(.footnote)).foregroundStyle(Theme.label2)
         }
         .familyActivityPicker(isPresented: $showPicker, selection: $selection)
-        .onChange(of: selection) { _, new in SelectionStore.save(new); status = ScreenTimeAccess.statusText }
+        .onChange(of: selection) { _, new in SelectionStore.save(new); status = ScreenTimeAccess.statusText; model.syncPauseReadiness(force: true) }
         .onAppear { status = ScreenTimeAccess.statusText; selection = SelectionStore.load() }
     }
 
@@ -48,6 +52,7 @@ struct ScreenTimeSetupCard: View {
             #endif
         }
         status = ScreenTimeAccess.statusText
+        model.syncPauseReadiness(force: true)
     }
 }
 
@@ -63,7 +68,7 @@ struct OnboardingView: View {
 
     var body: some View {
         ZStack {
-            Theme.bg.ignoresSafeArea()
+            if page == 0 { Theme.bg.ignoresSafeArea() } else { AmbientBackground(mood: .today) }
             if page == 0 {
                 ZStack { ArtView(art: .welcome, focus: UnitPoint(x: 0.3, y: 0.5)); ArtFade(color: Theme.bg) }
                     .frame(height: 470).frame(maxHeight: .infinity, alignment: .top).ignoresSafeArea(edges: .top)

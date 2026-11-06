@@ -25,27 +25,29 @@ struct PlanView: View {
                             Symbol(icon: .shield, size: 20).foregroundStyle(Theme.label).frame(width: 36, height: 36).background(Squircle(corner: 10).fill(Theme.fill))
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Pause distractions").font(.text(.body, weight: .medium)).foregroundStyle(Theme.label)
-                                Text("Only during a promise").font(.text(.footnote)).foregroundStyle(Theme.label2)
+                                Text("Only during your evening walk").font(.text(.footnote)).foregroundStyle(Theme.label2)
                             }
                             Spacer(minLength: 8)
                             ToggleSwitch(isOn: Binding(get: { walk.blockingEnabled }, set: { on in
                                 var c = walk; c.blockingEnabled = on; model.send(.upsertCommitment(c))
-                                model.show(on ? "Distraction pause on (simulated)." : "Coach only. Distraction pause is off.")
-                            }), label: "Pause distractions during promises")
+                                if on && !model.pauseReady { model.present(.apps) }
+                                else { model.show(on ? "Apps will pause during your walk." : "Coach only. Apps stay available.") }
+                            }), label: "Pause distractions during your evening walk")
                         }
                         .padding(.horizontal, 16).padding(.vertical, 8).frame(minHeight: 60)
                         Button { model.present(.apps) } label: {
-                            ListRow(icon: .lock, title: "Selected apps", subtitle: model.selectedAppsSummary, chevron: true,
-                                    accessory: model.enforcementIsReal ? nil : AnyView(AppStack(apps: walk.protectedApps)))
+                            ListRow(icon: .lock, title: "Apps to pause", subtitle: model.selectedAppsSummary, chevron: true)
                         }.buttonStyle(RowPress())
                     }
-                    Footnote(text: "Every session has an end time. You can always pause or change the plan. App pausing is simulated in this build.")
+                    Footnote(text: model.pauseReady
+                             ? "Every pause has an end time. It ends when you finish, at the deadline, or when you say so."
+                             : "Allow Screen Time and choose apps to switch this on. Until then GYLT is a coach only.")
                 }
             }
             .padding(.horizontal, Theme.gutter).padding(.bottom, 32)
         }
         .scrollBounceBehavior(.basedOnSize)
-        .background(Theme.bg)
+        .background(AmbientBackground(mood: .promises))
         .navigationTitle("Promises")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
@@ -97,7 +99,7 @@ private struct PromiseCard: View {
             .padding(16)
         }
         .frame(maxWidth: .infinity)
-        .panel(Theme.surface, corner: 26)
+        .panel(Theme.surface, corner: 26, glass: true)
         .animation(Motion.easeOut, value: on)
     }
 }
@@ -134,7 +136,7 @@ struct CoachView: View {
                     }
                     .padding(18)
                 }
-                .panel(Theme.surface, corner: 30)
+                .panel(Theme.surface, corner: 30, glass: true)
                 .appear()
 
                 SmallLabel(text: "How should I talk to you?")
@@ -156,7 +158,7 @@ struct CoachView: View {
             .padding(.horizontal, Theme.gutter).padding(.bottom, 32)
         }
         .scrollBounceBehavior(.basedOnSize)
-        .background(Theme.bg)
+        .background(AmbientBackground(mood: .coach))
         .navigationTitle("Coach")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
@@ -244,7 +246,7 @@ struct YouView: View {
                             .frame(maxWidth: .infinity)
                         }
                     }
-                    .padding(.vertical, 16).frame(maxWidth: .infinity).panel(Theme.surface)
+                    .padding(.vertical, 16).frame(maxWidth: .infinity).panel(Theme.surface, glass: true)
                 }
                 .buttonStyle(PressScale(scale: 0.98))
                 .appear(0.03)
@@ -290,7 +292,7 @@ struct YouView: View {
             .padding(.horizontal, Theme.gutter).padding(.bottom, 32)
         }
         .scrollBounceBehavior(.basedOnSize)
-        .background(Theme.bg)
+        .background(AmbientBackground(mood: .progress))
         .navigationTitle("Progress")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
@@ -358,7 +360,7 @@ struct MilestonesView: View {
             .padding(.horizontal, Theme.gutter).padding(.bottom, 32)
         }
         .scrollBounceBehavior(.basedOnSize)
-        .background(Theme.bg)
+        .background(AmbientBackground(mood: .progress))
         .navigationTitle("Medals")
         .navigationBarTitleDisplayMode(.large)
     }

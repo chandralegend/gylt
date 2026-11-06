@@ -10,41 +10,38 @@ enum AppGroup {
     static func file(_ name: String) -> URL { containerURL.appendingPathComponent(name) }
 }
 
-/// Append-only log written by the app AND the extensions, so the spike can see what happened while the app was closed.
-enum SpikeLog {
-    private static var url: URL { AppGroup.file("spike-log.txt") }
+/// Diagnostics for the Screen Time extensions, written only by debug builds. A release build writes and keeps nothing.
+/// Read it from a connected device with `tools/read-device-log.sh`.
+enum DebugLog {
+    private static var url: URL { AppGroup.file("debug-log.txt") }
     private static let lock = NSLock()
+    private static let maxBytes = 120_000
 
     static func write(_ source: String, _ message: String) {
+        #if DEBUG
         let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let line = "\(f.string(from: Date())) [\(source)] \(message)\n"
         lock.withLock {
-            if let data = line.data(using: .utf8) {
-                if let handle = try? FileHandle(forWritingTo: url) {
-                    defer { try? handle.close() }
-                    _ = try? handle.seekToEnd()
-                    try? handle.write(contentsOf: data)
-                } else {
-                    try? data.write(to: url, options: .atomic)
-                }
+            if let size = (try? FileManager.default.attributesOfItem(atPath: url.path))?[.size] as? Int, size > maxBytes { try? FileManager.default.removeItem(at: url) }
+            guard let data = line.data(using: .utf8) else { return }
+            if let handle = try? FileHandle(forWritingTo: url) {
+                defer { try? handle.close() }
+                _ = try? handle.seekToEnd()
+                try? handle.write(contentsOf: data)
+            } else {
+                try? data.write(to: url, options: .atomic)
             }
         }
+        #endif
     }
-
-    static func recent(_ count: Int = 40) -> [String] {
-        guard let text = try? String(contentsOf: url, encoding: .utf8) else { return [] }
-        return Array(text.split(separator: "\n").suffix(count).map(String.init))
-    }
-
-    static func clear() { try? FileManager.default.removeItem(at: url) }
 }
 
 /// What the shield screen needs to show, written by the app when a restriction is applied.
 struct ShieldLeaseInfo: Codable, Equatable {
     var leaseId: UUID
     var expiresAt: Date
-    /// A shield started from the Screen Time test screen. It is not an engine lease, so the app's launch cleanup must leave it alone.
-    var isTest: Bool?
+    /// The promise the pause is for, so the shield can name it.
+    var promiseTitle: String?
 }
 
 enum ShieldLeaseFile {

@@ -59,6 +59,7 @@ Contact: TBD.
 ## Build checklist
 
 - [x] App icon (timer ring), system fonts only
+- [x] No mock, demo or test code paths in the app; erase-my-data in Settings; debug log only in debug builds
 - [x] Privacy manifest
 - [x] Unit tests: 53 (engine, progress, AI) + app target tests passing
 - [x] Large-text (Dynamic Type up to AX5) layouts checked in the simulator on Today

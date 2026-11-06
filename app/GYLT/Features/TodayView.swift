@@ -27,7 +27,7 @@ struct TodayView: View {
             .padding(.horizontal, Theme.gutter).padding(.bottom, 32)
         }
         .scrollBounceBehavior(.basedOnSize)
-        .background(Theme.bg)
+        .background(AmbientBackground(mood: .today))
         .navigationTitle("Today")
         .navigationBarTitleDisplayMode(.large)
     }
@@ -199,8 +199,9 @@ private struct HeroCard: View {
     }
 }
 
-// MARK: - Shield row
+// MARK: - Pause row
 
+/// One honest line about the pause: active, ready, not set up, or not part of this promise.
 private struct ShieldRow: View {
     @Environment(AppModel.self) private var model
     let commitment: Commitment
@@ -208,40 +209,25 @@ private struct ShieldRow: View {
 
     var body: some View {
         let open = !occurrence.state.isTerminal
-        let authorised = model.state.permissions.restrictionsAuthorized
         CardGroup {
-            if commitment.blockingEnabled && authorised && !commitment.protectedApps.isEmpty {
-                if open {
-                    let until = occurrence.lease.map { "Until about \(Fmt.time($0.expiresAt))" } ?? "When you start"
-                    Button { if occurrence.hasActiveLease { model.openFlow(for: occurrence); model.go(.blocked) } else { model.show("Apps pause the moment you start.") } } label: {
-                        ListRow(icon: .shield, title: model.pausedTitle(simulatedCount: commitment.protectedApps.count), subtitle: until, chevron: true, showsSeparator: false,
-                                accessory: AnyView(AppStack(apps: commitment.protectedApps)))
-                    }.buttonStyle(RowPress())
-                } else {
-                    ListRow(icon: .lockOpen, title: "Distractions released", subtitle: "Your time is yours.", showsSeparator: false)
-                }
+            if !model.pauseReady {
+                Button { model.present(.apps) } label: {
+                    ListRow(icon: .shield, title: "Pause distracting apps", subtitle: "Choose apps and they wait while you do this.", chevron: true, showsSeparator: false)
+                }.buttonStyle(RowPress())
+            } else if occurrence.hasActiveLease, let lease = occurrence.lease {
+                Button { model.openFlow(for: occurrence); model.go(.blocked) } label: {
+                    ListRow(icon: .shield, title: model.pausedTitle, subtitle: "Until about \(Fmt.time(lease.expiresAt))", chevron: true, showsSeparator: false)
+                }.buttonStyle(RowPress())
+            } else if open {
+                Button { model.present(.apps) } label: {
+                    ListRow(icon: .shield, title: "Ready to pause \(SelectionStore.count()) \(SelectionStore.count() == 1 ? "app" : "apps")",
+                            subtitle: "They pause when you start, for up to \(commitment.restrictionWindowMinutes) minutes.", chevron: true, showsSeparator: false)
+                }.buttonStyle(RowPress())
+            } else if occurrence.lease != nil {
+                ListRow(icon: .lockOpen, title: "Apps released", subtitle: "Your time is yours.", showsSeparator: false)
             } else {
-                ListRow(icon: .headphone, title: "Coach only", subtitle: "Your apps stay available", showsSeparator: false)
+                ListRow(icon: .headphone, title: "Coach only", subtitle: "No apps were paused.", showsSeparator: false)
             }
         }
-    }
-}
-
-struct AppStack: View {
-    let apps: Set<ProtectedApp>
-    var size: CGFloat = 26
-    var body: some View {
-        HStack(spacing: -6) {
-            ForEach(ProtectedApp.allCases.filter { apps.contains($0) }) { app in
-                BrandBadge(app: app.brand, size: size).overlay(RoundedRectangle(cornerRadius: size * 0.3, style: .continuous).stroke(Theme.surface, lineWidth: 2))
-            }
-        }
-        .padding(.trailing, 4)
-    }
-}
-
-extension ProtectedApp {
-    var brand: BrandApp {
-        switch self { case .instagram: .instagram; case .tiktok: .tiktok; case .youtube: .youtube }
     }
 }

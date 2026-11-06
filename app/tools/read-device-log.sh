@@ -7,8 +7,8 @@ GROUP="group.org.leafmonkey.gylt"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 if xcrun devicectl device copy from --device "$DEVICE" --domain-type appGroupDataContainer \
-     --domain-identifier "$GROUP" --source spike-log.txt --destination "$TMP/spike-log.txt" >/dev/null 2>&1; then
-  cat "$TMP/spike-log.txt"
+     --domain-identifier "$GROUP" --source debug-log.txt --destination "$TMP/debug-log.txt" >/dev/null 2>&1; then
+  cat "$TMP/debug-log.txt"
 else
   echo "(no log yet: nothing has been written, or the phone is locked)"
 fi

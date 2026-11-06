@@ -2,7 +2,8 @@ import Foundation
 
 // MARK: - Apps the user can choose to pause
 
-/// Simulated app identities. On a device these are replaced by opaque Screen Time selection tokens.
+/// Placeholder identities the engine uses to know a promise pauses apps. The apps actually paused are the person's own
+/// Screen Time selection (opaque tokens kept on the device), never this list.
 public enum ProtectedApp: String, Codable, CaseIterable, Sendable, Identifiable {
     case instagram, tiktok, youtube
     public var id: String { rawValue }
@@ -227,7 +228,7 @@ public struct Settings: Codable, Equatable, Sendable {
 }
 
 public struct Permissions: Codable, Equatable, Sendable {
-    /// Whether the user has authorized restrictions. Simulated in the simulator.
+    /// True only when Screen Time is approved and apps are chosen. The engine grants a pause only then.
     public var restrictionsAuthorized: Bool = true
     public init() {}
 }
