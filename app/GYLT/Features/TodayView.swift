@@ -129,15 +129,7 @@ private struct HeroCard: View {
         var action: () -> Void
     }
 
-    /// The line the coach opens with for each starter promise; your own promises lead with their name.
-    private var headline: String {
-        switch commitment.id {
-        case Commitment.walkID: "Get off\nthe couch"
-        case Commitment.bedID: "Make your\nbed"
-        case Commitment.nightID: "Call it\na night"
-        default: commitment.title
-        }
-    }
+    private var headline: String { commitment.headline }
 
     private var content: Content {
         let occ = occurrence

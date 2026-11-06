@@ -45,6 +45,7 @@ struct RootView: View {
             if !model.settings.onboardingCompleted { OnboardingView().transition(.opacity) }
         }
         .animation(Motion.easeOut, value: model.settings.onboardingCompleted)
+        .onOpenURL { model.handle(url: $0) }
         .sheet(item: $m.sheet) { sheet in SheetHost(sheet: sheet) }
         .fullScreenCover(item: $m.flow) { flow in FlowView(flow: flow) }
         .task {

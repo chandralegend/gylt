@@ -28,6 +28,7 @@ targets:
       - target: GYLTMonitor
       - target: GYLTShieldConfiguration
       - target: GYLTShieldAction
+      - target: GYLTWidgets
     entitlements:
       path: GYLT/Resources/GYLT.entitlements
       properties:
@@ -51,6 +52,10 @@ targets:
           NSAllowsLocalNetworking: true
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
+        CFBundleURLTypes:
+          - CFBundleURLName: org.leafmonkey.gylt
+            CFBundleURLSchemes:
+              - gylt
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: org.leafmonkey.gylt
@@ -139,6 +144,36 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Extensions/ShieldAction/Info.plist
         SKIP_INSTALL: YES
+
+  GYLTWidgets:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Widgets
+      - path: Shared
+      - path: GYLT/DesignSystem/Theme.swift
+      - path: GYLT/DesignSystem/Art.swift
+    dependencies:
+      - package: GYLTCore
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: GYLT
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Widgets/Widgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.org.leafmonkey.gylt
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.leafmonkey.gylt.widgets
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Widgets/Info.plist
+        SKIP_INSTALL: YES
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: ""
 
   GYLTTests:
     type: bundle.unit-test

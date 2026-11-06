@@ -1,4 +1,5 @@
 import SwiftUI
+import WidgetKit
 import AVFoundation
 import GYLTCore
 import Observation
@@ -98,7 +99,7 @@ final class AppModel {
 
     private func commit(_ r: EngineResult) {
         state = r.state
-        if !r.events.isEmpty || !r.effects.isEmpty { try? store.save(state) }
+        if !r.events.isEmpty || !r.effects.isEmpty { try? store.save(state); WidgetCenter.shared.reloadAllTimelines() }
         for effect in r.effects { run(effect) }
         // The block screen is only valid while a restriction is active.
         if let f = flow, f.screen == .blocked, state.occurrence(f.occurrenceId)?.hasActiveLease != true { flow?.screen = .session }
@@ -140,6 +141,7 @@ final class AppModel {
         let n = notifier; Task { await n.cancelAll() }
         state = AppState()
         try? store.save(state)
+        WidgetCenter.shared.reloadAllTimelines()
         selectedTab = .today
         syncPauseReadiness(force: true)
         send(.materialize)
@@ -253,6 +255,18 @@ final class AppModel {
         case .scheduled, .due: flow = Flow(screen: .intervention, occurrenceId: occurrence.id)
         case .active, .awaitingConfirmation: flow = Flow(screen: .session, occurrenceId: occurrence.id)
         default: flow = Flow(screen: .complete, occurrenceId: occurrence.id)
+        }
+    }
+
+    /// A tap on a widget: `gylt://open/<occurrence id>` opens that promise, `gylt://today` and `gylt://progress` open a tab.
+    func handle(url: URL) {
+        guard url.scheme == "gylt", settings.onboardingCompleted else { return }
+        switch url.host {
+        case "open":
+            let id = url.pathComponents.dropFirst().first.flatMap(UUID.init(uuidString:))
+            if let id, let occ = state.occurrence(id) { selectedTab = .today; openFlow(for: occ) } else { selectedTab = .today }
+        case "progress": selectedTab = .you
+        default: selectedTab = .today
         }
     }
 

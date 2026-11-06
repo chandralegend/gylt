@@ -5,6 +5,7 @@ public struct DayStat: Equatable, Sendable {
     public var kept: Int
     public var possible: Int
     public var fraction: Double { possible == 0 ? 0 : Double(kept) / Double(possible) }
+    public init(localDate: String, kept: Int, possible: Int) { self.localDate = localDate; self.kept = kept; self.possible = possible }
 }
 
 public struct WeekSummary: Equatable, Sendable {

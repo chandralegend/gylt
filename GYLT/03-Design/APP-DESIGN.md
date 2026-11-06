@@ -77,6 +77,15 @@ Light mode: cream background, deeper lavender (`#6F59C9`) for controls and links
 - **No test tools.** The Screen Time test bench and "Reset the demo" are gone. Settings has a real "Erase my data" (promises, history, settings, AI keys, chosen apps, reminders). The extension log is debug-builds only.
 - **Ambient backgrounds.** Each tab has its own soft, blurred colour field from the palette (Today gold, Promises sky and lavender, Coach blossom and lavender, Progress mint and butter), drifting very slowly (still under Reduce Motion), with glass-like translucent cards (thin material over a tint) so the colour shows through.
 
+## Widgets (Nov 2026)
+
+Two widgets, no setup, no configuration. They read the saved state from the App Group and never talk to a network or the engine's clock.
+
+- **Next promise** (small, medium, lock screen rectangular and inline): the promise's own illustration, its one-line headline in the serif voice, and when. Upcoming shows the start time ("UP NEXT" or "TOMORROW"), a running session shows a live countdown that ticks without refreshing (`Text(timerInterval:)`), a promise past its start time says "Time to start", a kept one shows how long, and a missed one says "Recorded honestly". Medium adds a glass panel with the week's dots and the streak chip. Tapping opens the promise (`gylt://open/<id>`); with nothing set up it opens Today.
+- **This week** (small, medium, lock screen circular): promises kept against promised this week as a lavender ring, with the streak. Medium adds a day-by-day strip and a serif line ("You showed up 4 times."). Tapping opens Progress (`gylt://progress`).
+- All numbers come from `TodaySnapshot` in GYLTCore, the same functions the app uses for streak and week counts, so they cannot disagree (covered by `SnapshotTests`). The app reloads the timelines after every save; the timeline also refreshes at the next start time, the timer end, and midnight.
+- Same palette as the app: pastel art with a soft scrim for text, lavender ring, peach flame, no red.
+
 ## Logo
 
 The doorway is the same arch, sun and dunes as the illustrations. Full kit and rules: [`Logo-Meadow/GUIDELINES.md`](Logo-Meadow/GUIDELINES.md). In the app it is the app icon, the launch screen, the welcome lockup and the payoff wordmark.
