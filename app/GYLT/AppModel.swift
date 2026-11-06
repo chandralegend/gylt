@@ -169,6 +169,11 @@ final class AppModel {
     }
 
     var week: WeekSummary { Progress.week(containing: now, in: state) }
+    /// Consecutive days with at least one promise kept. Real data only.
+    var streak: Int { Progress.streak(asOf: now, in: state) }
+    func history(weeks: Int, commitment: UUID? = nil) -> GYLTCore.Progress.History {
+        Progress.history(weeks: weeks, endingWith: now, in: state, commitmentId: commitment)
+    }
 
     /// True only when the OS is really restricting apps. Otherwise the UI says "simulated".
     var enforcementIsReal: Bool { restrictions.isReal }

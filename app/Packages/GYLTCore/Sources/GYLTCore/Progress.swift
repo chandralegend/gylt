@@ -54,4 +54,51 @@ public enum Progress {
                            kept: days.map(\.kept).reduce(0, +), possible: days.map(\.possible).reduce(0, +),
                            activeMinutes: minutes, daysShowedUp: days.filter { $0.kept > 0 }.count)
     }
+
+    // MARK: History and streaks
+
+    /// Day-by-day record, Monday-aligned weeks, oldest first. `todayIndex` points at today inside `days`; days after it are still ahead.
+    public struct History: Equatable, Sendable {
+        public var days: [DayStat]
+        public var todayIndex: Int
+        public var weeks: Int { days.count / 7 }
+        public var daysShowedUp: Int { days.filter { $0.kept > 0 }.count }
+    }
+
+    /// The last `weeks` weeks ending with the current one. Same rules as `week`: only days that have arrived count as opportunities.
+    /// Pass `commitmentId` to see a single promise.
+    public static func history(weeks: Int, endingWith now: Date, in state: AppState, commitmentId: UUID? = nil, calendar: Calendar = .current) -> History {
+        var cal = calendar
+        cal.firstWeekday = 2
+        let thisWeek = cal.dateInterval(of: .weekOfYear, for: now)?.start ?? cal.startOfDay(for: now)
+        let first = cal.date(byAdding: .day, value: -7 * (weeks - 1), to: thisWeek) ?? thisWeek
+        func key(_ d: Date) -> String {
+            let c = cal.dateComponents([.year, .month, .day], from: d)
+            return String(format: "%04d-%02d-%02d", c.year ?? 0, c.month ?? 0, c.day ?? 0)
+        }
+        let keys = (0..<(weeks * 7)).map { key(cal.date(byAdding: .day, value: $0, to: first) ?? first) }
+        let todayKey = key(now)
+        let wanted = Set(keys)
+
+        let scheduled = state.occurrences.filter { $0.kind == .scheduled && (commitmentId == nil || $0.commitmentId == commitmentId) }
+        var possible = [String: Int](), kept = [String: Int]()
+        for (_, chain) in Dictionary(grouping: scheduled, by: \.opportunityId) {
+            guard let head = chain.min(by: { $0.scheduledStart < $1.scheduledStart }), wanted.contains(head.localDate), head.localDate <= todayKey else { continue }
+            possible[head.localDate, default: 0] += 1
+            if chain.contains(where: { $0.state == .completedFull || $0.state == .completedMinimum }) { kept[head.localDate, default: 0] += 1 }
+        }
+        return History(days: keys.map { DayStat(localDate: $0, kept: kept[$0] ?? 0, possible: possible[$0] ?? 0) },
+                       todayIndex: keys.firstIndex(of: todayKey) ?? keys.count - 1)
+    }
+
+    /// Consecutive days, ending today, on which at least one promise was kept. Today still being open does not break it:
+    /// if nothing is kept yet today the count runs back from yesterday. Zero when there is nothing to count.
+    public static func streak(asOf now: Date, in state: AppState, calendar: Calendar = .current) -> Int {
+        let h = history(weeks: 18, endingWith: now, in: state, calendar: calendar)
+        var i = h.todayIndex
+        if h.days[i].kept == 0 { i -= 1 }
+        var count = 0
+        while i >= 0, h.days[i].kept > 0 { count += 1; i -= 1 }
+        return count
+    }
 }

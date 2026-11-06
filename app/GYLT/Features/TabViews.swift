@@ -236,6 +236,41 @@ struct YouView: View {
                 }
                 .appear()
 
+                SectionHeader(title: "Consistency", trailing: AnyView(Text("12 weeks").font(.text(.subheadline)).foregroundStyle(Theme.label2)))
+                let h = model.history(weeks: 12)
+                Card {
+                    VStack(alignment: .leading, spacing: 14) {
+                        ConsistencyGrid(history: h)
+                        Text(h.daysShowedUp == 0 ? "Nothing yet. Every square starts grey."
+                                                 : "\(h.daysShowedUp) \(h.daysShowedUp == 1 ? "day" : "days") you showed up. Coral is every promise kept, lighter is some.")
+                            .font(.text(.footnote)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .appear(0.05)
+
+                let active = model.state.commitments.filter(\.isEnabled)
+                if !active.isEmpty {
+                    SectionHeader(title: "By promise", trailing: AnyView(Text("last 2 weeks").font(.text(.subheadline)).foregroundStyle(Theme.label2)))
+                    CardGroup {
+                        ForEach(Array(active.enumerated()), id: \.element.id) { i, c in
+                            let ph = model.history(weeks: 2, commitment: c.id)
+                            VStack(alignment: .leading, spacing: 10) {
+                                HStack(spacing: 12) {
+                                    Symbol(icon: Icon(rawValue: c.iconName) ?? .zap, size: 20).foregroundStyle(Theme.label)
+                                        .frame(width: 36, height: 36).background(Squircle(corner: 10).fill(Theme.fill))
+                                    Text(c.title).font(.text(.body, weight: .medium)).foregroundStyle(Theme.label)
+                                    Spacer(minLength: 8)
+                                    Text("\(ph.daysShowedUp) kept").font(.text(.subheadline)).foregroundStyle(Theme.label2).monospacedDigit()
+                                }
+                                DotStrip(history: ph).padding(.leading, 48)
+                            }
+                            .padding(.horizontal, 16).padding(.vertical, 14)
+                            .overlay(alignment: .top) { if i > 0 { Rectangle().fill(Theme.separator).frame(height: 0.5).padding(.leading, 64) } }
+                        }
+                    }
+                    .appear(0.1)
+                }
+
                 SectionHeader(title: "Today’s receipts")
                 receipts
             }

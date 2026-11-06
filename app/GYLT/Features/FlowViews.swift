@@ -118,7 +118,7 @@ struct InterventionView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     Chip2(text: model.settings.persona.rawValue + (model.lineIsAI(.intervention, for: occurrence.id) ? " · AI" : ""))
                     Text("\(first)\(first.isEmpty ? "" : "\n")\(Text(last).foregroundStyle(Theme.accent))")
-                        .font(.system(size: 46, weight: .bold)).foregroundStyle(Theme.label)
+                        .font(.statement(46)).foregroundStyle(Theme.label)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
                     if !quote.isEmpty {
@@ -161,6 +161,8 @@ struct SessionView: View {
     @Environment(AppModel.self) private var model
     let occurrence: Occurrence
     let commitment: Commitment
+    @State private var breathe = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         if let s = occurrence.session {
@@ -221,6 +223,15 @@ struct SessionView: View {
                             }
                         }
                         .frame(width: 284, height: 284)
+                        .background {
+                            Circle()
+                                .fill(RadialGradient(colors: [Theme.accent.opacity(running ? 0.30 : 0.10), .clear], center: .center, startRadius: 20, endRadius: 190))
+                                .frame(width: 380, height: 380)
+                                .scaleEffect(breathe && !reduceMotion ? 1.07 : 0.95)
+                                .animation(reduceMotion ? nil : .easeInOut(duration: 3.2).repeatForever(autoreverses: true), value: breathe)
+                                .animation(Motion.easeOut, value: running)
+                                .allowsHitTesting(false).accessibilityHidden(true)
+                        }
                         .padding(.vertical, 28)
                         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                         .accessibilityElement(children: .ignore)
@@ -274,6 +285,7 @@ struct SessionView: View {
                 .padding(.horizontal, Theme.gutter).padding(.bottom, 8)
             }
             .task { model.fetchLine(.started, for: occurrence.id) }
+            .onAppear { breathe = true }
         }
     }
 }
@@ -328,7 +340,7 @@ struct BlockedView: View {
                 .padding(.top, 44).padding(.bottom, 32).appear()
 
                 Text("The feed can wait.")
-                    .font(.system(size: 40, weight: .bold)).multilineTextAlignment(.center).foregroundStyle(Theme.label)
+                    .font(.statement(40)).multilineTextAlignment(.center).foregroundStyle(Theme.label)
                     .accessibilityAddTraits(.isHeader).appear(0.05)
                 Text("You chose this time for yourself. Let’s keep that promise.")
                     .font(.text(.body)).foregroundStyle(Theme.label2).multilineTextAlignment(.center).padding(.top, 12).padding(.horizontal, 12).appear(0.1)
@@ -393,8 +405,9 @@ struct CompleteView: View {
                 }
                 .frame(width: 132, height: 132).padding(.top, 40)
 
+                if model.streak >= 2 { StreakChip(days: model.streak).padding(.top, 20).appear(0.4) }
                 Text("You showed up.")
-                    .font(.system(size: 40, weight: .bold)).multilineTextAlignment(.center).foregroundStyle(Theme.label).padding(.top, 28)
+                    .font(.statement(40)).multilineTextAlignment(.center).foregroundStyle(Theme.label).padding(.top, model.streak >= 2 ? 12 : 28)
                     .accessibilityAddTraits(.isHeader)
                 if !line.isEmpty {
                     Text(line).font(.text(.body)).foregroundStyle(Theme.label2).multilineTextAlignment(.center).padding(.top, 10).padding(.horizontal, 12)

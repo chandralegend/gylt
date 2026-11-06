@@ -63,3 +63,58 @@ struct ProgressTests {
         #expect(w.kept == 1)
     }
 }
+
+@Suite("History and streaks")
+struct HistoryTests {
+    /// Keeps the walk on `daysAgo` days before Friday 6 Nov: materialize, start, report done, all at 18:00 that day.
+    private func state(keeping daysAgo: [Int]) throws -> AppState {
+        var s = AppState(commitments: Commitment.defaults(timeZone: TimeZone(identifier: "UTC")!).filter { $0.id == Commitment.walkID })
+        for d in daysAgo.sorted(by: >) {
+            let t = friday.addingTimeInterval(-Double(d) * 86_400)
+            s = try Engine().apply(CommandEnvelope(.materialize), to: s, now: t, calendar: utc).state
+            let id = s.occurrences.last { !$0.state.isTerminal }!.id
+            s = try Engine().apply(CommandEnvelope(.start(id, .full)), to: s, now: t, calendar: utc).state
+            s = try Engine().apply(CommandEnvelope(.reportDone(id, .full)), to: s, now: t.addingTimeInterval(60), calendar: utc).state
+        }
+        return s
+    }
+
+    @Test func historyIsWholeMondayAlignedWeeksEndingThisWeek() throws {
+        let h = Progress.history(weeks: 12, endingWith: friday, in: try state(keeping: []), calendar: utc)
+        #expect(h.days.count == 84)
+        #expect(h.todayIndex == 11 * 7 + 4)                 // Friday of the last week
+        #expect(h.days[h.todayIndex].localDate == "2026-11-06")
+        #expect(h.days.allSatisfy { $0.kept == 0 })
+    }
+
+    @Test func keptDaysShowUpAndFutureDaysStayEmpty() throws {
+        let h = Progress.history(weeks: 4, endingWith: friday, in: try state(keeping: [0, 1]), calendar: utc)
+        #expect(h.days[h.todayIndex].kept == 1)
+        #expect(h.days[h.todayIndex - 1].kept == 1)
+        #expect(h.days[h.todayIndex - 2].kept == 0)
+        #expect(h.days.suffix(from: h.todayIndex + 1).allSatisfy { $0.possible == 0 && $0.kept == 0 })
+        #expect(h.daysShowedUp == 2)
+    }
+
+    @Test func aSinglePromiseCanBeFilteredOut() throws {
+        let s = try state(keeping: [0])
+        let none = Progress.history(weeks: 2, endingWith: friday, in: s, commitmentId: Commitment.bedID, calendar: utc)
+        #expect(none.daysShowedUp == 0)
+        let walk = Progress.history(weeks: 2, endingWith: friday, in: s, commitmentId: Commitment.walkID, calendar: utc)
+        #expect(walk.daysShowedUp == 1)
+    }
+
+    @Test func streakCountsConsecutiveDaysEndingToday() throws {
+        #expect(Progress.streak(asOf: friday, in: try state(keeping: [0, 1, 2]), calendar: utc) == 3)
+    }
+
+    @Test func anOpenTodayDoesNotBreakTheStreak() throws {
+        #expect(Progress.streak(asOf: friday, in: try state(keeping: [1, 2]), calendar: utc) == 2)
+    }
+
+    @Test func aMissedDayBreaksItAndNothingIsZero() throws {
+        #expect(Progress.streak(asOf: friday, in: try state(keeping: [0, 2, 3]), calendar: utc) == 1)
+        #expect(Progress.streak(asOf: friday, in: try state(keeping: []), calendar: utc) == 0)
+    }
+}
+

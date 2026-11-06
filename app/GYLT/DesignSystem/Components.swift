@@ -1,4 +1,5 @@
 import SwiftUI
+import GYLTCore
 
 // MARK: - Shapes and surfaces
 
@@ -244,6 +245,77 @@ struct ProgressRing: View {
             }
         }
         .accessibilityHidden(true)
+    }
+}
+
+// MARK: - Consistency
+
+struct StreakChip: View {
+    let days: Int
+    var body: some View {
+        HStack(spacing: 5) {
+            Image(systemName: "flame.fill").font(.system(size: 12, weight: .bold))
+            Text("\(days) days in a row").font(.text(.footnote, weight: .semibold))
+        }
+        .foregroundStyle(Theme.accentText).padding(.horizontal, 10).frame(minHeight: 28)
+        .background(Capsule().fill(Theme.accentSoft))
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// Twelve weeks at a glance, one square a day: coral for a day with every promise kept, lighter for some, grey for none.
+struct ConsistencyGrid: View {
+    let history: GYLTCore.Progress.History
+    @State private var shown = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 4) {
+            ForEach(0..<history.weeks, id: \.self) { week in
+                VStack(spacing: 4) {
+                    ForEach(0..<7, id: \.self) { day in
+                        let i = week * 7 + day
+                        cell(i)
+                            .scaleEffect(shown || reduceMotion ? 1 : 0.5).opacity(shown || reduceMotion ? 1 : 0)
+                            .animation(reduceMotion ? nil : Motion.spring.delay(Double(week) * 0.03 + Double(day) * 0.008), value: shown)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .onAppear { shown = true }
+        .onDisappear { shown = false }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Consistency over \(history.weeks) weeks")
+        .accessibilityValue("\(history.daysShowedUp) days with at least one promise kept")
+    }
+
+    private func cell(_ i: Int) -> some View {
+        let d = history.days[i]
+        let future = i > history.todayIndex
+        let fill: Color = future ? Theme.fill.opacity(0.5)
+            : d.kept > 0 ? (d.fraction >= 1 ? Theme.accent : Theme.accent.opacity(0.5))
+            : d.possible > 0 ? Theme.fill2 : Theme.fill.opacity(0.7)
+        return RoundedRectangle(cornerRadius: 5, style: .continuous).fill(fill)
+            .aspectRatio(1, contentMode: .fit)
+            .overlay { if i == history.todayIndex { RoundedRectangle(cornerRadius: 5, style: .continuous).stroke(Theme.label, lineWidth: 1.5) } }
+    }
+}
+
+/// The last two weeks of one promise as dots: kept, missed, or nothing scheduled.
+struct DotStrip: View {
+    let history: GYLTCore.Progress.History
+    var body: some View {
+        let upto = history.todayIndex
+        let slice = Array(history.days[max(0, upto - 13)...upto])
+        HStack(spacing: 5) {
+            ForEach(Array(slice.enumerated()), id: \.offset) { _, d in
+                Circle().fill(d.kept > 0 ? Theme.accent : d.possible > 0 ? Theme.fill2 : Theme.fill.opacity(0.7)).frame(width: 9, height: 9)
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Last two weeks")
+        .accessibilityValue("\(slice.filter { $0.kept > 0 }.count) days kept")
     }
 }
 

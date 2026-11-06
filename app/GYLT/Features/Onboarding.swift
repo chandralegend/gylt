@@ -130,7 +130,7 @@ struct OnboardingView: View {
     }
 
     private func heading(_ text: String) -> some View {
-        Text(text).font(.system(size: 36, weight: .bold)).foregroundStyle(Theme.label).accessibilityAddTraits(.isHeader)
+        Text(text).font(.statement(34)).foregroundStyle(Theme.label).accessibilityAddTraits(.isHeader)
             .fixedSize(horizontal: false, vertical: true).padding(.bottom, 12)
     }
     private func body(_ text: String) -> some View {
@@ -140,7 +140,7 @@ struct OnboardingView: View {
     private var welcome: some View {
         VStack(alignment: .leading, spacing: 0) {
             Wordmark(size: 28).padding(.top, 8).padding(.bottom, 56)
-            Text("You said\nyou would.").font(.system(size: 52, weight: .bold)).foregroundStyle(Theme.label)
+            Text("You said\nyou would.").font(.statement(52)).foregroundStyle(Theme.label)
                 .accessibilityAddTraits(.isHeader).padding(.bottom, 16)
             body("GYLT is a coach with attitude and a short leash. It helps you start the thing you already decided to do.")
             VStack(alignment: .leading, spacing: 14) {

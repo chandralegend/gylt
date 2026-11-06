@@ -7,7 +7,12 @@ struct TodayView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                Text(Fmt.longDate(model.now)).font(.text(.subheadline)).foregroundStyle(Theme.label2)
+                HStack {
+                    Text(Fmt.longDate(model.now)).font(.text(.subheadline)).foregroundStyle(Theme.label2)
+                    Spacer()
+                    if model.streak >= 2 { StreakChip(days: model.streak).transition(.scale.combined(with: .opacity)) }
+                }
+                .animation(Motion.spring, value: model.streak)
                 weekStrip.padding(.top, 20).padding(.bottom, 24)
 
                 if let f = model.featured {
@@ -176,7 +181,7 @@ private struct HeroCard: View {
                     if c.kept { Image(systemName: "checkmark.circle.fill").foregroundStyle(Theme.accent) }
                     Text(c.meta).font(.text(.footnote, weight: .semibold)).foregroundStyle(fg2)
                 }
-                Text(c.title).font(.system(size: 34, weight: .bold)).foregroundStyle(fg).padding(.top, 12)
+                Text(c.title).font(.statement(36)).foregroundStyle(fg).padding(.top, 12)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(c.sub).font(.text(.subheadline)).foregroundStyle(fg2).padding(.top, 8)
                 Spacer(minLength: 24)

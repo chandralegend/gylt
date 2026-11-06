@@ -60,6 +60,12 @@ extension Font {
         .system(size: size, weight: weight, design: .rounded).monospacedDigit()
     }
 
+    /// Statements: New York, the system serif. Used for the big lines the coach says (hero, intervention, payoff, welcome).
+    /// UI chrome, labels and numerals stay in SF.
+    static func statement(_ size: CGFloat, weight: Font.Weight = .bold) -> Font {
+        .system(size: size, weight: weight, design: .serif)
+    }
+
     /// Headlines. One display size per screen.
     static func display(_ size: CGFloat, relativeTo style: Font.TextStyle = .largeTitle) -> Font {
         .system(size: size, weight: .bold, design: .default)
