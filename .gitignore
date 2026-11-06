@@ -1,0 +1,4 @@
+.DS_Store
+# third-party skills are reinstalled from skills-lock.json
+.claude/skills/
+.claude/settings.local.json

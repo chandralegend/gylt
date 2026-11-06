@@ -1,0 +1,720 @@
+{
+  "schema_version": 1,
+  "project": "GetYourLifeTogether (GYLT)",
+  "prepared_date": "2026-11-06",
+  "archive_root": "GYLT",
+  "file_count_including_this_manifest": 141,
+  "manifest_self_hash": "Excluded to avoid a recursive hash dependency.",
+  "validation": {
+    "original_tracked_source_files_match": "8 of 9 at their package paths (README.md replaced by the v2 README)",
+    "proposal_pdf_pages": 8,
+    "relative_markdown_links": "checked",
+    "javascript_syntax": "node --check passed",
+    "pdf_visual_review": "all pages reviewed; dense pages inspected at full size",
+    "zip_integrity": "not re-packaged after design v2",
+    "design_v2_browser_check": "all eight screens at 375x812 in light and dark, desktop shell and overview; no console errors"
+  },
+  "files": [
+    {
+      "path": "01-Product/CONCEPT-AND-DECISION-LOG.md",
+      "bytes": 4926,
+      "sha256": "e988ba4650ae722c500232ebbbdd7bb394d2f26d73008637e3c5efec03253e71"
+    },
+    {
+      "path": "01-Product/PRODUCT-REQUIREMENTS.md",
+      "bytes": 15575,
+      "sha256": "5afe101887693427a80ee325522645da74c60a9932f8928ed890ac0b83db5c37"
+    },
+    {
+      "path": "01-Product/PROJECT-PROPOSAL.md",
+      "bytes": 17797,
+      "sha256": "65662788a3e8695b040b0916511c9c6449faffeff633254d46e20349a92d79da"
+    },
+    {
+      "path": "01-Product/PROJECT-PROPOSAL.pdf",
+      "bytes": 196820,
+      "sha256": "3e4fd1f44d6e2f77359f069ced156eba8f398dafb8f49dcffb3dde98b2836948"
+    },
+    {
+      "path": "02-Engineering/DEVELOPMENT-ROADMAP.md",
+      "bytes": 9095,
+      "sha256": "4df451cb50e60b4c33c2c8cf0b20c2f03aac9e21b4ee2995021a2afb73cb97da"
+    },
+    {
+      "path": "02-Engineering/TECHNICAL-ARCHITECTURE.md",
+      "bytes": 14894,
+      "sha256": "811feef707b24b989aef002c3faa8853cc0b1049b7fb51dd96572eb4eec86ab1"
+    },
+    {
+      "path": "03-Design/DESIGN-SPECIFICATION.md",
+      "bytes": 12807,
+      "sha256": "f08f8e3994d92b312c9c632284c4df43969491051146396cb10ac04d5e39f165"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/a2-lockup-horizontal-colour.svg",
+      "bytes": 1028,
+      "sha256": "75f1f1a8c1b037440dcccbfca15a33c474fbb67755670554409ea89548cbde21"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/a2-lockup-horizontal.svg",
+      "bytes": 1007,
+      "sha256": "3cb5a7b53bacd4a34d10161daf244958aaeee4328c05ddd473c25484f49cdb70"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/a2-lockup-stacked-colour.svg",
+      "bytes": 1038,
+      "sha256": "3876844387b5bf8bdc9d9312d6f9c744aaed5432915fe8517d0e9bde5e081d01"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/a2-lockup-stacked.svg",
+      "bytes": 1017,
+      "sha256": "b9397a915748086d38eac6d2886a8ec12d612d946416ef53d01815898892a0e9"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/a2-symbol-colour.svg",
+      "bytes": 734,
+      "sha256": "f4b90f9e963b0bf5e463a2e8635b2139b027d89fd11823a32529b03483ecb950"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/a2-symbol-small-colour.svg",
+      "bytes": 543,
+      "sha256": "22928e602d36b11f8e1c21c9df5d2858f76398fd4f02504206c4fb76840d6e22"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/a2-symbol-small.svg",
+      "bytes": 531,
+      "sha256": "1820b60c43e88f40c25c784be75fe868812e9c9dd6423688bfe19ab7c07343d8"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/a2-symbol.svg",
+      "bytes": 716,
+      "sha256": "424425cfcac5f4379e75d0f06ce464f908e662a105d54662179360f8d6c72eca"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/a2-wordmark-colour.svg",
+      "bytes": 409,
+      "sha256": "bc6f57c1a06671ae40c0869168d2dbcb30c68a986c5f220d3dddba735e88d8dc"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/a2-wordmark.svg",
+      "bytes": 406,
+      "sha256": "38a463c91da95c51141d8c5e569970113ac84a7217acea102d7110783ddca23d"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/concepts-round2.png",
+      "bytes": 111655,
+      "sha256": "bf7b7fe9f08ae1a8893f31b992f983ae87eaccdfdf4abe011549a8d41b6b7fd5"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/concepts-round2.svg",
+      "bytes": 10644,
+      "sha256": "25158f6adef27c5170ce6ff4d9bf8c3974777a0480475552f7cf4de08d8c20a8"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/a-full-stop-lockup-colour.png",
+      "bytes": 19170,
+      "sha256": "95df0c23d1137254c7c92954f4c71d3adae13d99b0a948a41ee2a8f66a3f446b"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/a-full-stop-lockup.png",
+      "bytes": 11294,
+      "sha256": "6fe925913ace8f2a5af0167b24f2e5e64424f0c58d7ba7a21708f3145cbf14bf"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/a-full-stop-symbol-colour.png",
+      "bytes": 19558,
+      "sha256": "7f5c3f67261241fa46a3fd9810f8e0bdee445f029d1e19d78bff2fc108e48eee"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/a-full-stop-symbol.png",
+      "bytes": 12790,
+      "sha256": "6269f50cbe54b245c4bb892bd1876f4157ed3421a51449b1d609ea66758f087c"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/a2-lockup-horizontal-colour.png",
+      "bytes": 17108,
+      "sha256": "f8906d4df2937342f50e57359f717d7e22412660073d4db69fec2a039c55b31a"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/a2-lockup-stacked-colour.png",
+      "bytes": 27592,
+      "sha256": "7c93ae84747fcbf6d051c9be9703a27f302067a2d9d76d53083413734a080a11"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/a2-symbol-colour.png",
+      "bytes": 26781,
+      "sha256": "4fd1817898881eed6a74de67a83edeb78d15d8a7331a861bf982650178e7816c"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/a2-symbol-small-colour.png",
+      "bytes": 26230,
+      "sha256": "c123a73f4a297770c6bd6e7dff45cf744bafebd0c06d6fab496112dbec9de253"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/b-loud-spark-lockup.png",
+      "bytes": 11975,
+      "sha256": "079eb50481e2f9fde384795ea285b2f92da33e4e5470fcf3ae0683cbbecb7cd0"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/b-loud-spark-symbol.png",
+      "bytes": 15227,
+      "sha256": "bb546f193c75ea8694cf0ee2b7da43a9665a49af648bcd49e7eb0cfa23b3ffee"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/c-g-dot-lockup.png",
+      "bytes": 9410,
+      "sha256": "7f2406477f27a676fddf07301a310df3729e9c0d55657e56b5eb5f1a493c7243"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/renders/c-g-dot-symbol.png",
+      "bytes": 11102,
+      "sha256": "f43f291011e5790a0e7ea5f8bc9d6f8b7e75001c2862a0de3cd3c269fe1714d7"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/round1/a-full-stop-colour-hint.png",
+      "bytes": 56087,
+      "sha256": "cca6a8773cf2fabc51b72494168e6029181571667f61aa5fe9f755b10898849f"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/round1/a-full-stop-lockup-colour.svg",
+      "bytes": 1190,
+      "sha256": "aa30d87e9c40e67a213aca8059c107d629dafb45b2306101a72456e28a7e47ae"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/round1/a-full-stop-lockup.svg",
+      "bytes": 1169,
+      "sha256": "db52beb97d3782de0bcbb37448c5d19618e957fad3a2bbb34f205314190fd028"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/round1/a-full-stop-symbol-colour.svg",
+      "bytes": 743,
+      "sha256": "2f14d8c592c933833e8d31068993ce48c655b748e2ba4a46cfb8965bee95b00e"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/round1/a-full-stop-symbol.svg",
+      "bytes": 725,
+      "sha256": "9e7a4abb1d5d1e2e312927cd3f326c91b56f3c942c966cd2adac95019580d963"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/round1/b-loud-spark-lockup.svg",
+      "bytes": 1414,
+      "sha256": "7d82614a4ebf78331e1fd74a572c4fbaedf9e262d1e1fdade9d300620f13aab1"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/round1/b-loud-spark-symbol.svg",
+      "bytes": 951,
+      "sha256": "946ba32d431ee6a3e64378d5d22e3adced32cbfb4bb63be3278e7ab1d85488a3"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/round1/c-g-dot-lockup.svg",
+      "bytes": 1066,
+      "sha256": "3c7813869bb4a26f504cebe5c000424e3647d05f5044226e0bfeae1d1d674b18"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/round1/c-g-dot-symbol.svg",
+      "bytes": 536,
+      "sha256": "e48e26e1c15e52b9af61e4622fca27921dac1d38f7262d29655949055a8cc4fc"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/round1/concepts-round1.png",
+      "bytes": 149498,
+      "sha256": "8bf3f1bde65b9c37bdec9d71348c7f5e7292939b0db3f7a020642df258aebd8e"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/round1/concepts-round1.svg",
+      "bytes": 18024,
+      "sha256": "941cc7393622d98ab26402dc37d249bd2eb07cf9617e0d96aac5dda3e2cbad96"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/v1/a-full-stop-lockup.svg",
+      "bytes": 1134,
+      "sha256": "47fed5896d46dee326c5c2461eac70cca7d01f5202da7193685bb7f31335ef0c"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/v1/a-full-stop-symbol.svg",
+      "bytes": 725,
+      "sha256": "9e7a4abb1d5d1e2e312927cd3f326c91b56f3c942c966cd2adac95019580d963"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/v1/b-loud-spark-lockup.svg",
+      "bytes": 1414,
+      "sha256": "7d82614a4ebf78331e1fd74a572c4fbaedf9e262d1e1fdade9d300620f13aab1"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/v1/b-loud-spark-symbol.svg",
+      "bytes": 951,
+      "sha256": "946ba32d431ee6a3e64378d5d22e3adced32cbfb4bb63be3278e7ab1d85488a3"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/v1/c-g-dot-lockup.svg",
+      "bytes": 1029,
+      "sha256": "016cc78d9a2601b3eeaa7cf938851768106e3c14ce1faa175a3a04c535491dde"
+    },
+    {
+      "path": "03-Design/Logo-Concepts/v1/c-g-dot-symbol.svg",
+      "bytes": 408,
+      "sha256": "d1fcc10038486104390ef9baf4b116bd3a670ca43e2ea451729e023c0588cdf1"
+    },
+    {
+      "path": "03-Design/Logo-Kit/GUIDELINES.md",
+      "bytes": 4453,
+      "sha256": "2c570cfd276dd647cbd7308af338cd9f621c42eaf40e00834c5002655bcf417b"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-coach-pleased@16x.png",
+      "bytes": 2208,
+      "sha256": "ec5622b93342ecb9c0cfdc739be8eb69c261988aa0411d6540bd7f275872a306"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-coach-pleased@4x.png",
+      "bytes": 733,
+      "sha256": "756a5bdb942231aa4756886494deded7d0a3aac52e3e20fffe8834202a765820"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-coach-pleased@8x.png",
+      "bytes": 1178,
+      "sha256": "845d6054da7efbb05345759e1234e9f7ecab435d5ee57240942694141e1c1634"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-coach@16x.png",
+      "bytes": 2220,
+      "sha256": "a2fb869186ef9c0af13ad07ac45608d9f033217e9f5e276c598dba12686dbfdc"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-coach@4x.png",
+      "bytes": 766,
+      "sha256": "cd120a2d375f5276a8ebac3923a89de84bb27d9f680265f67a469774750b2254"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-coach@8x.png",
+      "bytes": 1207,
+      "sha256": "9a0739e8197bc8b4b35cc28faaac6b57d314f9aa61b1fde31502763db04e45a3"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-horizontal-reversed@16x.png",
+      "bytes": 3799,
+      "sha256": "75bf63e28fcd2317b802f35af5a712b84939688b9cf09646374f5b1bbf108344"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-horizontal-reversed@4x.png",
+      "bytes": 1020,
+      "sha256": "c03739c4b23d7f700430304ca85f19c42970174c6983ec5ff975aa05ac712cac"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-horizontal-reversed@8x.png",
+      "bytes": 1699,
+      "sha256": "9198fe1831cbd42250cce397cc041b7f83a3f2187ee9200e78bf4c58bb0e26ce"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-horizontal@16x.png",
+      "bytes": 3804,
+      "sha256": "378f1c63df5552ab6a6d254171bb0de690c7b95d6cd831d46708250b1b166d57"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-horizontal@4x.png",
+      "bytes": 1011,
+      "sha256": "3a4b5a3194c949a3f3a48dcba561d2d969da9879bf3d9fb51c53372f5a633751"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-horizontal@8x.png",
+      "bytes": 1703,
+      "sha256": "c0509ccf43911aeb68ba23a561e8e1cfa9493d65516619f02eb1ec1ce66a3323"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-stacked-reversed@16x.png",
+      "bytes": 3664,
+      "sha256": "64f4f521e30302f0e38939efc51c2c23c403fe4f5d50377ee6ebb20aa8739ca4"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-stacked-reversed@4x.png",
+      "bytes": 1028,
+      "sha256": "23c712d023880041d13634c988af647441de62af7b09e0866aad86c37ce20488"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-stacked-reversed@8x.png",
+      "bytes": 1673,
+      "sha256": "d80767f5e0bf714670efe18c723ba524c620b02ece3b74d9c0f49496a3f1ce07"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-stacked@16x.png",
+      "bytes": 3672,
+      "sha256": "3075ee8636f8a4c2731c00d58fcf8e27f123395f175c30fd8ece2831448406d6"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-stacked@4x.png",
+      "bytes": 1016,
+      "sha256": "cfa91ecf5cfda8e073ff4fdaf563b0fef461f0bba04c84c290ace14be2e80da0"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-lockup-stacked@8x.png",
+      "bytes": 1674,
+      "sha256": "809bdec01415cb2097097fa5cd22ba461652031d862229c00d68e8842f026eee"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-wordmark-ink@16x.png",
+      "bytes": 871,
+      "sha256": "2f6dc8d20da427356d512ec2b637647bc0fb5b3beb1a4b1a79b9889f6fa41f26"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-wordmark-ink@4x.png",
+      "bytes": 282,
+      "sha256": "ad98e34af2a73e35338d51f539b437832a25510ca6bd21118ae5b62f7d2e6f37"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-wordmark-ink@8x.png",
+      "bytes": 432,
+      "sha256": "3a0dbafb72f4c17d2a7ed06fd80eb9327032c7e66b95b682a6c5f5712495cc02"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-wordmark-white@16x.png",
+      "bytes": 849,
+      "sha256": "914050340eee01d13bf39354572bb7cf7cb8658450a5a0b6cfa345f8971f15ac"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-wordmark-white@4x.png",
+      "bytes": 273,
+      "sha256": "023c183ca6ecee4c90a3272e96cbebc647cf7f2854f7e00da0588a4d03d02cce"
+    },
+    {
+      "path": "03-Design/Logo-Kit/png/gylt-wordmark-white@8x.png",
+      "bytes": 423,
+      "sha256": "c8af7a1400cdd88a6017215dca9324b8c8753127bf094d76a767c8899b918a2c"
+    },
+    {
+      "path": "03-Design/Logo-Kit/presentation-board.html",
+      "bytes": 70196,
+      "sha256": "e841795335b12aa5a9d70eff79eaa36f7856e37af805bbaf493068b1bfe6af09"
+    },
+    {
+      "path": "03-Design/Logo-Kit/source/build_logo_kit.py",
+      "bytes": 10600,
+      "sha256": "b15819e699b1e91addf1d5e14e52ab37199b8f5a0ff4e97f32f36ed4fc0c9ab2"
+    },
+    {
+      "path": "03-Design/Logo-Kit/source/presentation-spec.json",
+      "bytes": 2114,
+      "sha256": "6bd28bca3d496febcce8560b440711762a1b4d97e03f0133c49fb28c17bb5662"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-app-icon.svg",
+      "bytes": 2874,
+      "sha256": "f24d9a3b4c333b6e0b4271f7f71c4ffa0a76b4c6a54b86b211580518e06ca1db"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-coach-16.svg",
+      "bytes": 1553,
+      "sha256": "44ce6f07a0739cf25d793d0b2076ef978da809169a781ca0b3a57a7fc1c51ed5"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-coach-line-ink.svg",
+      "bytes": 1340,
+      "sha256": "2444dd6cf3c909f2b521cdcc488f34070b4f8d8c98d44e461aa0f27a68be2f58"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-coach-line-white.svg",
+      "bytes": 1342,
+      "sha256": "c92e65295aa5a2e756bda804a0af08225303480e3f86d84be28bbb9e7c1f181d"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-coach-pleased.svg",
+      "bytes": 2500,
+      "sha256": "c4c061fd1e371e2c1a002855bb007428aa3fc4357e15755ffa9ed38581d08293"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-coach.svg",
+      "bytes": 2733,
+      "sha256": "bcc084e17053d4c8189a2971217b32dee6c870c652a1f32aa6ad6509da1bf523"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-lockup-horizontal-reversed.svg",
+      "bytes": 3388,
+      "sha256": "1e27da02198cf357f62272abc587a3cdce837d615ef677f78e7d1d2580d8e02c"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-lockup-horizontal.svg",
+      "bytes": 3388,
+      "sha256": "57c477e192d8f7c4d5f37d8e3bc2fc2a1a83d414b519c78d25c21f6cf247a192"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-lockup-stacked-reversed.svg",
+      "bytes": 3395,
+      "sha256": "41a1ef6ba3e6735e2cb97fe36749b1b0a7cf6abed93d1a9d2bca4ed4247f1aa5"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-lockup-stacked.svg",
+      "bytes": 3395,
+      "sha256": "0f38f879173d1523e28ddda6de4e335581088a62485a47dd84c5ac435e7c1a4c"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-wordmark-coral.svg",
+      "bytes": 776,
+      "sha256": "6405dd29f293faec1d96aa813738455352f7750dc1597dbb05d63c0d17893831"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-wordmark-ink.svg",
+      "bytes": 774,
+      "sha256": "b00c4255c2534752ee0c79fc34ce5f84531c82f8897f2cbbbafbdf010a0b6fca"
+    },
+    {
+      "path": "03-Design/Logo-Kit/svg/gylt-wordmark-white.svg",
+      "bytes": 776,
+      "sha256": "70ea52d001cda4d712dfaa19bdab89776b59e4b73e6aa6a389e127c61950a5f4"
+    },
+    {
+      "path": "03-Design/Logo-Kit/web/apple-touch-icon.png",
+      "bytes": 992,
+      "sha256": "e59eaca03d72b7c65717b6cff8732f1ebd69f181ae4285ae56bb3741f863e679"
+    },
+    {
+      "path": "03-Design/Logo-Kit/web/favicon-16.png",
+      "bytes": 277,
+      "sha256": "e49cc5c015aa9dfa97c9e99df953dc06c4547176e1d97eae35f0123660abbe19"
+    },
+    {
+      "path": "03-Design/Logo-Kit/web/favicon-32.png",
+      "bytes": 326,
+      "sha256": "289b16f6bc381b319e8c81b7fbc25cc78395ccee7ef04bda917cc5eeadcdd766"
+    },
+    {
+      "path": "03-Design/Logo-Kit/web/favicon-48.png",
+      "bytes": 393,
+      "sha256": "4292ffe1878d03409c44925194211976095d8cb63fa5daaffe7eb65bbca9ba8c"
+    },
+    {
+      "path": "03-Design/Logo-Kit/web/favicon.ico",
+      "bytes": 1050,
+      "sha256": "5a70bf6ced8660a0aa86f73feea3afff9526b1acf55133a71da9af59c9dfd617"
+    },
+    {
+      "path": "03-Design/Logo-Kit/web/favicon.svg",
+      "bytes": 1536,
+      "sha256": "12080a559ebc4e217ff4d3f27f7643aca52027b51f86df18ac318179a19a2c70"
+    },
+    {
+      "path": "03-Design/Logo-Kit/web/head-snippet.html",
+      "bytes": 261,
+      "sha256": "f36403d03aa1c876c00c8fa13189bcf69ca7a0a221f89f57e9fe52f10a0388b2"
+    },
+    {
+      "path": "03-Design/Logo-Kit/web/icon-192.png",
+      "bytes": 1033,
+      "sha256": "640bc29d7b43ee952f026bbccb4e7d4daf47bc16f630d75663fefc439a7e50f6"
+    },
+    {
+      "path": "03-Design/Logo-Kit/web/icon-512.png",
+      "bytes": 2680,
+      "sha256": "21db7042a2d0422c2aed00bacc36bb380f4bfb0c1c01145160114d047c08fc76"
+    },
+    {
+      "path": "03-Design/Logo-Kit/web/maskable-512.png",
+      "bytes": 2679,
+      "sha256": "d2a4b6da08bd2b029a50b03a94f64617e703a6e9a8893dd2806dc7157ccb3e7b"
+    },
+    {
+      "path": "03-Design/Logo-Kit/web/site.webmanifest",
+      "bytes": 495,
+      "sha256": "6328aeeb62f949f2c2b7495a77f9108eea7fc8f6da86a26348236aa1174efab9"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/pixel-coach-ink.svg",
+      "bytes": 2508,
+      "sha256": "0477339f17b19eace173e2aace3ec354344c46c5de5f9c8e48405ebe6a8f25e6"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/pixel-coach.svg",
+      "bytes": 2739,
+      "sha256": "9d34a02cf9bcb2d3ff7d5cbe3f54099124034c72e20267d11a9b305ff299862d"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/pixel-concepts.png",
+      "bytes": 79631,
+      "sha256": "0881aa9a4e511bd0a9ca2042092f8e642c320599f2d938e13fecf3356e399d4d"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/pixel-concepts.svg",
+      "bytes": 31893,
+      "sha256": "1b31765ff057dcc53c991d3a6a5736e966017d6eb4a22ebcc935a9cebfb30bc6"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/pixel-lockup-horizontal-rounded.svg",
+      "bytes": 3102,
+      "sha256": "3dc2b4ed0ae4672df9fb1372060016b7085a2b982a6853ed29456d955c17db55"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/pixel-lockup-horizontal.svg",
+      "bytes": 3396,
+      "sha256": "5bb92e29a6ee387c91a03b0ab2b15ba8156c3bdae87f20b50504a138748152e4"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/pixel-lockup-stacked-rounded.svg",
+      "bytes": 3099,
+      "sha256": "26063c6a5ec6c706c0c728751e88d488b42bdcf9796541b6107d0a657ce390d1"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/pixel-lockup-stacked.svg",
+      "bytes": 3403,
+      "sha256": "72bb3d9ed8ce19ae4985fa95bf01106c2cb61afa8e37edf221c0c7ea85dc4ef9"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/pixel-wordmark.svg",
+      "bytes": 774,
+      "sha256": "61b7077879afc4bd2e51b2ab5aa5684513c13f3f13ee73f1006b123c55e7acad"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/renders/pixel-coach.png",
+      "bytes": 4367,
+      "sha256": "fdb879b4a856a4418ced587373fb1388ab72651e33f0617174b4b63e0e256a8c"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/renders/pixel-lockup-horizontal-rounded.png",
+      "bytes": 10854,
+      "sha256": "ebbae2ea65f8afd3f6db08eabfb052e5896b95be37c92e47a6cf249cb8ac33ee"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/renders/pixel-lockup-horizontal.png",
+      "bytes": 3608,
+      "sha256": "b2a0b4f6ae0c66198f9d40bada7dbb69ef6841a0302c1989c9333bc582283de6"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/renders/pixel-lockup-stacked-rounded.png",
+      "bytes": 15357,
+      "sha256": "93f6b879da2949e85a3d0c95b4900e0bba39d5a12ec5f1f9abb3a07fcc860643"
+    },
+    {
+      "path": "03-Design/Logo-Pixel/renders/pixel-lockup-stacked.png",
+      "bytes": 4457,
+      "sha256": "6b3349c19b6d5a1675e8a444c97bc9a9c65d067789556751e6fe0c38a283f646"
+    },
+    {
+      "path": "03-Design/Previews/gylt-screen-overview.jpg",
+      "bytes": 103165,
+      "sha256": "b953c857b96318b54b7a6996ca003d30dfc13f849c1400c6ce877e61a84e3312"
+    },
+    {
+      "path": "03-Design/design-tokens.json",
+      "bytes": 15557,
+      "sha256": "4871a80d4fddd31ad6563798c51ae65c0009a9852629fdb58159a43bb5176918"
+    },
+    {
+      "path": "04-Prototype/.openai/hosting.json",
+      "bytes": 106,
+      "sha256": "a718cd0bb08e8562705be635f24b393c4f095a84e76230517b6a10f45bf8981e"
+    },
+    {
+      "path": "04-Prototype/README.md",
+      "bytes": 4611,
+      "sha256": "e14ab4c390e40ace739e559fc7e5dc9105b0b3be6ff69a79a55b5180f06c2569"
+    },
+    {
+      "path": "04-Prototype/dist-v1-original/app.css",
+      "bytes": 29846,
+      "sha256": "6d97b839a27603f02b403c6000a2bbe3f6eb08bec8fc015ec16687dfba9c8a75"
+    },
+    {
+      "path": "04-Prototype/dist-v1-original/app.js",
+      "bytes": 49012,
+      "sha256": "48319dcd448e00a138ad27bf680ae27e183c83fdb323fe474f0ddbdc5981a9eb"
+    },
+    {
+      "path": "04-Prototype/dist-v1-original/assets/favicon.svg",
+      "bytes": 305,
+      "sha256": "7e1b0f15ae86d2ec2b7171415259e0b6f4a17ebe979f9879144038320c7060f3"
+    },
+    {
+      "path": "04-Prototype/dist-v1-original/assets/stride.svg",
+      "bytes": 2278,
+      "sha256": "0a2bcb8af218e41236d8ece89763949155450fb45cdcf0cc73ba157e53767c5b"
+    },
+    {
+      "path": "04-Prototype/dist-v1-original/index.html",
+      "bytes": 2292,
+      "sha256": "8f4ccfeaa7eaae231b5a1d90902ec24529cbd62c16f1f8db11aef8853c43166e"
+    },
+    {
+      "path": "04-Prototype/dist-v1-original/mobile-preview.html",
+      "bytes": 734,
+      "sha256": "b0938075c06c2c82e4db04224aff75a5e547a015b8238a21d0af491863de4772"
+    },
+    {
+      "path": "04-Prototype/dist/app.css",
+      "bytes": 33677,
+      "sha256": "051eb0a9a0ec96da48d34acbdd1c6230624fa347eb05637f32456d9dcfc7f44e"
+    },
+    {
+      "path": "04-Prototype/dist/app.js",
+      "bytes": 51442,
+      "sha256": "cf523258387d85214ad62b5b3c59513ebd776573a180eeb753d7388547a9d442"
+    },
+    {
+      "path": "04-Prototype/dist/assets/apple-touch-icon.png",
+      "bytes": 992,
+      "sha256": "e59eaca03d72b7c65717b6cff8732f1ebd69f181ae4285ae56bb3741f863e679"
+    },
+    {
+      "path": "04-Prototype/dist/assets/brand/gylt-coach-pleased.svg",
+      "bytes": 2500,
+      "sha256": "c4c061fd1e371e2c1a002855bb007428aa3fc4357e15755ffa9ed38581d08293"
+    },
+    {
+      "path": "04-Prototype/dist/assets/brand/gylt-coach.svg",
+      "bytes": 2733,
+      "sha256": "bcc084e17053d4c8189a2971217b32dee6c870c652a1f32aa6ad6509da1bf523"
+    },
+    {
+      "path": "04-Prototype/dist/assets/favicon.ico",
+      "bytes": 1050,
+      "sha256": "5a70bf6ced8660a0aa86f73feea3afff9526b1acf55133a71da9af59c9dfd617"
+    },
+    {
+      "path": "04-Prototype/dist/assets/favicon.svg",
+      "bytes": 1536,
+      "sha256": "12080a559ebc4e217ff4d3f27f7643aca52027b51f86df18ac318179a19a2c70"
+    },
+    {
+      "path": "04-Prototype/dist/assets/stride.svg",
+      "bytes": 2278,
+      "sha256": "0a2bcb8af218e41236d8ece89763949155450fb45cdcf0cc73ba157e53767c5b"
+    },
+    {
+      "path": "04-Prototype/dist/index.html",
+      "bytes": 3251,
+      "sha256": "f0ab3deb198481c7297fc8b3c7e1b4c3a0f012f357cad841720f4abd02345ca9"
+    },
+    {
+      "path": "04-Prototype/dist/mobile-preview.html",
+      "bytes": 734,
+      "sha256": "b0938075c06c2c82e4db04224aff75a5e547a015b8238a21d0af491863de4772"
+    },
+    {
+      "path": "04-Prototype/exports/gylt-screen-overview.jpg",
+      "bytes": 101718,
+      "sha256": "3ad52e9e94ce2511cccb10805d5e144cd8e7977db3d11b3e6387a77c35427483"
+    },
+    {
+      "path": "05-Research/REFERENCES.md",
+      "bytes": 6094,
+      "sha256": "84f4a3a362e5e8e9d91023181e17c206c7b2c9a8092c3f76688b4aaab18aec88"
+    },
+    {
+      "path": "06-Project-Metadata/HOSTING-AND-SOURCE-NOTES.md",
+      "bytes": 4394,
+      "sha256": "87aea73fbd77a912ac6e7edfa3e6484e39d09d9b200a6cce9992183b1706fbf6"
+    },
+    {
+      "path": "06-Project-Metadata/SOURCE-MANIFEST.json",
+      "bytes": 3513,
+      "sha256": "6947785f706cdbc22b39ef37f9d334a887a2c85dabd55c1ab3b10ee914d92399"
+    },
+    {
+      "path": "06-Project-Metadata/build_proposal_pdf.py",
+      "bytes": 11515,
+      "sha256": "1575aa0f0a2786d4206e05f1504868fa4cf5a3042ef3b9efe52c5b379782e35b"
+    },
+    {
+      "path": "START-HERE.md",
+      "bytes": 8323,
+      "sha256": "f34d78f585f2d423095e62cda13efca256b3a322c85bc2c0ba2641a48c939841"
+    }
+  ],
+  "design_version": "2"
+}

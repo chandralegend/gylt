@@ -1,0 +1,43 @@
+{
+  "brand": "GYLT",
+  "tagline": "Get Your Life Together",
+  "brief": "An accountability coach that steps in at the moment a good intention is about to lose to a distraction. Direct, unapologetic and on your side — never cruel.",
+  "adjectives": ["direct", "unapologetic", "in your corner", "deadpan"],
+  "criteria": "Success: a character people remember, distinct from owl, flame and checkmark habit-app marks, readable at 16 px, and at home in a warm-neutral, coral-accented app.",
+  "industry": "consumer-app",
+  "mockups": ["app-icon", "website", "social", "favicon-tab", "sticker", "tshirt"],
+  "nav": ["How it works", "The coach", "Download"],
+  "brand_color": "#FF6548",
+  "tile_color": "#1C1B18",
+  "greyscale": false,
+  "final": true,
+  "designer": "GYLT design",
+  "round": 3,
+  "concepts": [
+    {
+      "name": "The Coach",
+      "symbol": "../svg/gylt-coach.svg",
+      "lockup": "../svg/gylt-lockup-horizontal.svg",
+      "stacked": "../svg/gylt-lockup-stacked.svg",
+      "avatar": "../svg/gylt-coach.svg",
+      "symbol_on_tile": "../svg/gylt-coach.svg",
+      "stacked_on_tile": "../svg/gylt-lockup-stacked-reversed.svg",
+      "symbol_on_dark": "../svg/gylt-coach.svg",
+      "lockup_on_dark": "../svg/gylt-lockup-horizontal-reversed.svg",
+      "stacked_on_dark": "../svg/gylt-lockup-stacked-reversed.svg",
+      "idea": "A grumpy coral cube in a cap — the coach who won't let you off the hook, drawn in chunky pixels with a matching pixel wordmark.",
+      "rationale": [
+        "A character, not a symbol: one look says 'you said you would'",
+        "Pixel art keeps it crisp from a 16 px favicon to a billboard",
+        "Coral face and warm-grey cap come straight from the app palette",
+        "A second, pleased expression rewards a kept promise"
+      ]
+    }
+  ],
+  "recommendation": "The Coach: a mascot with attitude that is still on your side, built on an exact pixel grid so every size stays sharp.",
+  "next_steps": [
+    "Name the character (avoid celebrity names)",
+    "Professional trademark search before launch",
+    "Draw more expressions as the app needs them"
+  ]
+}

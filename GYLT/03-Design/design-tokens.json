@@ -1,0 +1,592 @@
+{
+  "name": "GYLT implementation design tokens",
+  "version": "2.0.0",
+  "capturedAt": "2026-11-06",
+  "supersedes": "1.0.0 (original prototype). The v1 source is preserved in ../04-Prototype/dist-v1-original/.",
+  "format": "Descriptive JSON handoff; not a DTCG interchange schema or generated theme package.",
+  "sources": {
+    "css": "../04-Prototype/dist/app.css",
+    "javascript": "../04-Prototype/dist/app.js",
+    "specification": "DESIGN-SPECIFICATION.md",
+    "note": "Values are the CSS custom properties at the top of app.css. There are no late cascade overrides in v2; component styles reference these tokens directly."
+  },
+  "rules": {
+    "accent": "One accent hue (coral). Spent only on the primary action, the active state and progress. Text that must read as accent uses accentText for contrast.",
+    "greys": "One warm grey family. No sage or cool greys.",
+    "shape": "Actions are capsules; cards and sheets 24; grouped lists, inputs and tickets 14; small icon tiles 10; app icons 22.5% of their size.",
+    "spacing": "4pt base. Screen gutter 20.",
+    "type": "iOS type ramp. One display size per screen. Tabular numerals for anything that counts.",
+    "labels": "One label per intent: start = \"Let's go\"; resume = \"Back to my walk\"; smaller option = \"Do the N-minute version\"; plan change = \"Change the plan\"; confirm in sheets = \"Save\" / \"Done\".",
+    "themes": "Planning screens follow the system light/dark setting. Focus screens (intervention, session, blocked) are always dark."
+  },
+  "color": {
+    "accent": {
+      "accent": {
+        "value": "#FF6548",
+        "cssVariable": "--accent"
+      },
+      "accentPressed": {
+        "value": "#F0563A",
+        "cssVariable": "--accent-press"
+      },
+      "onAccent": {
+        "value": "#1C1B18",
+        "cssVariable": "--on-accent"
+      },
+      "onAccentSecondary": {
+        "value": "#4A2117",
+        "cssVariable": "--on-accent-2"
+      }
+    },
+    "light": {
+      "bg": {
+        "value": "#F5F4F0",
+        "cssVariable": "--bg"
+      },
+      "surface": {
+        "value": "#FFFFFF",
+        "cssVariable": "--surface"
+      },
+      "fill": {
+        "value": "#ECEBE6",
+        "cssVariable": "--fill"
+      },
+      "fill2": {
+        "value": "#E2E1DB",
+        "cssVariable": "--fill-2"
+      },
+      "label": {
+        "value": "#1C1B18",
+        "cssVariable": "--label"
+      },
+      "label2": {
+        "value": "#64635C",
+        "cssVariable": "--label-2"
+      },
+      "label3": {
+        "value": "#8F8E86",
+        "cssVariable": "--label-3"
+      },
+      "separator": {
+        "value": "#E4E3DD",
+        "cssVariable": "--sep"
+      },
+      "accentText": {
+        "value": "#C23F20",
+        "cssVariable": "--accent-text"
+      },
+      "accentSoft": {
+        "value": "#FFE6DE",
+        "cssVariable": "--accent-soft"
+      },
+      "sheet": {
+        "value": "#F5F4F0",
+        "cssVariable": "--sheet"
+      },
+      "sheetGroup": {
+        "value": "#FFFFFF",
+        "cssVariable": "--sheet-group"
+      },
+      "scrim": {
+        "value": "rgba(0,0,0,.36)",
+        "cssVariable": "--scrim"
+      },
+      "elevation": {
+        "value": "0 1px 2px rgba(28,27,24,.04), 0 10px 30px -14px rgba(28,27,24,.16)",
+        "cssVariable": "--elev"
+      }
+    },
+    "dark": {
+      "bg": {
+        "value": "#141412",
+        "cssVariable": "--bg"
+      },
+      "surface": {
+        "value": "#1F1E1B",
+        "cssVariable": "--surface"
+      },
+      "fill": {
+        "value": "#2A2925",
+        "cssVariable": "--fill"
+      },
+      "fill2": {
+        "value": "#34332E",
+        "cssVariable": "--fill-2"
+      },
+      "label": {
+        "value": "#F4F3EF",
+        "cssVariable": "--label"
+      },
+      "label2": {
+        "value": "#A6A59D",
+        "cssVariable": "--label-2"
+      },
+      "label3": {
+        "value": "#6F6E67",
+        "cssVariable": "--label-3"
+      },
+      "separator": {
+        "value": "#2F2E2A",
+        "cssVariable": "--sep"
+      },
+      "accentText": {
+        "value": "#FF8A70",
+        "cssVariable": "--accent-text"
+      },
+      "accentSoft": {
+        "value": "#3A2520",
+        "cssVariable": "--accent-soft"
+      },
+      "sheet": {
+        "value": "#1E1D1A",
+        "cssVariable": "--sheet"
+      },
+      "sheetGroup": {
+        "value": "#2A2925",
+        "cssVariable": "--sheet-group"
+      },
+      "scrim": {
+        "value": "rgba(0,0,0,.6)",
+        "cssVariable": "--scrim"
+      },
+      "elevation": {
+        "value": "none",
+        "cssVariable": "--elev"
+      }
+    },
+    "darkScopes": [
+      ":root[data-theme=\"dark\"]",
+      "@media (prefers-color-scheme: dark) :root:not([data-theme=\"light\"])",
+      ".screen.dark",
+      ".device.dark"
+    ],
+    "appBadges": {
+      "instagram": "linear-gradient(40deg,#FCA95C,#E0647E 50%,#9D69C3)",
+      "tiktok": "#111111",
+      "youtube": "#E8453C"
+    },
+    "contrastNotes": "label2 on bg: about 5.6:1 light, about 7:1 dark. label3 is for inactive tab glyphs and decoration only, not body text. Coral is never used as small text on light surfaces; accentText (#C23F20) is used instead."
+  },
+  "typography": {
+    "fontFamily": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", system-ui, \"Helvetica Neue\", Arial, sans-serif",
+    "remoteFonts": false,
+    "baseSizePx": 17,
+    "ramp": {
+      "largeTitle": {
+        "sizePx": 34,
+        "lineHeightPx": 41,
+        "weight": 700,
+        "letterSpacingEm": -0.02
+      },
+      "title1": {
+        "sizePx": 28,
+        "lineHeightPx": 34,
+        "weight": 700
+      },
+      "title2": {
+        "sizePx": 22,
+        "lineHeightPx": 28,
+        "weight": 700
+      },
+      "title3": {
+        "sizePx": 20,
+        "lineHeightPx": 25,
+        "weight": 700
+      },
+      "headline": {
+        "sizePx": 17,
+        "lineHeightPx": 22,
+        "weight": 600
+      },
+      "body": {
+        "sizePx": 17,
+        "lineHeightPx": 22,
+        "weight": 400
+      },
+      "subhead": {
+        "sizePx": 15,
+        "lineHeightPx": 20,
+        "weight": 400
+      },
+      "footnote": {
+        "sizePx": 13,
+        "lineHeightPx": 18,
+        "weight": 400
+      },
+      "caption1": {
+        "sizePx": 12,
+        "weight": 500
+      },
+      "caption2": {
+        "sizePx": 11,
+        "weight": 500
+      },
+      "tabLabel": {
+        "sizePx": 10,
+        "weight": 500
+      }
+    },
+    "display": {
+      "todayHeadline": {
+        "sizePx": 40,
+        "compactMobilePx": 36,
+        "weight": 700,
+        "lineHeight": 1.02,
+        "letterSpacingEm": -0.035
+      },
+      "interventionHeadline": {
+        "sizePx": 44,
+        "compactMobilePx": 38,
+        "weight": 700,
+        "letterSpacingEm": -0.04
+      },
+      "blockedHeadline": {
+        "sizePx": 44,
+        "compactMobilePx": 38,
+        "weight": 700
+      },
+      "completeHeadline": {
+        "sizePx": 40,
+        "compactMobilePx": 36,
+        "weight": 700
+      },
+      "heroCardTitle": {
+        "sizePx": 30,
+        "compactMobilePx": 28,
+        "weight": 700
+      },
+      "timer": {
+        "sizePx": 76,
+        "compactMobilePx": 64,
+        "weight": 250,
+        "numerals": "tabular"
+      },
+      "progressNumber": {
+        "sizePx": 56,
+        "weight": 700,
+        "numerals": "tabular"
+      },
+      "wordmark": {
+        "sizePx": 32,
+        "weight": 800,
+        "letterSpacingEm": -0.08
+      }
+    }
+  },
+  "layout": {
+    "screenGutterPx": 20,
+    "mobileBreakpointPx": 760,
+    "compactHeightPx": 740,
+    "desktopStudio": {
+      "maxWidthPx": 1370,
+      "gridTemplateColumns": "1fr 430px 1fr",
+      "gapPx": 40,
+      "headerHeightPx": 88,
+      "device": {
+        "widthPx": 390,
+        "heightPx": 814,
+        "borderPx": 6,
+        "radiusPx": 52
+      },
+      "note": "The phone frame, status bar, island and side rails are review chrome, not product layout."
+    },
+    "mobile": "At 760px and below the review chrome is removed; the app fills 100dvh and respects safe-area insets."
+  },
+  "spacing": {
+    "unit": "px",
+    "base": 4,
+    "scale": [
+      4,
+      8,
+      12,
+      16,
+      20,
+      24,
+      32,
+      40
+    ],
+    "note": "Enforced scale. Prefer flex gap over margin stacking."
+  },
+  "radiusPx": {
+    "action": 999,
+    "card": 24,
+    "sheetTop": 24,
+    "groupedList": 14,
+    "input": 14,
+    "ticket": 14,
+    "iconTile": 10,
+    "appIconRatio": 0.225,
+    "chartBar": 6,
+    "desktopDevice": 52
+  },
+  "controlGeometry": {
+    "buttonPrimary": {
+      "minHeightPx": 52,
+      "paddingXPx": 24,
+      "fontSizePx": 17,
+      "weight": 600,
+      "shape": "capsule"
+    },
+    "buttonPlain": {
+      "minHeightPx": 44,
+      "fontSizePx": 15
+    },
+    "iconButton": {
+      "sizePx": 44,
+      "shape": "circle",
+      "fill": "fill"
+    },
+    "sheetCloseButton": {
+      "visualSizePx": 32,
+      "hitAreaPx": 44
+    },
+    "listRow": {
+      "minHeightPx": 56,
+      "paddingXPx": 16,
+      "separatorInsetPx": 60
+    },
+    "switch": {
+      "widthPx": 51,
+      "heightPx": 31,
+      "knobPx": 27,
+      "onColor": "accent"
+    },
+    "segmented": {
+      "heightPx": 44,
+      "segmentMinHeightPx": 38,
+      "shape": "capsule"
+    },
+    "tab": {
+      "minWidthPx": 64,
+      "minHeightPx": 48,
+      "iconPx": 24
+    },
+    "sessionControl": {
+      "secondaryPx": 72,
+      "primaryPx": 84,
+      "labelBelow": true
+    },
+    "timerRing": {
+      "sizePx": 272,
+      "compactPx": 236,
+      "radius": 130,
+      "strokePx": 6
+    },
+    "minimumTapTargetPx": 44
+  },
+  "motion": {
+    "easing": "cubic-bezier(.23,1,.32,1)",
+    "tabSwitch": "none (tabs are peers)",
+    "presentedScreenEntry": {
+      "durationMs": 260,
+      "from": {
+        "opacity": 0,
+        "scale": 0.985
+      },
+      "appliesTo": [
+        "intervention",
+        "session",
+        "blocked",
+        "complete"
+      ]
+    },
+    "sheetEntry": {
+      "durationMs": 320,
+      "fromTranslateY": "100%"
+    },
+    "sheetExit": {
+      "durationMs": 180,
+      "easing": "ease-in"
+    },
+    "overlayFade": {
+      "inMs": 200,
+      "outMs": 160
+    },
+    "pressFeedback": {
+      "buttonScale": 0.97,
+      "cardScale": 0.98,
+      "sessionControlScale": 0.95,
+      "listRow": "background highlight, no scale",
+      "durationMs": 120
+    },
+    "switchKnob": {
+      "durationMs": 250
+    },
+    "toast": {
+      "durationMs": 250,
+      "fromScale": 0.97,
+      "fromTranslateYPx": 16
+    },
+    "voiceWave": {
+      "durationMs": 600,
+      "alternate": true,
+      "perBarDelayMs": 35,
+      "scaleYRange": [
+        0.45,
+        1.15
+      ]
+    },
+    "timerStroke": {
+      "durationMs": 250,
+      "easing": "linear"
+    },
+    "reducedMotion": "Animations and transitions collapse to 0.01ms."
+  },
+  "artwork": {
+    "logo": {
+      "kit": "Logo-Kit/",
+      "guidelines": "Logo-Kit/GUIDELINES.md",
+      "generator": "Logo-Kit/source/build_logo_kit.py",
+      "coach": {
+        "grid": [
+          24,
+          29
+        ],
+        "files": [
+          "Logo-Kit/svg/gylt-coach.svg",
+          "Logo-Kit/svg/gylt-coach-pleased.svg"
+        ],
+        "smallCut": {
+          "grid": [
+            16,
+            16
+          ],
+          "file": "Logo-Kit/svg/gylt-coach-16.svg"
+        }
+      },
+      "wordmark": {
+        "grid": [
+          36,
+          9
+        ],
+        "strokeUnits": 2,
+        "file": "Logo-Kit/svg/gylt-wordmark-ink.svg"
+      },
+      "lockups": {
+        "stacked": [
+          36,
+          41
+        ],
+        "horizontal": [
+          64,
+          29
+        ],
+        "gapUnits": {
+          "stacked": 3,
+          "horizontal": 4
+        }
+      },
+      "clearSpaceUnits": 3,
+      "scaling": "whole-number multiples only; image-rendering: pixelated",
+      "palette": {
+        "coral": "#FF6548",
+        "coralShade": "#C23F20",
+        "coralLight": "#FF8A70",
+        "ink": "#1C1B18",
+        "paper": "#F5F4F0",
+        "cap": [
+          "#ECEBE6",
+          "#8F8E86",
+          "#64635C"
+        ],
+        "gleam": [
+          "#FFFFFF",
+          "#FFE6DE"
+        ]
+      },
+      "provenance": "Redrawn from the founder's own pixel sketch; original character. Do not market under a celebrity name or likeness."
+    },
+    "sneaker": {
+      "path": "../04-Prototype/dist/assets/stride.svg",
+      "viewBox": [
+        0,
+        0,
+        300,
+        220
+      ],
+      "provenance": "Original SVG illustration",
+      "outline": "#20231f",
+      "darkCoral": "#d14428"
+    },
+    "prototypeUse": {
+      "coachArt()": "dist/assets/brand/gylt-coach.svg",
+      "complete": "dist/assets/brand/gylt-coach-pleased.svg",
+      "favicon": [
+        "dist/assets/favicon.svg",
+        "dist/assets/favicon.ico",
+        "dist/assets/apple-touch-icon.png"
+      ]
+    }
+  },
+  "screens": [
+    "today",
+    "intervention",
+    "session",
+    "blocked",
+    "plan",
+    "coach",
+    "progress",
+    "complete"
+  ],
+  "coachConfiguration": {
+    "personas": [
+      "The Coach",
+      "The Deadpan Friend",
+      "The Operator"
+    ],
+    "tones": [
+      "Calm",
+      "Direct",
+      "Savage"
+    ],
+    "implementation": "Scripted quotes primarily vary by tone. Persona selection changes the displayed identity; The Operator also lowers browser speech pitch. No production persona engine or AI/TTS provider calls exist.",
+    "authority": "Tone and persona do not grant permission to alter the user-selected commitment or protection settings."
+  },
+  "accessibility": {
+    "implemented": [
+      "Visible focus ring: 2px solid accent, offset 3px",
+      "Reduced-motion media query",
+      "44px minimum tap targets on interactive controls",
+      "Accessible labels on icon-only controls",
+      "role=switch with aria-checked on switches",
+      "On-screen text for spoken coach lines",
+      "Self-reported completion labels",
+      "Modal focus trap and Escape to close"
+    ],
+    "handoffChecks": [
+      "Full WCAG contrast audit of every text/surface pair in both themes",
+      "Dynamic Type / large text on compact screens",
+      "Screen-reader announcements for timer state changes",
+      "Chart alternative for the weekly bars",
+      "Native control parity when rebuilt (SF Symbols, UISwitch, UISegmentedControl)"
+    ]
+  },
+  "referenceProvenance": [
+    {
+      "name": "Opal",
+      "url": "https://appllama.io/apps/1497465230/opal-screen-time-control",
+      "scope": "Public preview pixels inspected; clear restriction reasons and app identity informed the concept."
+    },
+    {
+      "name": "Jomo",
+      "url": "https://appllama.io/apps/1609960918/jomo-screen-time-blocker",
+      "scope": "Public preview pixels inspected; deliberate pause and timing hierarchy informed the concept."
+    },
+    {
+      "name": "TIDE",
+      "url": "https://appllama.io/apps/1077776989/tide-sleep-focus-meditation",
+      "scope": "Public catalog flow organization only; no claim to visual inspection of locked screens."
+    },
+    {
+      "name": "Focus Keeper",
+      "url": "https://appllama.io/screens",
+      "scope": "Free public preview of the focus-timer setup screen: large light numerals and a single round primary control informed the v2 session screen."
+    },
+    {
+      "name": "FocusPomo",
+      "url": "https://appllama.io/screens",
+      "scope": "Free public preview of the focus-timer screen: oversized light timer numerals."
+    }
+  ],
+  "referenceAssetPolicy": "Locked paid screens were not accessed or reused. Competitor screenshot assets are not embedded in GYLT."
+}

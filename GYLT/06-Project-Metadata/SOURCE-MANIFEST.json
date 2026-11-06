@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "project": "GetYourLifeTogether (GYLT)",
+  "export_date": "2026-11-06",
+  "source_commit": "fd2b94f07b80924c1a197ca1d3e86bc11c92cbe5",
+  "hosted_prototype": "https://gylt-prototype.stekz-3007.chatgpt.site/",
+  "tracked_file_count": 9,
+  "source_verified_against_commit": "v1 files in dist-v1-original, exports/ and .openai/ match; README.md was replaced by the v2 README",
+  "source_snapshot_directory": "04-Prototype",
+  "static_document_root": "04-Prototype/dist (design v2); original v1 root: 04-Prototype/dist-v1-original",
+  "files": [
+    {
+      "original_path": ".openai/hosting.json",
+      "package_path": "04-Prototype/.openai/hosting.json",
+      "bytes": 106,
+      "sha256": "a718cd0bb08e8562705be635f24b393c4f095a84e76230517b6a10f45bf8981e",
+      "matches_package_file": true
+    },
+    {
+      "original_path": "README.md",
+      "package_path": "04-Prototype/README.md",
+      "bytes": 3169,
+      "sha256": "1e914b3dafbb0676adbb43e4041bf3f4c57c9b5ae359abb7116b9278cd3d578f",
+      "matches_package_file": false
+    },
+    {
+      "original_path": "dist/app.css",
+      "package_path": "04-Prototype/dist-v1-original/app.css",
+      "bytes": 29846,
+      "sha256": "6d97b839a27603f02b403c6000a2bbe3f6eb08bec8fc015ec16687dfba9c8a75",
+      "matches_package_file": true
+    },
+    {
+      "original_path": "dist/app.js",
+      "package_path": "04-Prototype/dist-v1-original/app.js",
+      "bytes": 49012,
+      "sha256": "48319dcd448e00a138ad27bf680ae27e183c83fdb323fe474f0ddbdc5981a9eb",
+      "matches_package_file": true
+    },
+    {
+      "original_path": "dist/assets/favicon.svg",
+      "package_path": "04-Prototype/dist-v1-original/assets/favicon.svg",
+      "bytes": 305,
+      "sha256": "7e1b0f15ae86d2ec2b7171415259e0b6f4a17ebe979f9879144038320c7060f3",
+      "matches_package_file": true
+    },
+    {
+      "original_path": "dist/assets/stride.svg",
+      "package_path": "04-Prototype/dist-v1-original/assets/stride.svg",
+      "bytes": 2278,
+      "sha256": "0a2bcb8af218e41236d8ece89763949155450fb45cdcf0cc73ba157e53767c5b",
+      "matches_package_file": true
+    },
+    {
+      "original_path": "dist/index.html",
+      "package_path": "04-Prototype/dist-v1-original/index.html",
+      "bytes": 2292,
+      "sha256": "8f4ccfeaa7eaae231b5a1d90902ec24529cbd62c16f1f8db11aef8853c43166e",
+      "matches_package_file": true
+    },
+    {
+      "original_path": "dist/mobile-preview.html",
+      "package_path": "04-Prototype/dist-v1-original/mobile-preview.html",
+      "bytes": 734,
+      "sha256": "b0938075c06c2c82e4db04224aff75a5e547a015b8238a21d0af491863de4772",
+      "matches_package_file": true
+    },
+    {
+      "original_path": "exports/gylt-screen-overview.jpg",
+      "package_path": "04-Prototype/exports/gylt-screen-overview.jpg",
+      "bytes": 101718,
+      "sha256": "3ad52e9e94ce2511cccb10805d5e144cd8e7977db3d11b3e6387a77c35427483",
+      "matches_package_file": true
+    }
+  ],
+  "notes": [
+    "Complete tracked source snapshot; repository history and authentication material are not included.",
+    "The original hosting manifest identifies the existing Site; configure a new host separately for a new deployment.",
+    "Other documents and the proposal PDF were prepared for this requested export.",
+    "Design v2 (2026-11-06): 04-Prototype/dist/ was redesigned after this export and is not in the source commit. The original dist/ files were moved to dist-v1-original/ unchanged; hashes above are checked against those paths."
+  ]
+}

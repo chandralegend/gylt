@@ -1,0 +1,165 @@
+name: GYLT
+options:
+  bundleIdPrefix: org.leafmonkey
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  developmentLanguage: en
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: DUWFNX67SN
+    CODE_SIGN_STYLE: Automatic
+packages:
+  GYLTCore:
+    path: Packages/GYLTCore
+targets:
+  GYLT:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: GYLT
+      - path: Shared
+    dependencies:
+      - package: GYLTCore
+      - target: GYLTMonitor
+      - target: GYLTShieldConfiguration
+      - target: GYLTShieldAction
+    entitlements:
+      path: GYLT/Resources/GYLT.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.developer.usernotifications.time-sensitive: true
+        com.apple.security.application-groups:
+          - group.org.leafmonkey.gylt
+    info:
+      path: GYLT/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: GYLT
+        UILaunchScreen:
+          UIColorName: ""
+          UIImageName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIAppFonts:
+          - Jersey25-Regular.ttf
+        ITSAppUsesNonExemptEncryption: false
+        NSCameraUsageDescription: Only used if you choose to take a photo as proof of what you did. The photo is shown to the coach you chose and is not saved.
+        NSLocalNetworkUsageDescription: Only used if you choose a coach that runs on your own computer, such as Ollama or LM Studio.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.leafmonkey.gylt
+        TARGETED_DEVICE_FAMILY: "1"
+        ENABLE_PREVIEWS: YES
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: GYLT/Resources/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  GYLTMonitor:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Extensions/Monitor
+      - path: Shared
+    info:
+      path: Extensions/Monitor/Info.plist
+      properties:
+        CFBundleDisplayName: GYLT Monitor
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.deviceactivity.monitor-extension
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension
+    entitlements:
+      path: Extensions/Monitor/Monitor.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.security.application-groups:
+          - group.org.leafmonkey.gylt
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.leafmonkey.gylt.monitor
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Extensions/Monitor/Info.plist
+        SKIP_INSTALL: YES
+
+  GYLTShieldConfiguration:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Extensions/ShieldConfiguration
+      - path: Shared
+      - path: GYLT/DesignSystem/Generated/PixelData.swift
+    info:
+      path: Extensions/ShieldConfiguration/Info.plist
+      properties:
+        CFBundleDisplayName: GYLT ShieldConfiguration
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.ManagedSettingsUI.shield-configuration-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShieldConfigurationExtension
+    entitlements:
+      path: Extensions/ShieldConfiguration/ShieldConfiguration.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.security.application-groups:
+          - group.org.leafmonkey.gylt
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.leafmonkey.gylt.shield
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Extensions/ShieldConfiguration/Info.plist
+        SKIP_INSTALL: YES
+
+  GYLTShieldAction:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Extensions/ShieldAction
+      - path: Shared
+    info:
+      path: Extensions/ShieldAction/Info.plist
+      properties:
+        CFBundleDisplayName: GYLT ShieldAction
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.ManagedSettings.shield-action-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShieldActionExtension
+    entitlements:
+      path: Extensions/ShieldAction/ShieldAction.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.security.application-groups:
+          - group.org.leafmonkey.gylt
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: org.leafmonkey.gylt.shieldaction
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Extensions/ShieldAction/Info.plist
+        SKIP_INSTALL: YES
+
+  GYLTTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: GYLTTests
+    dependencies:
+      - target: GYLT
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: org.leafmonkey.gylt.tests
+schemes:
+  GYLT:
+    build:
+      targets:
+        GYLT: all
+        GYLTTests: [test]
+    test:
+      targets:
+        - GYLTTests

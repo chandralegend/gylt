@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f6f2">
+  <meta name="description" content="GYLT. You said you would. An interactive concept for a personal accountability coach with a little attitude and real follow-through.">
+  <title>GYLT — You said you would.</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="studio-header">
+    <a class="studio-brand" href="./" aria-label="GYLT prototype home">gylt<span>.</span><span class="brand-caption">GET YOUR LIFE TOGETHER</span></a>
+    <div class="studio-tabs" role="group" aria-label="Preview mode"><button class="selected" data-view="app">Live app</button><button data-view="overview">Screen overview</button></div>
+    <button class="studio-about" data-action="about"><span class="status-dot"></span> CONCEPT 01 <span>↗</span></button>
+  </header>
+  <main id="studio" class="studio">
+    <aside class="screen-rail" aria-label="Prototype screens">
+      <div class="rail-top"><span class="eyebrow">THE EXPERIENCE</span><h1>A little push.<br>A lot more you.</h1><p>Your promises. A coach with attitude.<br>Distractions out of the way.</p></div>
+      <nav class="screen-links" id="screen-links" aria-label="Choose a screen"></nav>
+      <div class="rail-bottom"><span class="tiny-mark">✳</span><p>YOU SAID YOU WOULD.<br>LET’S GO.</p></div>
+    </aside>
+    <section class="device-stage" aria-label="Interactive mobile app">
+      <div class="device" id="device"><div class="device-island" aria-hidden="true"></div><div class="mobile-app" id="app"></div><div class="home-indicator" aria-hidden="true"></div></div>
+      <div class="device-caption"><span class="status-dot"></span><span>Interactive prototype</span><span class="caption-dot">·</span><span>Tap to explore</span></div>
+    </section>
+    <aside class="context-panel" id="context-panel"></aside>
+  </main>
+  <section id="overview" class="overview" hidden aria-label="Screen design overview"></section>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

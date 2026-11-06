@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f4f0">
+  <meta name="description" content="GYLT. You said you would. An interactive concept for a personal accountability coach with a little attitude and real follow-through.">
+  <title>GYLT — You said you would.</title>
+  <link rel="icon" href="assets/favicon.ico" sizes="48x48">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jersey+25&family=Geist+Mono:wght@400..700&display=swap">
+  <link rel="stylesheet" href="app.css?v=14">
+  <script defer src="app.js?v=14"></script>
+</head>
+<body>
+  <header class="studio-header">
+    <a class="studio-brand" href="./" aria-label="GYLT prototype home"><svg viewBox="0 0 36 9" width="144" height="36" shape-rendering="crispEdges" role="img" aria-label="GYLT"><path fill="currentColor" d="M1 0h5v1h-5zM9 0h2v1h-2zM15 0h2v1h-2zM19 0h2v1h-2zM28 0h8v1h-8zM0 1h2v1h-2zM5 1h2v1h-2zM9 1h2v1h-2zM15 1h2v1h-2zM19 1h2v1h-2zM28 1h8v1h-8zM0 2h2v1h-2zM10 2h2v1h-2zM14 2h2v1h-2zM19 2h2v1h-2zM31 2h2v1h-2zM0 3h2v1h-2zM11 3h4v1h-4zM19 3h2v1h-2zM31 3h2v1h-2zM0 4h2v1h-2zM3 4h4v1h-4zM12 4h2v1h-2zM19 4h2v1h-2zM31 4h2v1h-2zM0 5h2v1h-2zM5 5h2v1h-2zM12 5h2v1h-2zM19 5h2v1h-2zM31 5h2v1h-2zM0 6h2v1h-2zM5 6h2v1h-2zM12 6h2v1h-2zM19 6h2v1h-2zM31 6h2v1h-2zM0 7h2v1h-2zM5 7h2v1h-2zM12 7h2v1h-2zM19 7h7v1h-7zM31 7h2v1h-2zM1 8h5v1h-5zM12 8h2v1h-2zM19 8h7v1h-7zM31 8h2v1h-2z"/></svg><span class="brand-caption">GET YOUR LIFE TOGETHER</span></a>
+    <div class="studio-tabs" role="group" aria-label="Preview mode"><button class="selected" data-view="app">Live app</button><button data-view="overview">Screen overview</button></div>
+    <div class="studio-end"><button class="studio-theme" id="theme-toggle" data-action="toggle-theme" aria-label="Toggle light and dark mode">Dark</button><button class="studio-about" data-action="about"><span class="status-dot"></span> CONCEPT 02</button></div>
+  </header>
+  <main id="studio" class="studio">
+    <aside class="screen-rail" aria-label="Prototype screens">
+      <div class="rail-top"><span class="eyebrow">THE EXPERIENCE</span><h1>A little push.<br>A lot more you.</h1><p>Your promises. A coach with attitude.<br>Distractions out of the way.</p></div>
+      <nav class="screen-links" id="screen-links" aria-label="Choose a screen"></nav>
+      <div class="rail-bottom"><span class="tiny-mark">✳</span><p>YOU SAID YOU WOULD.<br>LET’S GO.</p></div>
+    </aside>
+    <section class="device-stage" aria-label="Interactive mobile app">
+      <div class="device" id="device"><div class="device-island" aria-hidden="true"></div><div class="mobile-app" id="app"></div><div class="home-indicator" aria-hidden="true"></div></div>
+      <div class="device-caption"><span class="status-dot"></span><span>Interactive prototype</span><span class="caption-dot">·</span><span>Tap to explore</span></div>
+    </section>
+    <aside class="context-panel" id="context-panel"></aside>
+  </main>
+  <section id="overview" class="overview" hidden aria-label="Screen design overview"></section>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

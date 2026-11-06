@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "gylt-prototype",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-I", "-m", "http.server", "8000", "--bind", "127.0.0.1", "--directory", "/Users/chandralegend/Documents/gylt/GYLT/04-Prototype/dist"],
+      "port": 8000
+    }
+  ]
+}
