@@ -51,6 +51,7 @@ final class AppModel {
     private let engine = Engine()
     private let store: StateStore
     private let restrictions: RestrictionAdapter
+    private let liveActivity = LiveActivityController()
     private let scripted = ScriptedCoach()
     private let notifier: Notifier
     let coachService: CoachService
@@ -99,6 +100,7 @@ final class AppModel {
 
     private func commit(_ r: EngineResult) {
         state = r.state
+        liveActivity.sync(state: state)
         if !r.events.isEmpty || !r.effects.isEmpty { try? store.save(state); WidgetCenter.shared.reloadAllTimelines() }
         for effect in r.effects { run(effect) }
         // The block screen is only valid while a restriction is active.
@@ -140,6 +142,7 @@ final class AppModel {
         aiLines = [:]; aiInFlight = []
         let n = notifier; Task { await n.cancelAll() }
         state = AppState()
+        liveActivity.end()
         try? store.save(state)
         WidgetCenter.shared.reloadAllTimelines()
         selectedTab = .today

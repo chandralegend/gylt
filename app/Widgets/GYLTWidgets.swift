@@ -6,5 +6,6 @@ struct GYLTWidgets: WidgetBundle {
     var body: some Widget {
         NextPromiseWidget()
         ProgressWidget()
+        SessionLiveActivity()
     }
 }

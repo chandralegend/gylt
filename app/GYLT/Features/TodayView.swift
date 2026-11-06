@@ -7,6 +7,8 @@ struct TodayView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                ScrollAnchor()
+                ScreenTitle(title: "Today")
                 HStack {
                     Text(Fmt.longDate(model.now)).font(.text(.subheadline)).foregroundStyle(Theme.label2)
                     Spacer()
@@ -27,9 +29,9 @@ struct TodayView: View {
             .padding(.horizontal, Theme.gutter).padding(.bottom, 32)
         }
         .scrollBounceBehavior(.basedOnSize)
+        .topEdgeBlur()
         .background(AmbientBackground(mood: .today))
-        .navigationTitle("Today")
-        .navigationBarTitleDisplayMode(.large)
+        .toolbar(.hidden, for: .navigationBar)
     }
 
     // MARK: week

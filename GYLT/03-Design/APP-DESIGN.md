@@ -86,6 +86,18 @@ Two widgets, no setup, no configuration. They read the saved state from the App 
 - All numbers come from `TodaySnapshot` in GYLTCore, the same functions the app uses for streak and week counts, so they cannot disagree (covered by `SnapshotTests`). The app reloads the timelines after every save; the timeline also refreshes at the next start time, the timer end, and midnight.
 - Same palette as the app: pastel art with a soft scrim for text, lavender ring, peach flame, no red.
 
+## Live Activity (Nov 2026)
+
+While a session runs, its timer is on the Lock Screen and in the Dynamic Island. The countdown and progress bar are drawn by the system from the end time, so they keep moving with the app closed. The app starts it when a session starts, updates it only when something real changes (paused, resumed, time's up), and ends it when the promise is recorded, rested, ended or the data is erased. Tapping opens the session.
+
+- **Lock Screen:** ink card. Everything that has to be read (eyebrow, serif promise title, big countdown, progress) sits in the left column on the ink; the promise's illustration fills the right and fades into the ink, so the figure never sits behind text. Time's up asks "Did you do it?".
+- **Island, compact:** the doorway mark on the left, the countdown on the right. **Expanded:** the promise's art as a small rounded thumbnail and the countdown beside the camera, then eyebrow, serif title and progress. Nothing is placed in the centre region, which iOS starts below the camera cutout and which leaves a gap above the heading.
+- Lavender is the dark-mode lavender (`#B9A6F5`); the surface is always dark. No red.
+
+## Screen titles
+
+Top-level screens (Today, Promises, Coach, Progress) draw their own large title in the content (`ScreenTitle`), with the plus or settings button on the same row, and hide the navigation bar. The system large-title bar left an empty strip above every heading.
+
 ## Logo
 
 The doorway is the same arch, sun and dunes as the illustrations. Full kit and rules: [`Logo-Meadow/GUIDELINES.md`](Logo-Meadow/GUIDELINES.md). In the app it is the app icon, the launch screen, the welcome lockup and the payoff wordmark.

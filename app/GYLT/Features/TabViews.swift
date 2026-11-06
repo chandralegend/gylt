@@ -9,6 +9,8 @@ struct PlanView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                ScrollAnchor()
+                ScreenTitle(title: "Promises", symbol: "plus", label: "Add a promise") { model.present(.editCommitment(nil)) }
                 Text("Keep it real. Give yourself a way to follow through.").font(.text(.subheadline)).foregroundStyle(Theme.label2)
                     .padding(.top, 2).padding(.bottom, 20)
 
@@ -47,15 +49,9 @@ struct PlanView: View {
             .padding(.horizontal, Theme.gutter).padding(.bottom, 32)
         }
         .scrollBounceBehavior(.basedOnSize)
+        .topEdgeBlur()
         .background(AmbientBackground(mood: .promises))
-        .navigationTitle("Promises")
-        .navigationBarTitleDisplayMode(.large)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button { model.present(.editCommitment(nil)) } label: { Image(systemName: "plus") }
-                    .accessibilityLabel("Add a promise")
-            }
-        }
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 
@@ -113,6 +109,8 @@ struct CoachView: View {
         let tone = Binding<Tone>(get: { model.settings.tone }, set: { t in var s = model.settings; s.tone = t; model.update(settings: s) })
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                ScrollAnchor()
+                ScreenTitle(title: "Coach", symbol: "slider.horizontal.3", label: "Settings") { model.present(.settings) }
                 Text("A little attitude. A lot of follow-through.").font(.text(.subheadline)).foregroundStyle(Theme.label2).padding(.top, 2).padding(.bottom, 20)
 
                 VStack(spacing: 0) {
@@ -158,14 +156,9 @@ struct CoachView: View {
             .padding(.horizontal, Theme.gutter).padding(.bottom, 32)
         }
         .scrollBounceBehavior(.basedOnSize)
+        .topEdgeBlur()
         .background(AmbientBackground(mood: .coach))
-        .navigationTitle("Coach")
-        .navigationBarTitleDisplayMode(.large)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button { model.present(.settings) } label: { Image(systemName: "slider.horizontal.3") }.accessibilityLabel("Settings")
-            }
-        }
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 
@@ -181,6 +174,8 @@ struct YouView: View {
         let letters = ["M", "T", "W", "T", "F", "S", "S"]
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
+                ScrollAnchor()
+                ScreenTitle(title: "Progress", symbol: "slider.horizontal.3", label: "Settings") { model.present(.settings) }
                 Text("Small promises. Actual follow-through.").font(.text(.subheadline)).foregroundStyle(Theme.label2).padding(.top, 2).padding(.bottom, 20)
 
                 Card {
@@ -292,14 +287,9 @@ struct YouView: View {
             .padding(.horizontal, Theme.gutter).padding(.bottom, 32)
         }
         .scrollBounceBehavior(.basedOnSize)
+        .topEdgeBlur()
         .background(AmbientBackground(mood: .progress))
-        .navigationTitle("Progress")
-        .navigationBarTitleDisplayMode(.large)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button { model.present(.settings) } label: { Image(systemName: "slider.horizontal.3") }.accessibilityLabel("Settings")
-            }
-        }
+        .toolbar(.hidden, for: .navigationBar)
         .onAppear { grown = true }
         .onDisappear { grown = false }
     }

@@ -23,6 +23,7 @@ targets:
     sources:
       - path: GYLT
       - path: Shared
+      - path: LiveActivity
     dependencies:
       - package: GYLTCore
       - target: GYLTMonitor
@@ -46,6 +47,7 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         ITSAppUsesNonExemptEncryption: false
+        NSSupportsLiveActivities: true
         NSCameraUsageDescription: Only used if you choose to take a photo as proof of what you did. The photo is shown to the coach you chose and is not saved.
         NSLocalNetworkUsageDescription: Only used if you choose a coach that runs on your own computer, such as Ollama or LM Studio.
         NSAppTransportSecurity:
@@ -152,6 +154,7 @@ targets:
     sources:
       - path: Widgets
       - path: Shared
+      - path: LiveActivity
       - path: GYLT/DesignSystem/Theme.swift
       - path: GYLT/DesignSystem/Art.swift
     dependencies:

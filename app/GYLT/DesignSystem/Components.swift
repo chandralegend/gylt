@@ -209,6 +209,78 @@ struct SegmentedPicker<T: Hashable & CaseIterable & RawRepresentable>: View wher
     }
 }
 
+/// Content that scrolls up under the status bar is blurred away, as it was under the system bar, and the blur fades in only once you have scrolled.
+private struct ScrollOffsetKey: PreferenceKey {
+    static var defaultValue: CGFloat? = nil
+    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) { value = value ?? nextValue() }
+}
+
+private struct TopEdgeBlur: ViewModifier {
+    @State private var rest: CGFloat?
+    @State private var minY: CGFloat = 0
+    private static let space = "topEdgeBlurScroll"
+
+    private var scrolled: CGFloat { max(0, (rest ?? minY) - minY) }
+
+    func body(content: Content) -> some View {
+        content
+            .coordinateSpace(name: Self.space)
+            .onPreferenceChange(ScrollOffsetKey.self) { y in
+                guard let y else { return }
+                if rest == nil { rest = y }
+                minY = y
+            }
+            .overlay(alignment: .top) {
+                GeometryReader { g in
+                    let h = g.safeAreaInsets.top
+                    Rectangle().fill(.ultraThinMaterial)
+                        .mask(LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: h / (h + 14)), .init(color: .clear, location: 1)], startPoint: .top, endPoint: .bottom))
+                        .frame(height: h + 14)
+                        .offset(y: -h)
+                        .opacity(min(1, scrolled / 24))
+                        .animation(.easeOut(duration: 0.15), value: scrolled > 1)
+                        .allowsHitTesting(false)
+                }
+            }
+    }
+}
+
+/// Put this at the top of a scroll view's content; it reports where the content sits.
+struct ScrollAnchor: View {
+    var body: some View {
+        GeometryReader { g in Color.clear.preference(key: ScrollOffsetKey.self, value: g.frame(in: .named("topEdgeBlurScroll")).minY) }
+            .frame(height: 0)
+    }
+}
+
+extension View {
+    func topEdgeBlur() -> some View { modifier(TopEdgeBlur()) }
+}
+
+/// The title of a top-level screen, drawn in the content instead of in a navigation bar, so nothing sits empty above it.
+/// An optional round button lives on the same row.
+struct ScreenTitle: View {
+    let title: String
+    var symbol: String?
+    var label: String = ""
+    var action: () -> Void = {}
+
+    var body: some View {
+        HStack(alignment: .center) {
+            Text(title).font(.text(.largeTitle, weight: .bold)).foregroundStyle(Theme.label).accessibilityAddTraits(.isHeader)
+            Spacer()
+            if let symbol {
+                Button(action: action) {
+                    Image(systemName: symbol).font(.system(size: 17, weight: .semibold)).foregroundStyle(Theme.label)
+                        .frame(width: 40, height: 40).background(Circle().fill(.ultraThinMaterial)).overlay(Circle().strokeBorder(Theme.separator.opacity(0.6), lineWidth: 0.5))
+                }
+                .buttonStyle(.plain).accessibilityLabel(label)
+            }
+        }
+        .padding(.top, 6).padding(.bottom, 6)
+    }
+}
+
 struct SectionHeader: View {
     let title: String
     var trailing: AnyView?

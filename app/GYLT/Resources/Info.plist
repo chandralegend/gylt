@@ -42,6 +42,8 @@
 	<string>Only used if you choose to take a photo as proof of what you did. The photo is shown to the coach you chose and is not saved.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Only used if you choose a coach that runs on your own computer, such as Ollama or LM Studio.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

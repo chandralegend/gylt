@@ -32,7 +32,8 @@ xcodebuild -project GYLT.xcodeproj -scheme GYLT -destination 'platform=iOS Simul
 | `Packages/GYLTCore` | Pure-Swift domain and engine: commitments, occurrences, restriction leases, events, persistence, coach contract. No UI or OS imports |
 | `GYLT/DesignSystem` | Theme tokens (Meadow Dusk: lavender primary, pastel companions), art and medals, motion and haptics, SF Symbol icons, buttons, cards, rows, ring |
 | `GYLT/Features` | Today, flow (intervention, session, block, payoff), Plan, Coach, Progress, sheets |
-| `Widgets` | WidgetKit extension: Next promise and This week (home and lock screen), driven by `TodaySnapshot` from the core package |
+| `Widgets` | WidgetKit extension: Next promise and This week (home and lock screen), driven by `TodaySnapshot` from the core package, and the session Live Activity (Lock Screen and Dynamic Island) |
+| `LiveActivity` | The Live Activity's attributes, shared by the app (which runs it) and the widget extension (which draws it) |
 | `GYLT/AppModel.swift` | `@Observable` model: runs the clock, persists state, performs side effects |
 
 ## Rules the engine enforces (covered by tests)
