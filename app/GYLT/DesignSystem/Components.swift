@@ -331,12 +331,25 @@ struct DotStrip: View {
 
 // MARK: - Brand
 
+/// The GYLT wordmark: four round-stroked letters, drawn as a vector so it stays crisp and takes any colour.
+/// `size` is the letter height.
 struct Wordmark: View {
     var size: CGFloat = 22
     var color: Color = Theme.label
     var body: some View {
-        Text("GYLT").font(.system(size: size, weight: .heavy, design: .rounded)).tracking(size * 0.09).foregroundStyle(color)
+        Image("logo-wordmark").renderingMode(.template).resizable().scaledToFit()
+            .frame(height: size * 1.55).foregroundStyle(color)
+            .frame(height: size)
             .accessibilityLabel("GYLT")
+    }
+}
+
+/// The doorway mark, in full colour.
+struct LogoMark: View {
+    var height: CGFloat = 44
+    var body: some View {
+        Image("logo-mark").resizable().scaledToFit().frame(width: height * 1.48, height: height * 1.48).frame(width: height * 0.82, height: height).clipped()
+            .accessibilityHidden(true)
     }
 }
 

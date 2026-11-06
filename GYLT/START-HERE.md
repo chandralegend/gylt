@@ -27,6 +27,8 @@ The existing hosted prototype is at **https://gylt-prototype.stekz-3007.chatgpt.
 | `02-Engineering/DEVELOPMENT-ROADMAP.md` | Phased build plan with release gates |
 | `03-Design/DESIGN-SPECIFICATION.md` | Screen map, visual system, interaction guidance and adaptation notes |
 | `03-Design/design-tokens.json` | Machine-readable values derived from the current mockup |
+| `03-Design/Logo-Meadow/` | **Current logo**: the doorway mark and round-stroked wordmark, with SVG, PNG and PDF files, app icon, social card and guidelines |
+| `03-Design/Logo-Kit/` | (Earlier pixel logo, kept for reference) |
 | `03-Design/Logo-Kit/` | Final logo kit: pixel coach and GYLT wordmark (SVG, PNG), lockups, reversed and one-colour versions, web icons, presentation board, [usage guidelines](03-Design/Logo-Kit/GUIDELINES.md) and the generator script |
 | `03-Design/Previews/gylt-screen-overview.jpg` | Screenshot of three key screens in design v2: Today, intervention and app block |
 | `04-Prototype/dist/` | The runnable prototype, design v2: HTML, CSS, JavaScript, original SVG artwork, favicon and preview page |

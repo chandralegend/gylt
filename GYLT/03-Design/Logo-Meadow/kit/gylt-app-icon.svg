@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024"><defs><linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2D2347"/><stop offset="0.55" stop-color="#16141D"/><stop offset="1" stop-color="#1A1426"/></linearGradient><radialGradient id="glow" cx="0.5" cy="0.78" r="0.55"><stop offset="0" stop-color="#F5B08B" stop-opacity="0.38"/><stop offset="1" stop-color="#F5B08B" stop-opacity="0"/></radialGradient></defs><rect width="1024" height="1024" fill="url(#dusk)"/><rect width="1024" height="1024" fill="url(#glow)"/><g transform="translate(56.89 37.93) scale(3.7926)"><defs>
+<clipPath id="door"><path d="M82 196 V112 a38 38 0 0 1 76 0 V196 Z"/></clipPath>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9DB6FF"/><stop offset="1" stop-color="#F7A9D3"/></linearGradient>
+</defs>
+<path d="M56 206 V108 a64 64 0 0 1 128 0 V206 Z" fill="#B9A6F5"/>
+<path d="M82 196 V112 a38 38 0 0 1 76 0 V196 Z" fill="url(#sky)"/>
+<circle cx="120" cy="140" r="21" fill="#F6D68B" clip-path="url(#door)"/>
+<g clip-path="url(#door)"><path d="M82 164.1 Q104.8 147.3 127.6 162.4 T158 158.2 V196 H82Z" fill="#F5B08B"/><path d="M82 179.2 Q108.6 164.1 135.2 179.2 T158 175.8 V196 H82Z" fill="#F7A9D3"/></g>
+</g></svg>

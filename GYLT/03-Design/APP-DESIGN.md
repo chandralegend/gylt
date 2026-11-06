@@ -31,9 +31,8 @@ Calm, confident and professional. Opal's focus-session calm (dark, big type, one
 
 ## Brand
 
-- Wordmark: "GYLT" in SF Rounded heavy, tracked. No full stop.
-- App icon: a nearly closed timer ring in white on coral. The ring is the app's central image: the promise you close.
-- The pixel mascot is retired from the app.
+- Logo (Nov 2026): the **doorway**, an arch with the meadow and a rising sun inside, plus a round-stroked GYLT wordmark drawn as shapes. Kit, guidelines and the three directions considered are in `Logo-Meadow/`.
+- The earlier timer-ring icon and the pixel mascot are retired.
 
 ## Screens
 
@@ -77,3 +76,7 @@ Light mode: cream background, deeper lavender (`#6F59C9`) for controls and links
 - **Any promise can pause apps** (editor toggle), not just the walk. The window is at least 30 minutes, or the promise length plus 10.
 - **No test tools.** The Screen Time test bench and "Reset the demo" are gone. Settings has a real "Erase my data" (promises, history, settings, AI keys, chosen apps, reminders). The extension log is debug-builds only.
 - **Ambient backgrounds.** Each tab has its own soft, blurred colour field from the palette (Today gold, Promises sky and lavender, Coach blossom and lavender, Progress mint and butter), drifting very slowly (still under Reduce Motion), with glass-like translucent cards (thin material over a tint) so the colour shows through.
+
+## Logo
+
+The doorway is the same arch, sun and dunes as the illustrations. Full kit and rules: [`Logo-Meadow/GUIDELINES.md`](Logo-Meadow/GUIDELINES.md). In the app it is the app icon, the launch screen, the welcome lockup and the payoff wordmark.

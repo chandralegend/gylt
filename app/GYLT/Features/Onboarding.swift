@@ -149,7 +149,7 @@ struct OnboardingView: View {
 
     private var welcome: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Wordmark(size: 24, color: .white).padding(.top, 8)
+            HStack(spacing: 10) { LogoMark(height: 40); Wordmark(size: 22, color: .white) }.padding(.top, 8)
             Color.clear.frame(height: 205)
             Text("You said\nyou would.").font(.statement(50)).foregroundStyle(Theme.label)
                 .accessibilityAddTraits(.isHeader).padding(.bottom, 14)

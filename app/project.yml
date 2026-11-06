@@ -40,8 +40,8 @@ targets:
       properties:
         CFBundleDisplayName: GYLT
         UILaunchScreen:
-          UIColorName: ""
-          UIImageName: ""
+          UIColorName: LaunchInk
+          UIImageName: logo-mark
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         ITSAppUsesNonExemptEncryption: false
