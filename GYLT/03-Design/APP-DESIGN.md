@@ -40,23 +40,27 @@ Calm, confident and professional. Opal's focus-session calm (dark, big type, one
 Onboarding (welcome, how it works, the deal, your promises, permissions), Today (week strip, hero card, shield row, rest of today), focus flow (intervention, session, app block, payoff), Promises, Coach, Progress, and sheets (change the plan, stuck, finish with proof, edit promise, personality, boundaries, settings, AI keys, apps).
 
 
-## v4: Meadow Dusk palette and art (Nov 2026)
+## v4: Meadow Dusk palette and art (Nov 2026, softened)
 
 Real illustrations replace drawn shapes. Source: The Open Meadows Library (CC BY 4.0), 8 images in `app/GYLT/Resources/Art`, plus 3 GYLT originals. Credit lives in Settings and `Art/CREDITS.md`.
 
+The first pass used a hot vermilion for every control, which fought the soft art. The palette is now calm: **lavender is the one primary**, and the pastel hues from the illustrations are companions used for data and medals. Text on a pastel fill is always ink.
+
 | Role | Colour |
 |---|---|
-| Ink (dark background) | `#14131B` |
+| Ink (dark background) | `#16141D` |
+| Dark surfaces | `#201D2A`, `#2B2837`, `#393446` |
 | Cream (light background) | `#F6F0E6` |
-| Vermilion (primary, buttons, progress) | `#EE4B2B` (small text on dark: `#FF8467`) |
-| Sunset orange | `#F0501A` |
-| Amber | `#FDB927` |
-| Periwinkle | `#4A6BEA` |
-| Blossom | `#FF9BD2` |
-| Lavender | `#CDB8F5` |
-| Forest | `#2F8F58` |
+| **Lavender** (primary: buttons, toggles, rings, active tab) | `#B9A6F5` (soft tint `#2E2445` on dark; text `#CDBEF8`) |
+| Lavender, deep (primary on light screens, white text on it) | `#6F59C9` |
+| Butter | `#F6D68B` |
+| Peach (streak flame) | `#F5B08B` |
+| Sky | `#9DB6FF` |
+| Blossom | `#F7A9D3` |
+| Mint | `#9ADBB6` |
 | Night | `#232A45` |
-| Dark surfaces | `#1E1B27`, `#2A2634`, `#383344` |
 
-Moods: Sunset (walk), Morning (bed), Night (call it a night), Flow (paused, forest and cream). Medals use one hue each: 3 amber, 7 vermilion, 14 periwinkle, 30 blossom, 60 forest, 100 lavender.
+Medals, one pastel each with an ink numeral: 3 butter, 7 peach, 14 sky, 30 blossom, 60 mint, 100 lavender.
+Moods: Sunset (walk), Morning (bed), Night (call it a night), Flow (paused).
+The two hottest illustrations are softened: the walk art is desaturated a little, and the red-room intervention art is tinted toward plum (hue-rotate, desaturated). Both are cosmetic filters on the credited originals.
 The canvas (https://claude.ai/artifact/c99cbd6f-1334-470c-945d-9d23f4033006) shows every screen in this system, including a Palette board.
