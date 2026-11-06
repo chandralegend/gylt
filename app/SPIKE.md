@@ -16,7 +16,7 @@
 
 - App applies a `ManagedSettingsStore` shield (named store `gylt`) to the apps the user picked with `FamilyActivityPicker`.
 - It also calls `DeviceActivityCenter.startMonitoring` for a schedule ending at the lease's fixed `expiresAt`. The **monitor extension** clears the shield at `intervalDidEnd`, even if the app is closed. If monitoring can't start, the shield is removed rather than left open-ended.
-- The **shield configuration extension** draws the pixel "The feed can wait." screen. The **shield action extension** handles "End this session": it clears the shield itself (no network, no AI) and leaves a note for the app.
+- The **shield configuration extension** draws the "The feed can wait." screen. The **shield action extension** handles "End this session": it clears the shield itself (no network, no AI) and leaves a note for the app.
 - The app re-checks on every launch/foreground: applies recorded overrides, clears any leftover shield when the engine has no active lease, and releases authority if permission was revoked.
 - Everything is written to `spike-log.txt` in the App Group (app + extensions), visible in **Coach → Settings (sliders icon) → Screen Time test**.
 
@@ -34,7 +34,7 @@ Use a short lease (the test button uses 20 minutes; the OS may reject schedules 
 | --- | --- | --- | --- | --- |
 | A | Tap **1. Ask for permission** and approve | Status "Approved" | **Pass** (19:21:28) | First attempt returned `authorizationConflict`, the retry succeeded. Cause not yet understood |
 | B | Tap **2. Choose apps** and pick 1–2 apps | Counts shown | **Pass** | 1 app saved |
-| C | Tap **3. Pause for 20 minutes**, open a chosen app | Pixel shield appears | **Pass** | Monitor extension logged `intervalDidStart`; app and extension share one log file. Shield visuals confirmed by the founder |
+| C | Tap **3. Pause for 20 minutes**, open a chosen app | Shield appears | **Pass** | Monitor extension logged `intervalDidStart`; app and extension share one log file. Shield visuals confirmed by the founder |
 | D | On the shield tap **End this session** | Shield gone immediately; reopen the app → it records the override | **Pass** | Shield extension cleared it at 19:23:16 with the app closed; app recorded it at 19:23:48 on reopen |
 | E | Pause again, **force-quit GYLT**, wait for the end time, then open the chosen app | Shield removed by the monitor extension, log shows `intervalDidEnd` | **Pass** (run 2) | Scheduled 19:51:15, monitor cleared it at 19:51:35 (**+20 s**) with the app force-quit. One sample only |
 | F | Pause again, then Settings → Screen Time → revoke GYLT's access | Shield gone; opening GYLT shows permission revoked | | |

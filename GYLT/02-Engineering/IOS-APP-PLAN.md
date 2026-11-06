@@ -10,7 +10,7 @@
 | **Swift / native** | SwiftUI app, Swift packages, Apple frameworks only. No cross-platform shell. |
 | **Completely free** | No purchases, subscription, ads, accounts or analytics. No server we pay for. Everything runs on the device. |
 | **Users bring their own AI** | The app never ships or relays an AI key. Keys live in the user's Keychain; requests go from the phone straight to the provider the user chose. |
-| **Pixel-art look** | Pixel sprites, icons, ring and corners drawn in code at whole-number scales; Jersey 25 display type. Third-party app icons stay normal. |
+| **Clean, professional look** (replaced the pixel look on 6 Nov 2026) | SF Pro, SF Symbols, system semantic colours, one coral accent, continuous corners, spring motion and haptics; native tab bar, toggles, pickers and sheets. See `03-Design/APP-DESIGN.md`. Third-party app icons stay normal. |
 
 "Completely free" is achievable because there is **no backend**. The only unavoidable cost is the Apple Developer Program fee (the founder's individual team already exists). Users pay their AI provider directly, or pay nothing by using Apple's on-device model where their iPhone supports it (§5).
 
@@ -79,23 +79,26 @@ On iPhones that support Apple Intelligence (iOS 26), the **FoundationModels** fr
 3. **Distribution:** the Family Controls *distribution* entitlement needs Apple's approval. Start the request early; development builds on the founder's paid team should work without it, but **that must be confirmed on a device**, not assumed.
 4. If expiry with the app closed cannot be guaranteed, narrow the promise in the UI before shipping. A restricted entitlement or unreliable expiry changes scope; it is not a later detail.
 
-## 7. Pixel design system in SwiftUI
+## 7. Design system in SwiftUI (v3, clean)
 
-- **Sprites** (coach, wordmark, sneaker) are ASCII grids plus a palette, drawn with `Canvas` as integer-aligned rectangles: no smoothing at any size, scaled only by whole numbers.
-- **Icons:** pixelarticons (MIT), generated into Swift rect lists from the SVG path data. Third-party app icons (Instagram, TikTok, YouTube) are normal rounded icons.
-- **Shapes:** `PixelRoundedRectangle` with stepped corners; chunky bevel buttons that press down 2 pt.
-- **Type:** Jersey 25 (SIL OFL) for display; system monospaced for body, with Dynamic Type via `relativeTo:`.
-- **Colour:** semantic tokens with light and dark values; coral `#FF6548` is the single accent; focus screens are always dark. Values come from [design-tokens.json](../03-Design/design-tokens.json).
-- **Reduce Motion** collapses spatial motion; **Dynamic Type** and 44 pt targets are part of "done" for every screen.
+Full write-up: [`../03-Design/APP-DESIGN.md`](../03-Design/APP-DESIGN.md).
+
+- **Icons:** SF Symbols only. Third-party app icons (Instagram, TikTok, YouTube) are normal rounded icons.
+- **Shapes:** one rule: cards 20, controls and inputs 12, buttons and chips are capsules; all corners continuous.
+- **Type:** SF Pro on system text styles (Dynamic Type); SF Rounded, tabular numerals for timers and totals.
+- **Colour:** system semantic neutrals (light, dark and increased contrast for free); coral `#EE4B2B` is the single accent; focus screens are always dark.
+- **Motion and haptics:** springs for anything a finger touches, strong ease-out under 300 ms for the rest; press scale 0.97; light haptic on primary press, success haptic on outcomes. **Reduce Motion** collapses spatial motion to fades.
+- **Native first:** `TabView`, `NavigationStack` large titles, `Toggle`, segmented `Picker`, `DatePicker`, system sheets.
+- **Dynamic Type** and 44 pt targets are part of "done" for every screen.
 
 ## 8. Milestones
 
 | # | Goal | Done when |
 | --- | --- | --- |
-| **M0** | Foundation | Core engine + tests green; pixel design system; Today → Intervention → Session → Complete working in the simulator with simulated restrictions |
+| **M0** | Foundation | Core engine + tests green; design system; Today → Intervention → Session → Complete working in the simulator with simulated restrictions |
 | **M1** | Trustworthy local app | Persistence and session recovery; notifications at the trigger time; onboarding with the consent contract; Plan editing (custom commitments run through the same engine); real outcome history instead of sample data |
 | **M2** | Coach | Provider interface; Keychain; Anthropic + OpenAI + custom endpoint adapters; Apple on-device model where available; TTS (device + BYOK); disclosure and cost guards |
-| **M3** | Real restrictions | Device spike per §6; extensions; shield UI in pixel style; expiry/override/revocation verified on hardware |
+| **M3** | Real restrictions | Device spike per §6; extensions; shield UI; expiry/override/revocation verified on hardware |
 | **M4** | Polish and release | Live Activity, accessibility audit, privacy manifest and App Store copy that matches verified behaviour, TestFlight pilot |
 
 ## 9. Risks and open questions
@@ -119,5 +122,5 @@ app/                         (this iOS repo, sibling to GYLT/ docs)
   GYLT/                      app target: DesignSystem, Features, AppModel, Resources
   GYLTUITests/               main-flow UI tests
   Extensions/                (M3) DeviceActivityMonitor, ShieldConfiguration, ShieldAction
-  tools/                     generators (pixel icons, sprites)
+  tools/                     helper scripts
 ```

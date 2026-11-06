@@ -4,7 +4,7 @@ Native SwiftUI app for **GYLT — Get Your Life Together**: an unapologetic acco
 user-approved, time-bounded distraction controls. **Free, no accounts, no analytics, bring-your-own AI.**
 
 Plan and decisions: [`../GYLT/02-Engineering/IOS-APP-PLAN.md`](../GYLT/02-Engineering/IOS-APP-PLAN.md).
-Design: [`../GYLT/03-Design/`](../GYLT/03-Design/) (pixel edition).
+Design: [`../GYLT/03-Design/`](../GYLT/03-Design/) (the earlier pixel edition is kept for reference; the app now uses the clean design in [`../GYLT/03-Design/APP-DESIGN.md`](../GYLT/03-Design/APP-DESIGN.md)).
 
 ## Requirements
 
@@ -30,10 +30,9 @@ xcodebuild -project GYLT.xcodeproj -scheme GYLT -destination 'platform=iOS Simul
 | Path | What |
 | --- | --- |
 | `Packages/GYLTCore` | Pure-Swift domain and engine: commitments, occurrences, restriction leases, events, persistence, coach contract. No UI or OS imports |
-| `GYLT/DesignSystem` | Theme tokens, pixel shapes, sprites, icons, ring, buttons. `Generated/PixelData.swift` is generated |
+| `GYLT/DesignSystem` | Theme tokens (semantic colours, one accent), motion and haptics, SF Symbol icons, buttons, cards, rows, ring |
 | `GYLT/Features` | Today, flow (intervention, session, block, payoff), Plan, Coach, Progress, sheets |
 | `GYLT/AppModel.swift` | `@Observable` model: runs the clock, persists state, performs side effects |
-| `tools/gen_pixel_assets.py` | Regenerates `PixelData.swift` from the logo-kit grids and pixel icons |
 
 ## Rules the engine enforces (covered by tests)
 
@@ -45,9 +44,9 @@ xcodebuild -project GYLT.xcodeproj -scheme GYLT -destination 'platform=iOS Simul
 
 ## Status
 
-Milestone 0: engine, pixel design system and the core flow run in the simulator with **simulated** app restrictions.
+Milestone 0: engine, design system and the core flow run in the simulator with **simulated** app restrictions.
 Real Screen Time restrictions, notifications, persistence recovery polish and BYOK AI come in later milestones.
 
 ## Credits
 
-Jersey 25 (SIL OFL, `GYLT/Resources/Fonts`), pixelarticons by Gerrit Halfmann (MIT, `tools/icons/LICENSE`).
+SF Pro and SF Symbols (system). No third-party fonts or icon sets.

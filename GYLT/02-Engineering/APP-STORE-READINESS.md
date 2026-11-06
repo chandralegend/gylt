@@ -58,7 +58,7 @@ Contact: TBD.
 
 ## Build checklist
 
-- [x] App icon, launch, fonts bundled (Jersey 25, OFL license included)
+- [x] App icon (timer ring), system fonts only
 - [x] Privacy manifest
 - [x] Unit tests: 53 (engine, progress, AI) + app target tests passing
 - [x] Large-text (Dynamic Type up to AX5) layouts checked in the simulator on Today

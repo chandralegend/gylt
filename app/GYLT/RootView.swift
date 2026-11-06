@@ -29,21 +29,22 @@ struct RootView: View {
 
     var body: some View {
         @Bindable var m = model
-        ZStack {
-            Theme.bg.ignoresSafeArea()
-            Group {
-                switch model.selectedTab {
-                case .today: TodayView()
-                case .plan: PlanView()
-                case .coach: CoachView()
-                case .you: YouView()
-                }
-            }
+        TabView(selection: $m.selectedTab) {
+            NavigationStack { TodayView() }
+                .tabItem { Label("Today", systemImage: "house.fill") }.tag(AppModel.Tab.today)
+            NavigationStack { PlanView() }
+                .tabItem { Label("Promises", systemImage: "checklist") }.tag(AppModel.Tab.plan)
+            NavigationStack { CoachView() }
+                .tabItem { Label("Coach", systemImage: "bubble.left.fill") }.tag(AppModel.Tab.coach)
+            NavigationStack { YouView() }
+                .tabItem { Label("Progress", systemImage: "chart.bar.fill") }.tag(AppModel.Tab.you)
         }
-        .safeAreaInset(edge: .top, spacing: 0) { Theme.bg.frame(height: 0).background(Theme.bg.ignoresSafeArea(edges: .top)) }
-        .safeAreaInset(edge: .bottom, spacing: 0) { TabBar() }
-        .overlay(alignment: .bottom) { ToastView().padding(.bottom, 96) }
-        .overlay { if !model.settings.onboardingCompleted { OnboardingView().transition(.opacity) } }
+        .tint(Theme.accent)
+        .overlay(alignment: .top) { ToastView() }
+        .overlay {
+            if !model.settings.onboardingCompleted { OnboardingView().transition(.opacity) }
+        }
+        .animation(Motion.easeOut, value: model.settings.onboardingCompleted)
         .sheet(item: $m.sheet) { sheet in SheetHost(sheet: sheet) }
         .fullScreenCover(item: $m.flow) { flow in FlowView(flow: flow) }
         .task {
@@ -57,47 +58,24 @@ struct RootView: View {
     }
 }
 
-struct TabBar: View {
-    @Environment(AppModel.self) private var model
-    private let items: [(AppModel.Tab, PxIcon, String)] = [(.today, .home, "Today"), (.plan, .calendar, "Plan"), (.coach, .headphone, "Coach"), (.you, .chartBar, "You")]
-
-    var body: some View {
-        HStack {
-            ForEach(items, id: \.0) { tab, icon, title in
-                let on = model.selectedTab == tab
-                Button { model.selectedTab = tab } label: {
-                    VStack(spacing: 4) {
-                        PxIconView(icon: icon, size: 24)
-                        Text(title).font(.mono(.caption2, weight: on ? .semibold : .medium))
-                    }
-                    .foregroundStyle(on ? Theme.label : Theme.label3)
-                    .frame(maxWidth: .infinity, minHeight: 48)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(title)
-                .accessibilityAddTraits(on ? [.isButton, .isSelected] : .isButton)
-            }
-        }
-        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-        .padding(.horizontal, 8).padding(.top, 6)
-        .background(alignment: .top) {
-            Theme.bg.overlay(alignment: .top) { Rectangle().fill(Theme.separator).frame(height: 2) }.ignoresSafeArea(edges: .bottom)
-        }
-    }
-}
-
 struct ToastView: View {
     @Environment(AppModel.self) private var model
     var body: some View {
-        if let text = model.toast {
-            Text(text).font(.mono(.subheadline, weight: .medium)).foregroundStyle(Theme.paper)
-                .padding(.horizontal, 20).padding(.vertical, 12)
-                .background(PixelRect(corner: 8).fill(Theme.ink))
-                .padding(.horizontal, 16).padding(.bottom, 8)
-                .transition(.opacity.combined(with: .move(edge: .bottom)))
-                .accessibilityAddTraits(.isStaticText)
-                .onAppear { UIAccessibility.post(notification: .announcement, argument: text) }
+        ZStack {
+            if let text = model.toast {
+                Text(text).font(.text(.subheadline, weight: .medium)).foregroundStyle(Theme.paper)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20).padding(.vertical, 12)
+                    .background(Capsule().fill(Theme.ink))
+                    .shadow(color: .black.opacity(0.18), radius: 14, y: 6)
+                    .padding(.horizontal, 20).padding(.top, 8)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .accessibilityAddTraits(.isStaticText)
+                    .onAppear { UIAccessibility.post(notification: .announcement, argument: text) }
+            }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .allowsHitTesting(false)
+        .animation(Motion.spring, value: model.toast)
     }
 }

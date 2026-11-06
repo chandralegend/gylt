@@ -23,8 +23,6 @@ struct SheetHost: View {
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
-        .presentationBackground(Theme.sheet)
-        .presentationCornerRadius(0)
     }
 }
 
@@ -37,12 +35,12 @@ struct SheetFrame<Content: View>: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 HStack {
-                    Text(title).font(.display(34, relativeTo: .title)).foregroundStyle(Theme.label).accessibilityAddTraits(.isHeader)
+                    Text(title).font(.text(.title2, weight: .bold)).foregroundStyle(Theme.label).accessibilityAddTraits(.isHeader)
                     Spacer()
-                    PxIconButton(icon: .close, label: "Close", size: 36) { model.dismissSheets() }
+                    IconButton(icon: .close, label: "Close", size: 32) { model.dismissSheets() }
                 }
-                .padding(.top, 20)
-                if let lead { Text(lead).font(.mono(.subheadline)).foregroundStyle(Theme.label2).padding(.top, 6).padding(.bottom, 20) }
+                .padding(.top, 24)
+                if let lead { Text(lead).font(.text(.subheadline)).foregroundStyle(Theme.label2).padding(.top, 6).padding(.bottom, 20) }
                 content
             }
             .padding(.horizontal, Theme.gutter).padding(.bottom, 32)
@@ -52,13 +50,13 @@ struct SheetFrame<Content: View>: View {
 }
 
 struct Option: View {
-    let icon: PxIcon
+    let icon: Icon
     let title: String
     var subtitle: String?
     var first = false
     let action: () -> Void
     var body: some View {
-        Button(action: action) { PxRow(icon: icon, title: title, subtitle: subtitle, chevron: true, showsSeparator: !first, tileFill: Theme.fill2) }
+        Button(action: action) { ListRow(icon: icon, title: title, subtitle: subtitle, chevron: true, showsSeparator: !first) }
             .buttonStyle(.plain)
     }
 }
@@ -71,7 +69,7 @@ struct ChangePlanSheet: View {
     var body: some View {
         let c = model.state.occurrence(id).flatMap { model.commitment($0.commitmentId) }
         SheetFrame(title: "Life happens.", lead: "Change the plan deliberately. You’re always in control.") {
-            PxGroup(fill: Theme.sheetGroup) {
+            CardGroup(fill: Theme.sheetGroup) {
                 if let c, c.minimumMinutes < c.fullMinutes, model.state.occurrence(id)?.kind == .scheduled {
                     Option(icon: .humanRun, title: "Do the \(c.minimumMinutes)-minute version", subtitle: "Keep the minimum you agreed to.", first: true) { model.chooseMinimum(id) }
                 }
@@ -90,9 +88,9 @@ struct StuckSheet: View {
         let c = model.state.occurrence(id).flatMap { model.commitment($0.commitmentId) }
         SheetFrame(title: "Let’s make it smaller.", lead: "You don’t need to solve the whole evening. What would help right now?") {
             if model.lineIsAI(.stuck, for: id), let line = model.line(.stuck, for: id) {
-                Text("“\(line)”").font(.mono(.body, weight: .medium)).foregroundStyle(Theme.label).padding(.bottom, 16)
+                Text("“\(line)”").font(.text(.body, weight: .medium)).foregroundStyle(Theme.label).padding(.bottom, 16)
             }
-            PxGroup(fill: Theme.sheetGroup) {
+            CardGroup(fill: Theme.sheetGroup) {
                 if let c, c.minimumMinutes < c.fullMinutes, model.state.occurrence(id)?.kind == .scheduled {
                     Option(icon: .humanRun, title: "Do the \(c.minimumMinutes)-minute version", subtitle: "The minimum is here for a reason.", first: true) { model.chooseMinimum(id) }
                 }
@@ -153,22 +151,22 @@ struct FinishSheet: View {
         SheetFrame(title: "Show me.", lead: attempt > 1 ? "Add something more specific. A clearer photo, or what exactly you did." : "Show your coach what you did: a photo, a few words, or both. It decides if it counts.") {
             VStack(alignment: .leading, spacing: 14) {
                 TextField("What did you do? Be specific.", text: $text, axis: .vertical)
-                    .lineLimit(3...6).font(.mono(.body)).foregroundStyle(Theme.label)
+                    .lineLimit(3...6).font(.text(.body)).foregroundStyle(Theme.label)
                     .padding(12).frame(maxWidth: .infinity, minHeight: 96, alignment: .topLeading)
-                    .background(PixelRect(corner: 8).fill(Theme.sheetGroup))
+                    .background(Squircle(corner: 12).fill(Theme.sheetGroup))
                     .onChange(of: text) { _, new in if new.count > ProofLimits.maxExplanationCharacters { text = String(new.prefix(ProofLimits.maxExplanationCharacters)) } }
 
                 if judge?.acceptsPhotos == true { photoSection }
-                else { Text("Apple’s on-device coach reads what you write. It can’t look at photos.").font(.mono(.footnote)).foregroundStyle(Theme.label2) }
+                else { Text("Apple’s on-device coach reads what you write. It can’t look at photos.").font(.text(.footnote)).foregroundStyle(Theme.label2) }
 
                 Button("Send to the coach") { send() }
-                    .buttonStyle(PxButtonStyle(kind: .accent, showsArrow: true))
+                    .buttonStyle(AppButtonStyle(kind: .primary))
                     .disabled(!canSend).opacity(canSend ? 1 : 0.4)
 
                 Text(EndpointPolicy.proofDisclosure(for: model.settings.ai.kind, host: EndpointPolicy.validate(model.settings.ai.baseURL)?.host))
-                    .font(.mono(.footnote)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
+                    .font(.text(.footnote)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
 
-                Button("I’m ending this one") { model.endUnfinished(id) }.buttonStyle(PxButtonStyle(kind: .plain))
+                Button("I’m ending this one") { model.endUnfinished(id) }.buttonStyle(AppButtonStyle(kind: .tertiary))
             }
         }
         .fullScreenCover(isPresented: $showCamera) {
@@ -194,8 +192,8 @@ struct FinishSheet: View {
                     .overlay(Rectangle().stroke(Theme.separator, lineWidth: 2))
                     .accessibilityLabel("Your photo")
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Photo ready").font(.mono(.subheadline, weight: .semibold)).foregroundStyle(Theme.label)
-                    Button("Remove") { photo = nil; self.thumbnail = nil }.font(.mono(.subheadline, weight: .medium)).foregroundStyle(Theme.accentText).frame(minHeight: 44)
+                    Text("Photo ready").font(.text(.subheadline, weight: .semibold)).foregroundStyle(Theme.label)
+                    Button("Remove") { photo = nil; self.thumbnail = nil }.font(.text(.subheadline, weight: .medium)).foregroundStyle(Theme.accentText).frame(minHeight: 44)
                 }
                 Spacer(minLength: 0)
             }
@@ -203,10 +201,10 @@ struct FinishSheet: View {
             HStack(spacing: 12) {
                 if ProofPhoto.cameraAvailable {
                     Button { showCamera = true } label: { Label("Take a photo", systemImage: "camera") }
-                        .buttonStyle(PxButtonStyle(kind: .secondary))
+                        .buttonStyle(AppButtonStyle(kind: .secondary))
                 }
                 PhotosPicker(selection: $pickerItem, matching: .images) { Label("From library", systemImage: "photo") }
-                    .buttonStyle(PxButtonStyle(kind: .secondary))
+                    .buttonStyle(AppButtonStyle(kind: .secondary))
             }
         }
     }
@@ -222,7 +220,7 @@ struct FinishSheet: View {
         SheetFrame(title: "Looking…", lead: "Your coach is checking it. This takes a few seconds.") {
             VStack(spacing: 16) {
                 ProgressView().controlSize(.large).tint(Theme.accent).frame(maxWidth: .infinity).padding(.vertical, 24)
-                Button("Cancel") { review?.cancel(); phase = .collecting }.buttonStyle(PxButtonStyle(kind: .plain))
+                Button("Cancel") { review?.cancel(); phase = .collecting }.buttonStyle(AppButtonStyle(kind: .tertiary))
             }
         }
     }
@@ -261,23 +259,23 @@ struct FinishSheet: View {
         let canAddMore = attempt < 3
         return SheetFrame(title: counted ? "Counted." : "Not yet.", lead: nil) {
             VStack(alignment: .leading, spacing: 14) {
-                PxCard {
+                Card {
                     VStack(alignment: .leading, spacing: 8) {
-                        PxChip(text: v.kind == .full ? "Full version" : v.kind == .minimum ? "Minimum" : "Not counted")
-                        Text(v.reason).font(.mono(.body)).foregroundStyle(Theme.label).fixedSize(horizontal: false, vertical: true)
+                        Chip(text: v.kind == .full ? "Full version" : v.kind == .minimum ? "Minimum" : "Not counted")
+                        Text(v.reason).font(.text(.body)).foregroundStyle(Theme.label).fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 if counted {
                     Button("Record it") { model.recordReviewed(id, verdict: v, usedPhoto: photo != nil, usedText: !trimmed.isEmpty) }
-                        .buttonStyle(PxButtonStyle(kind: .accent, showsArrow: true))
+                        .buttonStyle(AppButtonStyle(kind: .primary))
                 } else {
                     if canAddMore {
-                        Button("Add more proof") { attempt += 1; phase = .collecting }.buttonStyle(PxButtonStyle(kind: .accent, showsArrow: true))
+                        Button("Add more proof") { attempt += 1; phase = .collecting }.buttonStyle(AppButtonStyle(kind: .primary))
                     } else {
-                        Text("That’s three tries. Go do it, or call it for today.").font(.mono(.footnote)).foregroundStyle(Theme.label2)
+                        Text("That’s three tries. Go do it, or call it for today.").font(.text(.footnote)).foregroundStyle(Theme.label2)
                     }
-                    Button("Back to my session") { model.dismissSheets() }.buttonStyle(PxButtonStyle(kind: .secondary))
-                    Button("I’m ending this one") { model.endUnfinished(id) }.buttonStyle(PxButtonStyle(kind: .plain))
+                    Button("Back to my session") { model.dismissSheets() }.buttonStyle(AppButtonStyle(kind: .secondary))
+                    Button("I’m ending this one") { model.endUnfinished(id) }.buttonStyle(AppButtonStyle(kind: .tertiary))
                 }
             }
         }
@@ -293,16 +291,16 @@ struct FinishSheet: View {
     private func selfReport(title: String, lead: String, offerSetup: Bool, retry: (() -> Void)? = nil) -> some View {
         SheetFrame(title: title, lead: lead) {
             VStack(alignment: .leading, spacing: 14) {
-                if let retry { Button("Try again") { retry() }.buttonStyle(PxButtonStyle(kind: .accent, showsArrow: true)) }
+                if let retry { Button("Try again") { retry() }.buttonStyle(AppButtonStyle(kind: .primary)) }
                 if offerSetup {
                     Button { model.dismissSheets(); DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { model.present(.providers) } } label: {
-                        PxRow(icon: .zap, title: "Let the coach check your proof", subtitle: "Add your own AI and show a photo or a few words.", chevron: true, showsSeparator: false, tileFill: Theme.fill2)
+                        ListRow(icon: .zap, title: "Let the coach check your proof", subtitle: "Add your own AI and show a photo or a few words.", chevron: true, showsSeparator: false)
                     }
                     .buttonStyle(.plain)
-                    .pixelPanel(Theme.sheetGroup, corner: 12, border: nil)
+                    .panel(Theme.sheetGroup, corner: 12, border: nil)
                 }
                 SmallLabel(text: "Report it yourself")
-                PxGroup(fill: Theme.sheetGroup) {
+                CardGroup(fill: Theme.sheetGroup) {
                     Option(icon: .check, title: "I did the full version", subtitle: "Self-reported, not checked. Apps released.", first: true) { model.finish(id, mode: .full) }
                     if let c = commitment, c.minimumMinutes < c.fullMinutes {
                         Option(icon: .humanRun, title: "I did the minimum", subtitle: "\(c.minimumMinutes) \(c.minimumMinutes == 1 ? "minute" : "minutes"). Self-reported, not checked.") { model.finish(id, mode: .minimum) }
@@ -332,14 +330,12 @@ struct EditCommitmentSheet: View {
                 field("What will you do?") { TextField("Clear my desk", text: $title).textInputAutocapitalization(.sentences) }
                 field("First step") { TextField("Put the phone in another room", text: $firstStep) }
                 field("Start time") { DatePicker("Start time", selection: $time, displayedComponents: .hourAndMinute).labelsHidden().frame(maxWidth: .infinity, alignment: .leading) }
-                HStack(spacing: 12) {
-                    field("Full") { Stepper("\(full) min", value: $full, in: 2...120, step: 5).font(.mono(.body)) }
-                    field("Minimum") { Stepper("\(minimum) min", value: $minimum, in: 1...60).font(.mono(.body)) }
-                }
-                Button(commitmentId == nil ? "Add promise" : "Save") { save() }.buttonStyle(PxButtonStyle(kind: .ink))
+                field("Full version") { Stepper("\(full) min", value: $full, in: 2...120, step: 5).font(.text(.body)) }
+                field("Minimum for hard days") { Stepper("\(minimum) min", value: $minimum, in: 1...60).font(.text(.body)) }
+                Button(commitmentId == nil ? "Add promise" : "Save") { save() }.buttonStyle(AppButtonStyle(kind: .primary))
                     .padding(.top, 8).disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
                 if let id = commitmentId, id != Commitment.walkID {
-                    Button("Remove this promise") { model.send(.removeCommitment(id)); model.dismissSheets() }.buttonStyle(PxButtonStyle(kind: .plain))
+                    Button("Remove this promise") { model.send(.removeCommitment(id)); model.dismissSheets() }.buttonStyle(AppButtonStyle(kind: .tertiary))
                 }
             }
         }
@@ -348,9 +344,9 @@ struct EditCommitmentSheet: View {
 
     private func field<C: View>(_ label: String, @ViewBuilder _ content: () -> C) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(label).font(.mono(.footnote, weight: .medium)).foregroundStyle(Theme.label2).padding(.leading, 4)
-            content().font(.mono(.body)).foregroundStyle(Theme.label).padding(.horizontal, 12).frame(minHeight: 48)
-                .background(PixelRect(corner: 8).fill(Theme.sheetGroup))
+            Text(label).font(.text(.footnote, weight: .medium)).foregroundStyle(Theme.label2).padding(.leading, 4)
+            content().font(.text(.body)).foregroundStyle(Theme.label).padding(.horizontal, 12).frame(minHeight: 48)
+                .background(Squircle(corner: 12).fill(Theme.sheetGroup))
         }
     }
 
@@ -379,13 +375,13 @@ struct PersonasSheet: View {
     @Environment(AppModel.self) private var model
     var body: some View {
         SheetFrame(title: "Pick your person.", lead: "Different energy. Same commitment to you.") {
-            PxGroup(fill: Theme.sheetGroup) {
+            CardGroup(fill: Theme.sheetGroup) {
                 ForEach(Array(Persona.allCases.enumerated()), id: \.element) { i, p in
                     Button {
                         var s = model.settings; s.persona = p; model.update(settings: s); model.dismissSheets(); model.show("\(p.rawValue) is in your corner.")
                     } label: {
-                        PxRow(icon: .headphone, title: p.rawValue, subtitle: p.blurb, showsSeparator: i > 0, tileFill: Theme.fill2,
-                              accessory: model.settings.persona == p ? AnyView(PxIconView(icon: .check, size: 12).foregroundStyle(Theme.bg).frame(width: 24, height: 24).background(PixelRound().fill(Theme.label))) : nil)
+                        ListRow(icon: .headphone, title: p.rawValue, subtitle: p.blurb, showsSeparator: i > 0,
+                              accessory: model.settings.persona == p ? AnyView(Symbol(icon: .check, size: 12).foregroundStyle(Theme.bg).frame(width: 24, height: 24).background(Circle().fill(Theme.label))) : nil)
                     }.buttonStyle(.plain)
                 }
             }
@@ -396,10 +392,10 @@ struct PersonasSheet: View {
 struct BoundariesSheet: View {
     var body: some View {
         SheetFrame(title: "Firm. Still on your side.", lead: "Your coach follows the authority you give it.") {
-            PxGroup(fill: Theme.sheetGroup) {
-                PxRow(icon: .shield, title: "Only your selected apps", subtitle: "Essential apps remain available.", showsSeparator: false, tileFill: Theme.fill2)
-                PxRow(icon: .clock, title: "Every restriction ends", subtitle: "On finish, at the deadline, or when you say so.", tileFill: Theme.fill2)
-                PxRow(icon: .lockOpen, title: "The AI can only suggest", subtitle: "It can’t extend a block, add a penalty or change a rule.", tileFill: Theme.fill2)
+            CardGroup(fill: Theme.sheetGroup) {
+                ListRow(icon: .shield, title: "Only your selected apps", subtitle: "Essential apps remain available.", showsSeparator: false)
+                ListRow(icon: .clock, title: "Every restriction ends", subtitle: "On finish, at the deadline, or when you say so.")
+                ListRow(icon: .lockOpen, title: "The AI can only suggest", subtitle: "It can’t extend a block, add a penalty or change a rule.")
             }
             Footnote(text: "The coach can challenge avoidance. It never dismisses illness, pain, exhaustion, or a change in circumstances.")
         }
@@ -410,7 +406,7 @@ struct SettingsSheet: View {
     @Environment(AppModel.self) private var model
     var body: some View {
         SheetFrame(title: "Settings") {
-            PxGroup(fill: Theme.sheetGroup) {
+            CardGroup(fill: Theme.sheetGroup) {
                 Option(icon: .lock, title: "AI & voice keys", subtitle: "Bring your own, free to use.", first: true) {
                     model.dismissSheets(); DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { model.present(.providers) }
                 }
@@ -422,7 +418,7 @@ struct SettingsSheet: View {
                 }
                 Option(icon: .reload, title: "Reset the demo", subtitle: "Clear everything and start again.") { model.resetDemo() }
             }
-            Footnote(text: "GYLT — Get Your Life Together. Free, no accounts, no analytics. Pixelarticons (MIT) and Jersey 25 (OFL).")
+            Footnote(text: "GYLT — Get Your Life Together. Free, no accounts, no analytics.")
         }
     }
 }

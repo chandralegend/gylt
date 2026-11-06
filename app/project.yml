@@ -44,8 +44,6 @@ targets:
           UIImageName: ""
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        UIAppFonts:
-          - Jersey25-Regular.ttf
         ITSAppUsesNonExemptEncryption: false
         NSCameraUsageDescription: Only used if you choose to take a photo as proof of what you did. The photo is shown to the coach you chose and is not saved.
         NSLocalNetworkUsageDescription: Only used if you choose a coach that runs on your own computer, such as Ollama or LM Studio.
@@ -95,7 +93,6 @@ targets:
     sources:
       - path: Extensions/ShieldConfiguration
       - path: Shared
-      - path: GYLT/DesignSystem/Generated/PixelData.swift
     info:
       path: Extensions/ShieldConfiguration/Info.plist
       properties:

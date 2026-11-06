@@ -7,16 +7,16 @@ struct AppsSheet: View {
         let walk = model.walk
         SheetFrame(title: "Distractions, on pause.", lead: "Choose what takes a break during your commitments. Calls and essentials stay available.") {
             #if targetEnvironment(simulator)
-            PxGroup(fill: Theme.sheetGroup) {
+            CardGroup(fill: Theme.sheetGroup) {
                 ForEach(Array(ProtectedApp.allCases.enumerated()), id: \.element) { i, app in
                     HStack(spacing: 12) {
                         BrandBadge(app: app.brand, size: 36)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(app.displayName).font(.mono(.body, weight: .medium)).foregroundStyle(Theme.label)
-                            Text("During commitments only").font(.mono(.footnote)).foregroundStyle(Theme.label2)
+                            Text(app.displayName).font(.text(.body, weight: .medium)).foregroundStyle(Theme.label)
+                            Text("During commitments only").font(.text(.footnote)).foregroundStyle(Theme.label2)
                         }
                         Spacer(minLength: 8)
-                        PxSwitch(isOn: Binding(get: { walk?.protectedApps.contains(app) ?? false }, set: { on in
+                        ToggleSwitch(isOn: Binding(get: { walk?.protectedApps.contains(app) ?? false }, set: { on in
                             guard var c = walk else { return }
                             if on { c.protectedApps.insert(app) } else { c.protectedApps.remove(app) }
                             model.send(.upsertCommitment(c))
@@ -51,12 +51,12 @@ struct ProvidersSheet: View {
 
     var body: some View {
         SheetFrame(title: "Your AI. Your voice.", lead: "GYLT is free and has no servers. Pick a coach. The built-in one needs nothing; the others use your own account, straight from your phone.") {
-            PxGroup(fill: Theme.sheetGroup) {
+            CardGroup(fill: Theme.sheetGroup) {
                 ForEach(Array(AIProviderConfig.Kind.allCases.enumerated()), id: \.element) { i, k in
                     Button { choose(k) } label: {
-                        PxRow(icon: icon(for: k), title: k.title, subtitle: subtitle(for: k), showsSeparator: i > 0, tileFill: Theme.fill2,
-                              accessory: model.settings.ai.kind == k ? AnyView(PxIconView(icon: .check, size: 12).foregroundStyle(Theme.bg)
-                                .frame(width: 24, height: 24).background(PixelRound().fill(Theme.label))) : nil)
+                        ListRow(icon: icon(for: k), title: k.title, subtitle: subtitle(for: k), showsSeparator: i > 0,
+                              accessory: model.settings.ai.kind == k ? AnyView(Symbol(icon: .check, size: 12).foregroundStyle(Theme.bg)
+                                .frame(width: 24, height: 24).background(Circle().fill(Theme.label))) : nil)
                     }.buttonStyle(.plain)
                 }
             }
@@ -66,8 +66,8 @@ struct ProvidersSheet: View {
             if kind == .appleOnDevice, AppleOnDevice.isAvailable {
                 VStack(alignment: .leading, spacing: 8) {
                     Button(testing ? "Testing…" : "Test the on-device coach") { Task { await test() } }
-                        .buttonStyle(PxButtonStyle(kind: .secondary)).disabled(testing)
-                    if let result { Text(result.message).font(.mono(.footnote)).foregroundStyle(result.ok ? Theme.label : Theme.accentText) }
+                        .buttonStyle(AppButtonStyle(kind: .secondary)).disabled(testing)
+                    if let result { Text(result.message).font(.text(.footnote)).foregroundStyle(result.ok ? Theme.label : Theme.accentText) }
                 }
                 .padding(.top, 12)
             }
@@ -79,7 +79,7 @@ struct ProvidersSheet: View {
         .onAppear { load() }
     }
 
-    private func icon(for k: AIProviderConfig.Kind) -> PxIcon {
+    private func icon(for k: AIProviderConfig.Kind) -> Icon {
         switch k { case .builtIn: .headphone; case .appleOnDevice: .zap; default: .lock }
     }
 
@@ -98,27 +98,27 @@ struct ProvidersSheet: View {
             if kind == .custom {
                 labeled("Address (ends with /v1)") { TextField("https://openrouter.ai/api/v1", text: $baseURL).textInputAutocapitalization(.never).autocorrectionDisabled().keyboardType(.URL) }
                 if !baseURL.isEmpty && !endpointOK {
-                    Text("Use https, or an address on this phone or your local network.").font(.mono(.footnote)).foregroundStyle(Theme.accentText)
+                    Text("Use https, or an address on this phone or your local network.").font(.text(.footnote)).foregroundStyle(Theme.accentText)
                 }
             }
             labeled("Model") { TextField(kind.defaultModel.isEmpty ? "model name" : kind.defaultModel, text: $modelName).textInputAutocapitalization(.never).autocorrectionDisabled() }
             labeled(hasKey ? "New key (leave empty to keep the saved one)" : "Your key") { SecureField("Paste your key", text: $key).textInputAutocapitalization(.never).autocorrectionDisabled() }
 
-            Text(EndpointPolicy.disclosure(for: kind, host: host)).font(.mono(.footnote)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
+            Text(EndpointPolicy.disclosure(for: kind, host: host)).font(.text(.footnote)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 12) {
-                PxSwitch(isOn: $understood, label: "I understand where my requests go")
-                Text("I understand").font(.mono(.subheadline, weight: .medium)).foregroundStyle(Theme.label)
+                ToggleSwitch(isOn: $understood, label: "I understand where my requests go")
+                Text("I understand").font(.text(.subheadline, weight: .medium)).foregroundStyle(Theme.label)
             }
 
             Button(hasKey ? "Save and use" : "Save key and use") { save() }
-                .buttonStyle(PxButtonStyle(kind: .accent))
+                .buttonStyle(AppButtonStyle(kind: .primary))
                 .disabled(!canSave).opacity(canSave ? 1 : 0.4)
             Button(testing ? "Testing…" : "Test connection") { Task { await test() } }
-                .buttonStyle(PxButtonStyle(kind: .secondary)).disabled(!(hasKey || kind == .custom) || testing)
-            if hasKey { Button("Remove key") { removeKey() }.buttonStyle(PxButtonStyle(kind: .plain)) }
+                .buttonStyle(AppButtonStyle(kind: .secondary)).disabled(!(hasKey || kind == .custom) || testing)
+            if hasKey { Button("Remove key") { removeKey() }.buttonStyle(AppButtonStyle(kind: .tertiary)) }
 
             if let result {
-                Text(result.message).font(.mono(.footnote)).foregroundStyle(result.ok ? Theme.label : Theme.accentText)
+                Text(result.message).font(.text(.footnote)).foregroundStyle(result.ok ? Theme.label : Theme.accentText)
             }
         }
         .padding(.top, 8)
@@ -130,8 +130,8 @@ struct ProvidersSheet: View {
 
     private func labeled<C: View>(_ title: String, @ViewBuilder _ field: () -> C) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(title).font(.mono(.footnote, weight: .medium)).foregroundStyle(Theme.label2).padding(.leading, 4)
-            field().font(.mono(.body)).foregroundStyle(Theme.label).padding(.horizontal, 12).frame(minHeight: 48).background(PixelRect(corner: 8).fill(Theme.sheetGroup))
+            Text(title).font(.text(.footnote, weight: .medium)).foregroundStyle(Theme.label2).padding(.leading, 4)
+            field().font(.text(.body)).foregroundStyle(Theme.label).padding(.horizontal, 12).frame(minHeight: 48).background(Squircle(corner: 12).fill(Theme.sheetGroup))
         }
     }
 

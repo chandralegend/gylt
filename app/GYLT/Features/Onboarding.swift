@@ -12,25 +12,25 @@ struct ScreenTimeSetupCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            PxGroup(fill: Theme.sheetGroup) {
-                PxRow(icon: .shield, title: "Screen Time access", subtitle: status, showsSeparator: false, tileFill: Theme.fill2)
+            CardGroup(fill: Theme.sheetGroup) {
+                ListRow(icon: .shield, title: "Screen Time access", subtitle: status, showsSeparator: false)
                 if ScreenTimeAccess.isApproved {
-                    PxRow(icon: .lock, title: "Apps to pause", subtitle: SelectionStore.isEmpty(selection) ? "None chosen yet" : "\(SelectionStore.count()) chosen", tileFill: Theme.fill2)
+                    ListRow(icon: .lock, title: "Apps to pause", subtitle: SelectionStore.isEmpty(selection) ? "None chosen yet" : "\(SelectionStore.count()) chosen")
                     ForEach(Array(selection.applicationTokens), id: \.self) { token in
-                        Label(token).labelStyle(.titleAndIcon).font(.mono(.subheadline)).foregroundStyle(Theme.label)
+                        Label(token).labelStyle(.titleAndIcon).font(.text(.subheadline)).foregroundStyle(Theme.label)
                             .padding(.horizontal, 16).padding(.vertical, 8).frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
             }
             if ScreenTimeAccess.isApproved {
                 Button(SelectionStore.isEmpty(selection) ? "Choose apps to pause" : "Change apps") { showPicker = true }
-                    .buttonStyle(PxButtonStyle(kind: .secondary))
+                    .buttonStyle(AppButtonStyle(kind: .secondary))
             } else {
-                Button("Allow Screen Time access") { Task { await request() } }.buttonStyle(PxButtonStyle(kind: .secondary))
+                Button("Allow Screen Time access") { Task { await request() } }.buttonStyle(AppButtonStyle(kind: .secondary))
             }
-            if let error { Text(error).font(.mono(.footnote)).foregroundStyle(Theme.accentText) }
+            if let error { Text(error).font(.text(.footnote)).foregroundStyle(Theme.accentText) }
             Text("Optional. Apps stay paused only for the time you set, and you can end it any time. You can always use GYLT as a coach only.")
-                .font(.mono(.footnote)).foregroundStyle(Theme.label2)
+                .font(.text(.footnote)).foregroundStyle(Theme.label2)
         }
         .familyActivityPicker(isPresented: $showPicker, selection: $selection)
         .onChange(of: selection) { _, new in SelectionStore.save(new); status = ScreenTimeAccess.statusText }
@@ -54,6 +54,7 @@ struct ScreenTimeSetupCard: View {
 struct OnboardingView: View {
     @Environment(AppModel.self) private var model
     @State private var page = 0
+    @State private var forward = true
     @State private var agreed = false
     @State private var promiseOn: [UUID: Bool] = [:]
     @State private var promiseTime: [UUID: Date] = [:]
@@ -66,9 +67,10 @@ struct OnboardingView: View {
             VStack(spacing: 0) {
                 HStack(spacing: 6) {
                     ForEach(0..<pages, id: \.self) { i in
-                        Rectangle().fill(i <= page ? Theme.accent : Theme.fill2).frame(height: 6)
+                        Capsule().fill(i <= page ? Theme.accent : Theme.fill2).frame(height: 4)
                     }
                 }
+                .animation(Motion.spring, value: page)
                 .padding(.horizontal, Theme.gutter).padding(.top, 12)
                 .accessibilityElement().accessibilityLabel("Step \(page + 1) of \(pages)")
 
@@ -82,16 +84,21 @@ struct OnboardingView: View {
                         default: permissions
                         }
                     }
+                    .id(page)
+                    .transition(.asymmetric(insertion: .move(edge: forward ? .trailing : .leading).combined(with: .opacity),
+                                            removal: .opacity))
                     .padding(.horizontal, Theme.gutter).padding(.top, 28).padding(.bottom, 24)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .scrollBounceBehavior(.basedOnSize)
+                .clipped()
 
-                VStack(spacing: 8) {
+                VStack(spacing: 4) {
                     Button(page == pages - 1 ? "Let’s go" : "Continue") { next() }
-                        .buttonStyle(PxButtonStyle(kind: .accent, showsArrow: true))
-                        .disabled(!canContinue).opacity(canContinue ? 1 : 0.4)
-                    if page > 0 { Button("Back") { page -= 1 }.buttonStyle(PxButtonStyle(kind: .plain)) }
+                        .buttonStyle(AppButtonStyle(kind: .primary))
+                        .disabled(!canContinue)
+                    if page > 0 { Button("Back") { go(to: page - 1) }.buttonStyle(AppButtonStyle(kind: .tertiary)) }
+                    else { Color.clear.frame(height: 44) }
                 }
                 .padding(.horizontal, Theme.gutter).padding(.bottom, 8)
             }
@@ -108,39 +115,58 @@ struct OnboardingView: View {
     private var anyPromiseOn: Bool { model.state.commitments.contains { promiseOn[$0.id] ?? false } }
     private var canContinue: Bool { page == 2 ? agreed : page == 3 ? anyPromiseOn : true }
 
+    private func go(to new: Int) {
+        forward = new > page
+        withAnimation(Motion.spring) { page = new }
+    }
+
     private func next() {
         if page == pages - 1 {
+            Haptics.success()
             model.completeOnboarding(promises: Dictionary(uniqueKeysWithValues: model.state.commitments.map {
                 ($0.id, (enabled: promiseOn[$0.id] ?? $0.isEnabled, time: promiseTime[$0.id] ?? .now))
             }))
-        } else { page += 1 }
+        } else { go(to: page + 1) }
     }
 
     private func heading(_ text: String) -> some View {
-        Text(text).font(.display(48)).lineSpacing(-10).foregroundStyle(Theme.label).accessibilityAddTraits(.isHeader).padding(.bottom, 12)
+        Text(text).font(.system(size: 36, weight: .bold)).foregroundStyle(Theme.label).accessibilityAddTraits(.isHeader)
+            .fixedSize(horizontal: false, vertical: true).padding(.bottom, 12)
     }
     private func body(_ text: String) -> some View {
-        Text(text).font(.mono(.body)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
+        Text(text).font(.text(.body)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
     }
 
     private var welcome: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack { Spacer(); PixelSprite(data: PixelData.coach, scale: 7); Spacer() }.padding(.bottom, 20)
-            Text("You said\nyou would\(Text(".").foregroundStyle(Theme.accent))").font(.display(56)).lineSpacing(-14).foregroundStyle(Theme.label)
-                .accessibilityAddTraits(.isHeader).padding(.bottom, 12)
+            Wordmark(size: 28).padding(.top, 8).padding(.bottom, 56)
+            Text("You said\nyou would.").font(.system(size: 52, weight: .bold)).foregroundStyle(Theme.label)
+                .accessibilityAddTraits(.isHeader).padding(.bottom, 16)
             body("GYLT is a coach with attitude and a short leash. It helps you start the thing you already decided to do.")
-            Text("Free. No account. No tracking.").font(.mono(.subheadline, weight: .semibold)).foregroundStyle(Theme.label).padding(.top, 16)
+            VStack(alignment: .leading, spacing: 14) {
+                welcomePoint("gift", "Free. No ads, no subscription.")
+                welcomePoint("person.crop.circle.badge.xmark", "No account, no tracking.")
+                welcomePoint("iphone", "Everything stays on this phone.")
+            }
+            .padding(.top, 32)
+        }
+    }
+
+    private func welcomePoint(_ symbol: String, _ text: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: symbol).font(.system(size: 17, weight: .semibold)).foregroundStyle(Theme.accent).frame(width: 28)
+            Text(text).font(.text(.subheadline, weight: .medium)).foregroundStyle(Theme.label)
         }
     }
 
     private var how: some View {
         VStack(alignment: .leading, spacing: 16) {
-            heading("How it\nworks")
-            PxGroup {
-                PxRow(icon: .calendar, title: "Pick a promise", subtitle: "And a smaller minimum for the hard days.", showsSeparator: false)
-                PxRow(icon: .headphone, title: "The coach gets direct", subtitle: "At the time you chose, with one small first step.")
-                PxRow(icon: .shield, title: "Distractions can wait", subtitle: "If you choose, chosen apps pause for a fixed time.")
-                PxRow(icon: .check, title: "You tell the truth", subtitle: "Full, minimum or not today. All of it counts honestly.")
+            heading("How it works")
+            CardGroup {
+                ListRow(icon: .calendar, title: "Pick a promise", subtitle: "And a smaller minimum for the hard days.", showsSeparator: false)
+                ListRow(icon: .headphone, title: "The coach gets direct", subtitle: "At the time you chose, with one small first step.")
+                ListRow(icon: .shield, title: "Distractions can wait", subtitle: "If you choose, chosen apps pause for a fixed time.")
+                ListRow(icon: .check, title: "You tell the truth", subtitle: "Show a photo or a few words. Your own AI checks it, or you report it yourself.")
             }
         }
     }
@@ -148,20 +174,20 @@ struct OnboardingView: View {
     private var contract: some View {
         VStack(alignment: .leading, spacing: 16) {
             heading("The deal")
-            PxGroup {
+            CardGroup {
                 ForEach(Array(contractLines.enumerated()), id: \.offset) { i, line in
-                    PxRow(icon: line.0, title: line.1, subtitle: line.2, showsSeparator: i > 0)
+                    ListRow(icon: line.0, title: line.1, subtitle: line.2, showsSeparator: i > 0)
                 }
             }
             HStack(spacing: 12) {
-                PxSwitch(isOn: $agreed, label: "I understand and agree")
-                Text("I understand and agree").font(.mono(.subheadline, weight: .medium)).foregroundStyle(Theme.label)
+                ToggleSwitch(isOn: $agreed, label: "I understand and agree")
+                Text("I understand and agree").font(.text(.subheadline, weight: .medium)).foregroundStyle(Theme.label)
             }
             .padding(.top, 4)
         }
     }
 
-    private let contractLines: [(PxIcon, String, String)] = [
+    private let contractLines: [(Icon, String, String)] = [
         (.check, "You choose everything", "Every promise, app and time is yours to set or change."),
         (.lockOpen, "Pausing apps is optional", "It always ends at a fixed time, and one tap ends it sooner."),
         (.heart, "Tough on excuses, never on you", "No shaming, no fees, no messages to anyone else."),
@@ -169,37 +195,17 @@ struct OnboardingView: View {
         (.lock, "It all stays on this phone", "No account, no server, no analytics."),
     ]
 
-    private var permissions: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            heading("A couple of\npermissions")
-            body("Both are optional. GYLT works as a coach without them.")
-            PxGroup {
-                PxRow(icon: .clock, title: "Reminders", subtitle: model.notificationsAllowed ? "On. One at the time, one gentle nudge." : "A nudge at your promise time.", showsSeparator: false)
-            }
-            if !model.notificationsAllowed {
-                Button("Allow reminders") {
-                    Task { let ok = await model.requestNotifications(); notificationNote = ok ? nil : "No problem. You can turn reminders on later in Settings." }
-                }.buttonStyle(PxButtonStyle(kind: .secondary))
-            }
-            if let notificationNote { Text(notificationNote).font(.mono(.footnote)).foregroundStyle(Theme.label2) }
-            if promiseOn[Commitment.walkID] ?? true {
-                SmallLabel(text: "Pause distracting apps")
-                ScreenTimeSetupCard()
-            }
-        }
-    }
-
     private var promises: some View {
         VStack(alignment: .leading, spacing: 16) {
-            heading("Your\npromises")
+            heading("Your promises")
             body("Three to start. Switch off any you don’t want, and pick the time the coach should show up for the rest.")
             VStack(spacing: 12) {
                 ForEach(model.state.commitments) { c in promiseCard(c) }
             }
             if !anyPromiseOn {
-                Text("Keep at least one on to start. You can add your own later in Promises.").font(.mono(.footnote)).foregroundStyle(Theme.accentText)
+                Text("Keep at least one on to start. You can add your own later in Promises.").font(.text(.footnote)).foregroundStyle(Theme.accentText)
             } else {
-                Text("You can change these, or add your own, any time in Promises.").font(.mono(.footnote)).foregroundStyle(Theme.label2)
+                Text("You can change these, or add your own, any time in Promises.").font(.text(.footnote)).foregroundStyle(Theme.label2)
             }
         }
     }
@@ -207,32 +213,53 @@ struct OnboardingView: View {
     private func promiseCard(_ c: Commitment) -> some View {
         let on = Binding(get: { promiseOn[c.id] ?? c.isEnabled }, set: { promiseOn[c.id] = $0 })
         let time = Binding(get: { promiseTime[c.id] ?? .now }, set: { promiseTime[c.id] = $0 })
-        return PxCard {
+        return Card {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 12) {
-                    PxIconView(icon: PxIcon(rawValue: c.iconName) ?? .zap, size: 24)
-                        .foregroundStyle(on.wrappedValue ? Theme.label : Theme.label3)
-                        .frame(width: 36, height: 36).background(PixelRect(corner: 4).fill(Theme.fill))
+                    Symbol(icon: Icon(rawValue: c.iconName) ?? .zap, size: 22)
+                        .foregroundStyle(on.wrappedValue ? Theme.onAccent : Theme.label2)
+                        .frame(width: 40, height: 40).background(Squircle(corner: 12).fill(on.wrappedValue ? Theme.accent : Theme.fill))
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(c.title).font(.mono(.body, weight: .semibold)).foregroundStyle(on.wrappedValue ? Theme.label : Theme.label2)
-                        Text("\(c.fullMinutes) min · minimum \(c.minimumMinutes)").font(.mono(.footnote)).foregroundStyle(Theme.label2)
+                        Text(c.title).font(.text(.headline)).foregroundStyle(on.wrappedValue ? Theme.label : Theme.label2)
+                        Text("\(c.fullMinutes) min · minimum \(c.minimumMinutes)").font(.text(.footnote)).foregroundStyle(Theme.label2)
                     }
                     Spacer(minLength: 8)
-                    PxSwitch(isOn: on, label: "\(c.title) on or off")
+                    ToggleSwitch(isOn: on, label: "\(c.title) on or off")
                 }
                 if on.wrappedValue {
                     HStack {
-                        Text("Coach shows up at").font(.mono(.subheadline)).foregroundStyle(Theme.label2)
+                        Text("Coach shows up at").font(.text(.subheadline)).foregroundStyle(Theme.label2)
                         Spacer(minLength: 8)
                         DatePicker("Time for \(c.title)", selection: time, displayedComponents: .hourAndMinute).labelsHidden()
                     }
                     if c.id == Commitment.walkID {
                         Text("The only promise that can pause your apps, and only if you allow it on the next step.")
-                            .font(.mono(.footnote)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
+                            .font(.text(.footnote)).foregroundStyle(Theme.label2).fixedSize(horizontal: false, vertical: true)
                     }
                 } else {
-                    Text("Off. No reminders and no coach for this one.").font(.mono(.footnote)).foregroundStyle(Theme.label3)
+                    Text("Off. No reminders and no coach for this one.").font(.text(.footnote)).foregroundStyle(Theme.label3)
                 }
+            }
+            .animation(Motion.easeOut, value: on.wrappedValue)
+        }
+    }
+
+    private var permissions: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            heading("A couple of permissions")
+            body("Both are optional. GYLT works as a coach without them.")
+            CardGroup {
+                ListRow(icon: .clock, title: "Reminders", subtitle: model.notificationsAllowed ? "On. One at the time, one gentle nudge." : "A nudge at your promise time.", showsSeparator: false)
+            }
+            if !model.notificationsAllowed {
+                Button("Allow reminders") {
+                    Task { let ok = await model.requestNotifications(); notificationNote = ok ? nil : "No problem. You can turn reminders on later in Settings." }
+                }.buttonStyle(AppButtonStyle(kind: .secondary))
+            }
+            if let notificationNote { Text(notificationNote).font(.text(.footnote)).foregroundStyle(Theme.label2) }
+            if promiseOn[Commitment.walkID] ?? true {
+                SmallLabel(text: "Pause distracting apps")
+                ScreenTimeSetupCard()
             }
         }
     }

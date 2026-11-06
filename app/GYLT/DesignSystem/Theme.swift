@@ -13,45 +13,91 @@ extension Color {
     }
 }
 
-/// Design tokens, mirrored from GYLT/03-Design/design-tokens.json.
-/// One accent (coral). One warm grey family. Focus screens are forced dark by their container.
+/// Design tokens. Neutrals are the system's own semantic colours, so light, dark and increased contrast come for free.
+/// One accent (coral). Shape rule: cards 20, controls and inputs 12, buttons and chips are capsules. All corners are continuous.
 enum Theme {
-    static let accent = Color(hex: 0xFF6548)
-    static let accentShade = Color(hex: 0xC23F20)
-    static let onAccent = Color(hex: 0x1C1B18)
-    static let onAccentSecondary = Color(hex: 0x4A2117)
+    // Accent: spent only on the primary action, the active state and progress.
+    static let accent = Color(hex: 0xEE4B2B)
+    static let accentText = Color(light: 0xC63A1C, dark: 0xFF7A5C)       // for small accent text: passes contrast on both themes
+    static let accentSoft = Color(light: 0xFDE7E1, dark: 0x3A1F18)
+    static let onAccent = Color.white
+    static let onAccentSecondary = Color.white.opacity(0.82)
+    static let accentShade = Color(hex: 0xC63A1C)
 
-    static let bg = Color(light: 0xF5F4F0, dark: 0x141412)
-    static let surface = Color(light: 0xFFFFFF, dark: 0x1F1E1B)
-    static let fill = Color(light: 0xECEBE6, dark: 0x2A2925)
-    static let fill2 = Color(light: 0xE2E1DB, dark: 0x34332E)
-    static let label = Color(light: 0x1C1B18, dark: 0xF4F3EF)
-    static let label2 = Color(light: 0x64635C, dark: 0xA6A59D)
-    static let label3 = Color(light: 0x8F8E86, dark: 0x6F6E67)
-    static let separator = Color(light: 0xE4E3DD, dark: 0x2F2E2A)
-    static let accentText = Color(light: 0xC23F20, dark: 0xFF8A70)
-    static let accentSoft = Color(light: 0xFFE6DE, dark: 0x3A2520)
-    static let sheet = Color(light: 0xF5F4F0, dark: 0x1E1D1A)
-    static let sheetGroup = Color(light: 0xFFFFFF, dark: 0x2A2925)
-    static let ink = Color(hex: 0x1C1B18)
-    static let paper = Color(hex: 0xF5F4F0)
+    // Neutrals (system semantic).
+    static let bg = Color(uiColor: .systemGroupedBackground)
+    static let surface = Color(uiColor: .secondarySystemGroupedBackground)
+    static let fill = Color(uiColor: .tertiarySystemFill)
+    static let fill2 = Color(uiColor: .secondarySystemFill)
+    static let label = Color(uiColor: .label)
+    static let label2 = Color(uiColor: .secondaryLabel)
+    static let label3 = Color(uiColor: .tertiaryLabel)
+    static let separator = Color(uiColor: .separator)
+    static let sheet = Color(uiColor: .systemGroupedBackground)
+    static let sheetGroup = Color(uiColor: .secondarySystemGroupedBackground)
+
+    /// The focus flow (intervention, session, payoff) is always dark and a touch warmer than pure black.
+    static let focusBg = Color(hex: 0x0E0E10)
+    static let ink = Color(hex: 0x1C1C1E)
+    static let paper = Color(hex: 0xF2F2F7)
 
     static let gutter: CGFloat = 20
     static let minTap: CGFloat = 44
+    static let cardRadius: CGFloat = 20
+    static let controlRadius: CGFloat = 12
 }
 
 // MARK: - Type
 
 extension Font {
-    /// Jersey 25 — pixel display type. Scales with Dynamic Type relative to a text style.
-    static func display(_ size: CGFloat, relativeTo style: Font.TextStyle = .largeTitle) -> Font {
-        // Decorative display type is already large; it stays fixed so headlines never explode at accessibility sizes.
-        // Body text around it still follows Dynamic Type.
-        .custom("Jersey25-Regular", fixedSize: size)
+    /// SF Pro at a system text style, so everything follows Dynamic Type.
+    static func text(_ style: Font.TextStyle, weight: Font.Weight = .regular) -> Font {
+        .system(style, design: .default, weight: weight)
     }
 
-    /// System monospaced for everything that must stay easy to read.
-    static func mono(_ style: Font.TextStyle, weight: Font.Weight = .regular) -> Font {
-        .system(style, design: .monospaced, weight: weight)
+    /// Numerals that count, time or total: SF Rounded, tabular, fixed size (always large already).
+    static func numeral(_ size: CGFloat, weight: Font.Weight = .semibold) -> Font {
+        .system(size: size, weight: weight, design: .rounded).monospacedDigit()
     }
+
+    /// Headlines. One display size per screen.
+    static func display(_ size: CGFloat, relativeTo style: Font.TextStyle = .largeTitle) -> Font {
+        .system(size: size, weight: .bold, design: .default)
+    }
+}
+
+// MARK: - Motion
+
+/// One vocabulary: springs for anything a finger touched, strong ease-out under 300 ms for the rest.
+enum Motion {
+    static let spring = Animation.spring(response: 0.42, dampingFraction: 0.86)
+    static let snappy = Animation.spring(response: 0.3, dampingFraction: 0.84)
+    static let easeOut = Animation.timingCurve(0.23, 1, 0.32, 1, duration: 0.28)
+    static let press = Animation.easeOut(duration: 0.12)
+}
+
+/// Haptics are punctuation: one per action, on the same frame as the visual.
+enum Haptics {
+    static func tap() { UIImpactFeedbackGenerator(style: .light).impactOccurred() }
+    static func selection() { UISelectionFeedbackGenerator().selectionChanged() }
+    static func success() { UINotificationFeedbackGenerator().notificationOccurred(.success) }
+    static func warning() { UINotificationFeedbackGenerator().notificationOccurred(.warning) }
+}
+
+/// Fades and lifts content in once when it first appears. Reduce Motion: a plain fade.
+private struct Appear: ViewModifier {
+    let delay: Double
+    @State private var shown = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(shown ? 1 : 0)
+            .offset(y: shown || reduceMotion ? 0 : 14)
+            .onAppear { withAnimation(Motion.easeOut.delay(delay)) { shown = true } }
+    }
+}
+
+extension View {
+    func appear(_ delay: Double = 0) -> some View { modifier(Appear(delay: delay)) }
 }
