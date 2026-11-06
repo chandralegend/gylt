@@ -38,3 +38,25 @@ Calm, confident and professional. Opal's focus-session calm (dark, big type, one
 ## Screens
 
 Onboarding (welcome, how it works, the deal, your promises, permissions), Today (week strip, hero card, shield row, rest of today), focus flow (intervention, session, app block, payoff), Promises, Coach, Progress, and sheets (change the plan, stuck, finish with proof, edit promise, personality, boundaries, settings, AI keys, apps).
+
+
+## v4: Meadow Dusk palette and art (Nov 2026)
+
+Real illustrations replace drawn shapes. Source: The Open Meadows Library (CC BY 4.0), 8 images in `app/GYLT/Resources/Art`, plus 3 GYLT originals. Credit lives in Settings and `Art/CREDITS.md`.
+
+| Role | Colour |
+|---|---|
+| Ink (dark background) | `#14131B` |
+| Cream (light background) | `#F6F0E6` |
+| Vermilion (primary, buttons, progress) | `#EE4B2B` (small text on dark: `#FF8467`) |
+| Sunset orange | `#F0501A` |
+| Amber | `#FDB927` |
+| Periwinkle | `#4A6BEA` |
+| Blossom | `#FF9BD2` |
+| Lavender | `#CDB8F5` |
+| Forest | `#2F8F58` |
+| Night | `#232A45` |
+| Dark surfaces | `#1E1B27`, `#2A2634`, `#383344` |
+
+Moods: Sunset (walk), Morning (bed), Night (call it a night), Flow (paused, forest and cream). Medals use one hue each: 3 amber, 7 vermilion, 14 periwinkle, 30 blossom, 60 forest, 100 lavender.
+The canvas (https://claude.ai/artifact/c99cbd6f-1334-470c-945d-9d23f4033006) shows every screen in this system, including a Palette board.
